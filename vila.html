@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vila TUI · Sinaia — Cazare & Rezervări | Montania</title>
+  <meta name="description" content="Vila TUI Sinaia: cazare ultracentrală pe Str. Aosta, la 5 min de telecabină. Verifică disponibilitatea și rezervă direct, fără comisioane.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container nav">
+      <a href="index.html" class="logo"><img src="assets/img/montania-logo.png" alt="Montania · Vila TUI Sinaia"></a>
+      <nav class="nav-links">
+        <a href="index.html" data-i18n="nav.home">Acasă</a>
+        <a href="vila.html" class="active" data-i18n="nav.vila">Vila TUI</a>
+        <a href="sinaia.html" data-i18n="nav.sinaia">Sinaia & Munți</a>
+        <a href="bio.html" data-i18n="nav.bio">Bio de Maramu'</a>
+        <a href="contact.html" data-i18n="nav.contact">Contact</a>
+        <div class="lang-toggle"><button data-lang="ro">RO</button><button data-lang="en">EN</button></div>
+      </nav>
+      <button class="burger" aria-label="Menu">☰</button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" style="min-height:62vh;background:linear-gradient(rgba(20,35,25,.4),rgba(20,35,25,.6)),url('https://images.unsplash.com/photo-1551524559-8af4e6624178?auto=format&fit=crop&w=1900&q=80') center/cover">
+    <div class="hero-inner">
+      <h1 data-i18n="vila.hero.title">Vila TUI · Sinaia</h1>
+      <p data-i18n="vila.hero.sub">Cazare ultracentrală pe Strada Aosta.</p>
+      <a href="#booking" class="btn btn-primary" data-i18n="vila.hero.book">Verifică disponibilitatea</a>
+    </div>
+  </section>
+
+  <!-- BOOKING / AVAILABILITY (central, first) -->
+  <section class="section" id="booking">
+    <div class="container">
+      <div class="center mb-2">
+        <p class="eyebrow" data-i18n="vila.book.eyebrow">Rezervare directă</p>
+        <h2 data-i18n="vila.book.title">Verifică disponibilitatea</h2>
+        <p class="lead" data-i18n="vila.book.text">Alege camera și datele.</p>
+      </div>
+
+      <div class="booking-wrap mt-3">
+        <!-- Calendar panel -->
+        <div class="panel">
+          <div class="field">
+            <label data-i18n="vila.book.room">Camera</label>
+            <select id="room-select"></select>
+          </div>
+          <div id="calendar"></div>
+          <div class="cal-legend">
+            <span><span class="dot" style="background:var(--cream-2)"></span><span data-i18n="vila.book.legend.avail">Disponibil</span></span>
+            <span><span class="dot" style="background:#efd6d2"></span><span data-i18n="vila.book.legend.booked">Ocupat</span></span>
+            <span><span class="dot" style="background:var(--green)"></span><span data-i18n="vila.book.legend.selected">Selectat</span></span>
+          </div>
+        </div>
+
+        <!-- Request form -->
+        <div class="panel">
+          <div class="summary-box" id="summary"></div>
+          <form id="booking-form">
+            <input type="hidden" id="f-checkin"><input type="hidden" id="f-checkout">
+            <div class="field">
+              <label data-i18n="vila.book.name">Nume</label>
+              <input type="text" id="f-name" required>
+            </div>
+            <div class="field">
+              <label data-i18n="vila.book.guests">Număr persoane</label>
+              <input type="number" id="f-guests" min="1" max="24" value="2" required>
+            </div>
+            <div class="field">
+              <label data-i18n="vila.book.message">Mesaj</label>
+              <textarea id="f-message"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" data-i18n="vila.book.send">Trimite cererea</button>
+            <a href="#" id="wa-btn" class="btn btn-outline mt-1" style="width:100%;justify-content:center" data-i18n="vila.book.whatsapp">Cere pe WhatsApp</a>
+            <a href="#" data-contact="booking" target="_blank" class="btn btn-dark mt-1" style="width:100%;justify-content:center" data-i18n="vila.book.bookingcom">Sau pe Booking.com</a>
+            <p class="tag-secondary mt-1 center" data-i18n="vila.book.note">Plata nu se face online.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROOMS -->
+  <section class="section bg-cream2">
+    <div class="container">
+      <div class="center mb-2">
+        <p class="eyebrow" data-i18n="vila.rooms.eyebrow">Cazare</p>
+        <h2 data-i18n="vila.rooms.title">Camerele noastre</h2>
+        <p class="lead" data-i18n="vila.rooms.text">Prețuri pe noapte.</p>
+      </div>
+      <div class="grid grid-3 mt-3" id="rooms-grid"></div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section">
+    <div class="container">
+      <div class="center mb-2">
+        <p class="eyebrow" data-i18n="vila.feat.eyebrow">De ce Vila TUI</p>
+        <h2 data-i18n="vila.feat.title">Confort în inima stațiunii</h2>
+      </div>
+      <div class="grid grid-4 mt-3">
+        <div class="card"><div class="card-body"><h3 style="font-size:1.2rem">📍 <span data-i18n="vila.feat.1.t"></span></h3><p style="color:var(--muted)" data-i18n="vila.feat.1.d"></p></div></div>
+        <div class="card"><div class="card-body"><h3 style="font-size:1.2rem">🚗 <span data-i18n="vila.feat.2.t"></span></h3><p style="color:var(--muted)" data-i18n="vila.feat.2.d"></p></div></div>
+        <div class="card"><div class="card-body"><h3 style="font-size:1.2rem">🔥 <span data-i18n="vila.feat.3.t"></span></h3><p style="color:var(--muted)" data-i18n="vila.feat.3.d"></p></div></div>
+        <div class="card"><div class="card-body"><h3 style="font-size:1.2rem">🎟️ <span data-i18n="vila.feat.4.t"></span></h3><p style="color:var(--muted)" data-i18n="vila.feat.4.d"></p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISCOVER SINAIA teaser -->
+  <section class="section bg-green">
+    <div class="container split">
+      <div>
+        <p class="eyebrow" data-i18n="home.explore.eyebrow">Sinaia & Bucegi</p>
+        <h2 data-i18n="home.explore.title">Muntele, chiar la ușa ta</h2>
+        <p class="lead mt-2" style="color:rgba(247,243,234,.85)" data-i18n="home.explore.text">Castele, pârtii, schi de tură, biking.</p>
+        <a href="sinaia.html" class="btn btn-primary mt-3" data-i18n="home.explore.cta">Descoperă experiențele</a>
+      </div>
+      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=900&q=80" alt="Munții Bucegi">
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="logo" style="color:var(--cream)">Monta<span>nia</span></div>
+          <p class="mt-1" style="opacity:.85" data-i18n="footer.tag"></p>
+        </div>
+        <div>
+          <h4 data-i18n="footer.explore">Explorează</h4>
+          <ul>
+            <li><a href="vila.html" data-i18n="nav.vila">Vila TUI</a></li>
+            <li><a href="sinaia.html" data-i18n="nav.sinaia">Sinaia & Munți</a></li>
+            <li><a href="bio.html" data-i18n="nav.bio">Bio de Maramu'</a></li>
+            <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 data-i18n="footer.contact">Contact</h4>
+          <ul>
+            <li><a href="#" data-contact="phone"></a></li>
+            <li><a href="#" data-contact="email"></a></li>
+            <li><a href="#" data-contact="maps">Sinaia</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> Montania · <span data-i18n="footer.rights"></span></span>
+        <a href="#" data-i18n="footer.legal">Termeni & Confidențialitate</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="mobile-cta">
+    <a href="#booking" class="btn btn-primary" data-i18n="nav.book">Rezervă</a>
+    <a href="#" data-contact="phone" class="btn btn-outline">📞</a>
+  </div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>

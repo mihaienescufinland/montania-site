@@ -1,0 +1,38 @@
+# Redirecturi de la vechile pagini montania.ro către noile pagini.
+# Format compatibil Netlify + Cloudflare Pages. 301 = permanent (bun pentru SEO).
+
+# Cazare / vile -> Vila TUI
+/en_vile.htm        /vila.html      301
+/vile.htm           /vila.html      301
+/en_tui.htm         /vila.html      301
+/tui.htm            /vila.html      301
+/en_booking.htm     /vila.html      301
+/booking.htm        /vila.html      301
+
+# Munte / Sinaia / ski / tura / vara / freeride -> Sinaia & Munți
+/en_Touring.htm     /sinaia.html    301
+/Touring.htm        /sinaia.html    301
+/en_ski.htm         /sinaia.html    301
+/ski.htm            /sinaia.html    301
+/en_Ski.htm         /sinaia.html    301
+/en_summer.htm      /sinaia.html    301
+/en_Summer.htm      /sinaia.html    301
+/summer.htm         /sinaia.html    301
+/en_sinaia.htm      /sinaia.html    301
+/sinaia.htm         /sinaia.html    301
+/en_freeride.htm    /sinaia.html    301
+/freeride.htm       /sinaia.html    301
+/en_access.htm      /sinaia.html    301
+
+# Contact
+/en_contact.htm     /contact.html   301
+/contact.htm        /contact.html   301
+
+# Pagini vechi generale -> acasă
+/en_index.htm       /              301
+/index.htm          /              301
+/en_news.htm        /              301
+/en_gallery.htm     /              301
+
+# Orice altă pagină .htm rămasă -> acasă (catch-all)
+/*.htm              /              301

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact | Montania — Vila TUI & Bio de Maramu'</title>
+  <meta name="description" content="Contact Montania: rezervări Vila TUI Sinaia și informații Bio de Maramu'.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container nav">
+      <a href="index.html" class="logo"><img src="assets/img/montania-logo.png" alt="Montania · Vila TUI Sinaia"></a>
+      <nav class="nav-links">
+        <a href="index.html" data-i18n="nav.home">Acasă</a>
+        <a href="vila.html" data-i18n="nav.vila">Vila TUI</a>
+        <a href="sinaia.html" data-i18n="nav.sinaia">Sinaia & Munți</a>
+        <a href="bio.html" data-i18n="nav.bio">Bio de Maramu'</a>
+        <a href="contact.html" class="active" data-i18n="nav.contact">Contact</a>
+        <div class="lang-toggle"><button data-lang="ro">RO</button><button data-lang="en">EN</button></div>
+      </nav>
+      <button class="burger" aria-label="Menu">☰</button>
+    </div>
+  </header>
+
+  <section class="section bg-green">
+    <div class="container center">
+      <p class="eyebrow" data-i18n="contact.hero.title">Contact</p>
+      <h1 style="color:var(--cream)" data-i18n="contact.hero.title">Contact</h1>
+      <p class="lead" style="color:rgba(247,243,234,.85)" data-i18n="contact.hero.sub">Suntem aici pentru rezervări.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split">
+      <div>
+        <h2 data-i18n="contact.title">Hai să vorbim</h2>
+        <div class="mt-3">
+          <p class="mb-2"><strong data-i18n="contact.phone">Telefon</strong><br><a href="#" data-contact="phone" style="color:var(--amber);font-size:1.2rem"></a></p>
+          <p class="mb-2"><strong data-i18n="contact.email">Email</strong><br><a href="#" data-contact="email" style="color:var(--amber);font-size:1.2rem"></a></p>
+          <p class="mb-2"><strong data-i18n="contact.address">Adresă</strong><br><span data-contact="address"></span></p>
+          <div class="mt-2" style="display:flex;gap:10px;flex-wrap:wrap">
+            <a href="#" data-contact="whatsapp" target="_blank" class="btn btn-primary">WhatsApp</a>
+            <a href="#" data-contact="maps" target="_blank" class="btn btn-outline" data-i18n="contact.address">Hartă</a>
+            <a href="#" data-contact="booking" target="_blank" class="btn btn-dark">Booking.com</a>
+          </div>
+        </div>
+      </div>
+      <iframe
+        title="map"
+        style="border:0;border-radius:14px;min-height:340px;width:100%;box-shadow:var(--shadow)"
+        loading="lazy"
+        src="https://www.google.com/maps?q=Pensiunea%20Tui%20Str.%20Aosta%205%20Sinaia&output=embed"></iframe>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="logo" style="color:var(--cream)">Monta<span>nia</span></div>
+          <p class="mt-1" style="opacity:.85" data-i18n="footer.tag"></p>
+        </div>
+        <div>
+          <h4 data-i18n="footer.explore">Explorează</h4>
+          <ul>
+            <li><a href="vila.html" data-i18n="nav.vila">Vila TUI</a></li>
+            <li><a href="sinaia.html" data-i18n="nav.sinaia">Sinaia & Munți</a></li>
+            <li><a href="bio.html" data-i18n="nav.bio">Bio de Maramu'</a></li>
+            <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 data-i18n="footer.contact">Contact</h4>
+          <ul>
+            <li><a href="#" data-contact="phone"></a></li>
+            <li><a href="#" data-contact="email"></a></li>
+            <li><a href="#" data-contact="maps">Sinaia</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> Montania · <span data-i18n="footer.rights"></span></span>
+        <a href="#" data-i18n="footer.legal">Termeni & Confidențialitate</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
