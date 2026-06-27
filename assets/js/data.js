@@ -16,6 +16,11 @@ const SITE = {
   // Folosită pentru a afișa "când a fost făcută poza" sub imagine. Format AAAA-LL-ZZ.
   heroPhoto: { date: "2026-06-27" },
 
+  // Orizont de preț: pentru nopțile ÎNCEPÂND cu această dată, prețurile nu sunt
+  // încă publicate. Calendarul rămâne deschis, dar invităm oaspetele să ceară
+  // o ofertă (nu spunem că nu avem locuri). Format AAAA-LL-ZZ.
+  booking: { pricingUntil: "2026-09-01" },
+
   contact: {
     phone: "0722 427 636",
     // WhatsApp: număr internațional fără + și fără spații

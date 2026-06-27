@@ -353,22 +353,44 @@ function updateSummary() {
   box.innerHTML = `<strong>${ymd(s.checkIn)} → ${ymd(s.checkOut)}</strong> · ${n} ${n === 1 ? t("vila.book.night") : t("vila.book.nights")}`;
 }
 
+/* Pricing horizon: nights ON/AFTER this date have no published price yet —
+   the villa is still open, but the guest is invited to request a quote. */
+function pricingHorizon() {
+  const d = (typeof SITE !== "undefined" && SITE.booking && SITE.booking.pricingUntil) ? SITE.booking.pricingUntil : null;
+  return d ? parseYmd(d) : null;
+}
+function dayNeedsQuote(date) {
+  const h = pricingHorizon();
+  return h ? startOfDay(date) >= h : false;
+}
+/* Does the current selection fall (partly) beyond the pricing horizon? */
+function selectionNeedsQuote() {
+  const s = booking.state;
+  if (!s.checkIn) return false;
+  if (s.checkOut) {
+    const lastNight = new Date(s.checkOut); lastNight.setDate(lastNight.getDate() - 1);
+    return dayNeedsQuote(lastNight) || dayNeedsQuote(s.checkIn);
+  }
+  return dayNeedsQuote(s.checkIn);
+}
+
 /* Price + availability of a room for the selected range */
 function roomRangeInfo(room) {
   const s = booking.state;
-  if (!s.checkIn || !s.checkOut) return { complete: false, available: true, perNight: room.price };
-  let total = 0, available = true;
+  if (!s.checkIn || !s.checkOut) return { complete: false, available: true, quote: dayNeedsQuote(s.checkIn || new Date(0)), perNight: room.price };
+  let total = 0, available = true, quote = false;
   const booked = new Set(room.booked || []);
   const d = new Date(s.checkIn);
   while (d < s.checkOut) {
     const key = ymd(d);
+    if (dayNeedsQuote(d)) quote = true;
     const info = dayInfo(room, key);
     if (info.a <= 0 || booked.has(key)) available = false;
     total += info.p;
     d.setDate(d.getDate() + 1);
   }
   const n = nightsBetween(s.checkIn, s.checkOut);
-  return { complete: true, available, nights: n, total, perNight: Math.round(total / n) };
+  return { complete: true, available, quote, nights: n, total, perNight: Math.round(total / n) };
 }
 
 /* All-rooms rate table for the selected period (Booking-style) */
@@ -385,7 +407,11 @@ function renderRateTable() {
   const rows = fitting.map(room => {
     const ri = roomRangeInfo(room);
     let priceHtml, availHtml, btn;
-    if (ri.complete && ri.available) {
+    if (ri.quote) {
+      priceHtml = `<div class="rate-quote">${t("rate.quote.price")}</div>`;
+      availHtml = `<span class="badge-soon">${t("rate.quote.badge")}</span>`;
+      btn = `<button class="btn btn-primary" type="button" data-reserve="${room.id}">${t("rate.quote.cta")}</button>`;
+    } else if (ri.complete && ri.available) {
       priceHtml = `<div class="rate-price">${ri.total} <small>RON</small></div><div class="rate-sub">${ri.nights} ${ri.nights === 1 ? night : t("vila.book.nights")} · ${ri.perNight} RON/${night}</div>`;
       availHtml = `<span class="badge-ok">${t("rate.available")}</span>`;
       btn = `<button class="btn btn-primary" type="button" data-reserve="${room.id}">${t("vila.book.whatsapp")}</button>`;
@@ -413,7 +439,8 @@ function renderRateTable() {
       <div class="rate-side">${priceHtml}${btn}</div>
     </div>`;
   }).join("");
-  wrap.innerHTML = rows;
+  const note = selectionNeedsQuote() ? `<div class="rate-note">${t("rate.quote.note")}</div>` : "";
+  wrap.innerHTML = note + rows;
   wrap.querySelectorAll("[data-reserve]").forEach(b => b.addEventListener("click", () => reserveRoom(b.dataset.reserve)));
   wrap.querySelectorAll("[data-detail]").forEach(el => el.addEventListener("click", () => openRoomDetail(el.dataset.detail)));
 }
@@ -446,9 +473,12 @@ function openRoomDetail(roomId) {
   }
   const ri = roomRangeInfo(room);
   const night = t("vila.book.night");
-  const priceLine = (ri.complete && ri.available)
-    ? `<div class="rate-price">${ri.total} <small>RON · ${ri.nights} ${ri.nights === 1 ? night : t("vila.book.nights")}</small></div>`
-    : `<div class="rate-price">${t("rate.from")} ${room.price} <small>RON/${night}</small></div>`;
+  const priceLine = ri.quote
+    ? `<div class="rate-quote">${t("rate.quote.price")}</div>`
+    : (ri.complete && ri.available)
+      ? `<div class="rate-price">${ri.total} <small>RON · ${ri.nights} ${ri.nights === 1 ? night : t("vila.book.nights")}</small></div>`
+      : `<div class="rate-price">${t("rate.from")} ${room.price} <small>RON/${night}</small></div>`;
+  const reserveLabel = ri.quote ? t("rate.quote.cta") : t("vila.book.whatsapp");
   m.innerHTML = `
     <div class="rm-backdrop"></div>
     <div class="rm-dialog">
@@ -464,7 +494,7 @@ function openRoomDetail(roomId) {
         <div class="pills">${featurePills(room)}</div>
         <div class="rm-foot">
           ${priceLine}
-          <button class="btn btn-primary" id="rm-reserve">${t("vila.book.whatsapp")}</button>
+          <button class="btn btn-primary" id="rm-reserve">${reserveLabel}</button>
         </div>
       </div>
     </div>`;
@@ -487,18 +517,20 @@ function reserveRoom(id) {
     const ages = o.childAges.map(a => (a === 0 ? "<1" : a)).join(", ");
     guests += `, ${o.children} ${t("vila.book.children").toLowerCase()} (${ages} ${t("vila.book.years")})`;
   }
-  const lang = getLang();
+  let ri = null;
+  if (s.checkIn && s.checkOut) ri = roomRangeInfo(room);
+  const isQuote = ri ? ri.quote : selectionNeedsQuote();
   const lines = [
-    lang === "en" ? "Booking request — TUI Villa" : "Cerere rezervare — Vila TUI",
+    isQuote ? t("msg.quote.title") : t("msg.book.title"),
     "🌐 via montania.ro",
     `${t("vila.book.room")}: ${L(room.name)}`,
     `${t("vila.book.checkin")}: ${s.checkIn ? ymd(s.checkIn) : "-"}`,
     `${t("vila.book.checkout")}: ${s.checkOut ? ymd(s.checkOut) : "-"}`,
     `${t("vila.book.guests")}: ${guests}`
   ];
-  let ri = null;
-  if (s.checkIn && s.checkOut) {
-    ri = roomRangeInfo(room);
+  if (isQuote) {
+    lines.push(t("msg.quote.ask"));
+  } else if (ri) {
     lines.push(`${t("vila.book.total")}: ${ri.total} RON (${ri.nights} ${ri.nights === 1 ? t("vila.book.night") : t("vila.book.nights")})`);
   }
   // Record the request so it shows up in /admin (best-effort; never blocks WhatsApp)
@@ -508,7 +540,7 @@ function reserveRoom(id) {
       body: JSON.stringify({
         roomId: room.id, roomName: L(room.name),
         checkIn: s.checkIn ? ymd(s.checkIn) : "", checkOut: s.checkOut ? ymd(s.checkOut) : "",
-        nights: ri ? ri.nights : null, guests, total: ri ? ri.total : null
+        nights: ri ? ri.nights : null, guests, total: (ri && !ri.quote) ? ri.total : null, quote: isQuote
       })
     }).catch(() => {});
   } catch (e) { /* ignore */ }
