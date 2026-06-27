@@ -378,7 +378,10 @@ function renderMatrix(){
 function toggleCell(roomId, key){
   const k = roomId+"|"+key;
   if (state.selected.has(k)) state.selected.delete(k); else state.selected.add(k);
-  renderMatrix();
+  // incremental update (no full re-render) so multi-select stays snappy & stable
+  const td = $("matrix").querySelector(`td.cell[data-room="${roomId}"][data-key="${key}"]`);
+  if (td) td.classList.toggle("sel", state.selected.has(k));
+  updateSelCount();
 }
 
 /* ---- per-cell inline editor (price + rooms available for that day) ---- */
@@ -513,9 +516,14 @@ function initMatrixDrag(){
     if (drag.moved) {
       commitDrag(drag.room, drag.startKey, drag.endKey);
     } else {
-      const td = $("matrix").querySelector(`td.cell[data-room="${drag.room}"][data-key="${drag.startKey}"]`);
-      if (td) openCellEditor(drag.room, drag.startKey, td);
+      // simple click = toggle this cell in/out of the selection (Booking-style multi-select)
+      toggleCell(drag.room, drag.startKey);
     }
+  });
+  // double-click a cell = open the detailed single-day editor
+  m.addEventListener("dblclick", e => {
+    const td = e.target.closest("td.cell"); if (!td) return;
+    openCellEditor(td.dataset.room, td.dataset.key, td);
   });
 }
 
