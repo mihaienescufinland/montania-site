@@ -193,6 +193,14 @@ h3 { font-size: 1.4rem; }
 .pay-pluxee { color: #221C5B; font-weight: 800; }
 .pay-up { color: #00A651; font-weight: 800; }
 .pay-cash { color: var(--green); font-weight: 800; font-size: 1.05rem; }
+
+/* Compact payments inside the booking panel */
+.pay-mini { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--cream-2); }
+.pay-mini-title { display: block; font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 10px; }
+.pay-mini-logos { display: flex; flex-wrap: wrap; gap: 8px; }
+.pay-mini .pay-chip { height: 38px; min-width: 0; padding: 0 12px; font-size: .92rem; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.pay-mini .pay-visa { font-size: 1.15rem; }
+.pay-mini .pay-cash { font-size: .9rem; }
 .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .cal-head button { background: var(--cream-2); border: 0; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; color: var(--green); }
 .cal-title { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; }

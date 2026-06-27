@@ -63,12 +63,20 @@ const SITE = {
       bed: "double",
       features: ["bath", "tv", "sound", "wifi", "coffee", "heating"],
       gallery: [
-        "assets/img/villa/rooms/queen.jpg",
-        "assets/img/villa/rooms/g/queen-2.jpg",
-        "assets/img/villa/rooms/g/queen-3.jpg",
-        "assets/img/villa/rooms/g/queen-4.jpg",
-        "assets/img/villa/rooms/g/queen-5.jpg",
-        "assets/img/villa/rooms/g/queen-bath.jpg"
+        "assets/img/villa/rooms/g/q1.jpg",
+        "assets/img/villa/rooms/g/q2.jpg",
+        "assets/img/villa/rooms/g/q3.jpg",
+        "assets/img/villa/rooms/g/q4.jpg",
+        "assets/img/villa/rooms/g/q5.jpg",
+        "assets/img/villa/rooms/g/q6.jpg",
+        "assets/img/villa/rooms/g/q7.jpg",
+        "assets/img/villa/rooms/g/q8.jpg",
+        "assets/img/villa/rooms/g/q9.jpg",
+        "assets/img/villa/rooms/g/q10.jpg",
+        "assets/img/villa/rooms/g/q11.jpg",
+        "assets/img/villa/rooms/g/q12.jpg",
+        "assets/img/villa/rooms/g/q13.jpg",
+        "assets/img/villa/rooms/g/q14.jpg"
       ],
       amenities: {
         ro: ["Pat dublu mare", "Baie proprie (duș/cadă)", "TV cu cablu", "Dulap", "Ceai/cafea", "Încălzire", "Izolare fonică", "Wi-Fi gratuit"],
