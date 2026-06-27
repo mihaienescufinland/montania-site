@@ -420,7 +420,7 @@ function renderRateTable() {
       availHtml = `<span class="badge-no">${t("rate.sold")}</span>`;
       btn = `<button class="btn btn-outline" type="button" disabled>${t("rate.sold")}</button>`;
     } else {
-      priceHtml = `<div class="rate-price">${t("rate.from")} ${room.price} <small>RON/${night}</small></div>`;
+      priceHtml = `<div class="rate-pickdates">${t("rate.selectdates")}</div>`;
       availHtml = "";
       btn = `<button class="btn btn-primary" type="button" data-reserve="${room.id}">${t("vila.book.whatsapp")}</button>`;
     }
