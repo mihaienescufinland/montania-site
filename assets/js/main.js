@@ -500,11 +500,47 @@ function initReviews() {
 async function loadReviews() {
   const list = document.getElementById("reviews-list");
   if (!list) return;
+  let apiReviews = [];
   try {
     const res = await fetch("/api/reviews", { cache: "no-store" });
     const data = await res.json();
-    renderReviews(data.reviews || []);
-  } catch (e) { renderReviews([]); }
+    apiReviews = data.reviews || [];
+  } catch (e) { /* offline / local preview */ }
+  const seed = (typeof SITE !== "undefined" && SITE.seedReviews) ? SITE.seedReviews : [];
+  const all = seed.concat(apiReviews).sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+  renderReviews(all);
+}
+
+const RO_MON = ["ian.", "feb.", "mart.", "apr.", "mai", "iun.", "iul.", "aug.", "sept.", "oct.", "nov.", "dec."];
+function fmtReviewDate(d) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(d || ""));
+  if (!m) return esc(d || "");
+  return `${+m[3]} ${RO_MON[+m[2] - 1]} ${m[1]}`;
+}
+function fmtScore(n) {
+  const v = Number(n);
+  if (!isFinite(v)) return esc(String(n));
+  return Number.isInteger(v) ? String(v) : v.toFixed(1).replace(".", ",");
+}
+function flagEmoji(cc) {
+  if (!cc || cc.length !== 2) return "";
+  return cc.toUpperCase().replace(/./g, c => String.fromCodePoint(127397 + c.charCodeAt(0)));
+}
+function reviewCats(r) {
+  if (!r.cats) return "";
+  const lang = getLang();
+  const L = {
+    ro: { curatenie: "Curățenie", confort: "Confort", locatie: "Locație" },
+    en: { curatenie: "Cleanliness", confort: "Comfort", locatie: "Location" },
+    fr: { curatenie: "Propreté", confort: "Confort", locatie: "Emplacement" },
+    it: { curatenie: "Pulizia", confort: "Comfort", locatie: "Posizione" },
+    de: { curatenie: "Sauberkeit", confort: "Komfort", locatie: "Lage" }
+  };
+  const lbl = L[lang] || L.ro;
+  const items = ["curatenie", "confort", "locatie"]
+    .filter(k => r.cats[k] != null)
+    .map(k => `<span class="rev-cat">${lbl[k]} <strong>${fmtScore(r.cats[k])}</strong></span>`);
+  return items.length ? `<div class="rev-cats">${items.join("")}</div>` : "";
 }
 function renderReviews(reviews) {
   const list = document.getElementById("reviews-list");
@@ -512,18 +548,23 @@ function renderReviews(reviews) {
   const countEl = document.getElementById("reviews-count");
   if (countEl) countEl.textContent = reviews.length;
   if (!reviews.length) { list.innerHTML = `<p style="color:var(--muted)">${t("rev.none")}</p>`; return; }
-  list.innerHTML = reviews.map(r => `
-    <div class="review">
+  list.innerHTML = reviews.map(r => {
+    const booking = r.source === "booking";
+    const flag = flagEmoji(r.cc);
+    return `
+    <div class="review${booking ? " review--booking" : ""}">
       <div class="review-top">
-        <span class="review-score">${r.rating}/10</span>
-        <div>
-          <strong>${esc(r.author)}</strong>${r.country ? ` · <span style="color:var(--muted)">${esc(r.country)}</span>` : ""}
-          <div class="review-date">${esc(r.date || "")}${r.source === "booking" ? " · Booking.com" : ""}</div>
+        <span class="review-score">${fmtScore(r.rating)}</span>
+        <div class="review-meta">
+          <strong>${esc(r.author)}</strong>${flag ? ` <span class="rev-flag">${flag}</span>` : ""}${r.country ? ` <span class="rev-country">${esc(r.country)}</span>` : ""}
+          <div class="review-date">${fmtReviewDate(r.date)}${booking ? ` <span class="rev-source">Booking.com</span>` : ""}</div>
         </div>
       </div>
-      <p class="review-text">${esc(r.text)}</p>
+      ${r.text ? `<p class="review-text">${esc(r.text)}</p>` : ""}
+      ${booking ? reviewCats(r) : ""}
       ${r.reply ? `<div class="review-reply"><strong>${t("rev.reply")}:</strong> ${esc(r.reply)}</div>` : ""}
-    </div>`).join("");
+    </div>`;
+  }).join("");
 }
 async function submitReview(e) {
   e.preventDefault();

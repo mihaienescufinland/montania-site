@@ -294,10 +294,21 @@ h3 { font-size: 1.4rem; }
 .reviews-wrap { display: grid; grid-template-columns: 1.4fr .9fr; gap: 36px; align-items: start; }
 .reviews-list { display: flex; flex-direction: column; gap: 16px; max-height: 640px; overflow-y: auto; padding-right: 6px; }
 .review { background: var(--cream); border: 1px solid var(--cream-2); border-radius: 14px; padding: 16px 18px; }
-.review-top { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.review-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
+.review-meta { min-width: 0; }
 .review-score { background: var(--green); color: #fff; font-weight: 700; font-size: 1rem; padding: 5px 10px; border-radius: 8px 8px 8px 0; flex: none; }
-.review-date { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+.review-date { font-size: .78rem; color: var(--muted); margin-top: 2px; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
 .review-text { color: var(--charcoal); line-height: 1.6; }
+.rev-flag { font-size: .95rem; vertical-align: middle; }
+.rev-country { color: var(--muted); font-size: .82rem; }
+
+/* Booking.com style reviews */
+.review--booking { background: #fff; border-color: #e2e8f3; border-left: 4px solid #003b95; }
+.review--booking .review-score { background: #003b95; font-size: 1.05rem; min-width: 34px; text-align: center; }
+.rev-source { display: inline-flex; align-items: center; font-size: .7rem; font-weight: 700; color: #003b95; background: #eaf0fb; border-radius: 4px; padding: 1px 6px; letter-spacing: .01em; }
+.rev-cats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.rev-cat { font-size: .74rem; color: var(--muted); background: var(--cream); border: 1px solid var(--cream-2); border-radius: 999px; padding: 3px 10px; }
+.rev-cat strong { color: #003b95; }
 .review-reply { margin-top: 10px; padding: 10px 12px; background: var(--cream-2); border-radius: 10px; font-size: .9rem; color: var(--charcoal); }
 .review-form-panel .field { margin-bottom: 12px; }
 .review-form-panel input, .review-form-panel select, .review-form-panel textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--cream-2); border-radius: 9px; font: inherit; background: #fff; }

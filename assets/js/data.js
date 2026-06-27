@@ -25,6 +25,55 @@ const SITE = {
     bookingReviews: 71
   },
 
+  // ====================  RECENZII BOOKING.COM  =======================
+  // Recenzii preluate de pe Booking.com. Editează / adaugă liber.
+  // rating: număr (10, 9 …); cats: subnote opționale (Booking).
+  seedReviews: [
+    {
+      author: "Miriam", country: "Germania", cc: "de", rating: 9, date: "2026-05-30",
+      source: "booking", text: "",
+      cats: { curatenie: 10, confort: 10, locatie: 10 }
+    },
+    {
+      author: "Hooi Leng", country: "Malaysia", cc: "my", rating: 10, date: "2026-05-14",
+      source: "booking", text: "",
+      cats: { curatenie: 10, confort: 10, locatie: 10 }
+    },
+    {
+      author: "Sorin", country: "România", cc: "ro", rating: 10, date: "2026-04-14",
+      source: "booking", text: "",
+      cats: { curatenie: 10, confort: 10, locatie: 10 }
+    },
+    {
+      author: "Andrii", country: "Ucraina", cc: "ua", rating: 9, date: "2026-03-18",
+      source: "booking",
+      text: "Totul e bun la acest apartament. Locație frumoasă. Camere confortabile și spațioase. Nu avem nimic de reproșat.",
+      cats: { curatenie: 7.5, confort: 7.5, locatie: 10 }
+    },
+    {
+      author: "Ilie", country: "România", cc: "ro", rating: 10, date: "2026-02-25",
+      source: "booking",
+      text: "A fost un sejur de 3 nopți perfect! Personal amabil, doamna blondă de la recepție merită 10 stele, este un om minunat. Foarte curată camera, renovată, personal la dispoziția clientului. Cald în cameră, te așteaptă cu cafea, lapte, ceai, ciocolată caldă din partea lor. În primăvară, voi reveni cu drag tot la această locație. Pensiunea este în centrul Sinaiei.",
+      cats: { curatenie: 10, confort: 10, locatie: 10 }
+    },
+    {
+      author: "Daniela-Camelia", country: "România", cc: "ro", rating: 10, date: "2026-01-11",
+      source: "booking", text: "",
+      cats: { curatenie: 10, confort: 10, locatie: 10 }
+    },
+    {
+      author: "Rodica", country: "România", cc: "ro", rating: 10, date: "2026-01-11",
+      source: "booking", text: "",
+      cats: { curatenie: 10, confort: 10, locatie: 10 }
+    },
+    {
+      author: "Sorin", country: "România", cc: "ro", rating: 10, date: "2026-01-05",
+      source: "booking",
+      text: "Felicitări și respect pentru profesionalism. Vila este foarte frumoasă, camerele foarte curate, confortabile și cochete. Doamna Oana este foarte drăguță și ajută cu drag pe toți turiștii. Curățenie de nota 10. Patronii și tot personalul sunt oameni deosebiți și se vede cum au grijă de vilă și de turiștii care le calcă pragul. Mi-a plăcut totul. Recomand cu căldură. Vom reveni cu siguranță, cu mare drag!",
+      cats: { curatenie: 10, confort: 10, locatie: 10 }
+    }
+  ],
+
   // ====================  VILA TUI — CAMERE  ==========================
   // Editează: price (RON/noapte) și booked (zile ocupate).
   rooms: [
