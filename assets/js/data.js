@@ -99,7 +99,8 @@ const SITE = {
         "assets/img/villa/rooms/g/deluxe-2.jpg",
         "assets/img/villa/rooms/g/deluxe-3.jpg",
         "assets/img/villa/rooms/g/deluxe-4.jpg",
-        "assets/img/villa/rooms/g/deluxe-bath.jpg"
+        "assets/img/villa/rooms/g/deluxe-bath1.jpg",
+        "assets/img/villa/rooms/g/deluxe-bath2.jpg"
       ],
       amenities: {
         ro: ["Pat dublu mare", "Baie proprie (duș sau cadă)", "TV cu cablu", "Dulap", "Ceai/cafea", "Încălzire", "Izolare fonică", "Wi-Fi gratuit"],
