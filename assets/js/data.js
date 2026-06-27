@@ -101,7 +101,7 @@ const SITE = {
       units: 2,
       img: "assets/img/villa/rooms/dubla-balcon.jpg",
       bed: "double",
-      features: ["balcony", "view", "bath", "tv", "coffee", "wifi"],
+      features: ["balcony", "view", "bath", "tv", "fridge", "coffee", "heating", "wifi"],
       gallery: [
         "assets/img/villa/rooms/g/b1.jpg",
         "assets/img/villa/rooms/g/b2.jpg",
@@ -125,7 +125,7 @@ const SITE = {
       units: 1,
       img: "assets/img/villa/rooms/queen.jpg",
       bed: "double",
-      features: ["bath", "tv", "wifi", "coffee", "heating"],
+      features: ["bath", "tv", "fridge", "coffee", "heating", "wifi"],
       gallery: [
         "assets/img/villa/rooms/g/q1.jpg",
         "assets/img/villa/rooms/g/q2.jpg",
@@ -157,7 +157,7 @@ const SITE = {
       units: 1,
       img: "assets/img/villa/rooms/deluxe.jpg",
       bed: "double",
-      features: ["bath", "tv", "wifi", "coffee", "heating"],
+      features: ["bath", "tv", "fridge", "coffee", "heating", "wifi"],
       gallery: [
         "assets/img/villa/rooms/deluxe.jpg",
         "assets/img/villa/rooms/g/deluxe-2.jpg",
@@ -181,7 +181,7 @@ const SITE = {
       units: 2,
       img: "assets/img/villa/rooms/tripla.jpg",
       bed: "triple",
-      features: ["courtyard_view", "bath", "tv", "wifi", "coffee"],
+      features: ["courtyard_view", "bath", "tv", "fridge", "coffee", "heating", "wifi"],
       gallery: [
         "assets/img/villa/rooms/g/t1.jpg",
         "assets/img/villa/rooms/g/t2.jpg",
@@ -219,7 +219,7 @@ const SITE = {
       units: 1,
       img: "assets/img/villa/rooms/apartament.jpg",
       bed: "two_double",
-      features: ["kitchenette", "bath", "balcony", "garden_view", "tv", "coffee", "wifi"],
+      features: ["kitchenette", "bath", "balcony", "garden_view", "tv", "fridge", "coffee", "heating", "wifi"],
       gallery: [
         "assets/img/villa/rooms/g/a1.jpg",
         "assets/img/villa/rooms/g/a2.jpg",
@@ -236,8 +236,8 @@ const SITE = {
         "assets/img/villa/rooms/g/a13.jpg"
       ],
       amenities: {
-        ro: ["2 dormitoare (paturi duble)", "2 băi (duș & cadă)", "Chicinetă privată utilată", "Balcon & vedere la grădină", "Intrare privată", "TV cu cablu", "Wi-Fi gratuit"],
-        en: ["2 bedrooms (double beds)", "2 bathrooms (shower & tub)", "Private equipped kitchenette", "Balcony & garden view", "Private entrance", "Cable TV", "Free Wi-Fi"]
+        ro: ["2 dormitoare (paturi duble)", "2 băi (duș & cadă)", "Chicinetă utilată (plită, cuptor cu microunde, frigider)", "Balcon & vedere la grădină", "Intrare privată", "TV cu ecran plat (cablu)", "Încălzire", "Wi-Fi gratuit"],
+        en: ["2 bedrooms (double beds)", "2 bathrooms (shower & tub)", "Equipped kitchenette (hob, microwave, fridge)", "Balcony & garden view", "Private entrance", "Flat-screen TV (cable)", "Heating", "Free Wi-Fi"]
       },
       booked: []
     },
@@ -250,7 +250,7 @@ const SITE = {
       units: 1,
       img: "assets/img/villa/rooms/accesibila.jpg",
       bed: "double",
-      features: ["accessible", "bath", "tv", "wifi", "coffee"],
+      features: ["accessible", "bath", "tv", "fridge", "coffee", "heating", "wifi"],
       gallery: [
         "assets/img/villa/rooms/accesibila.jpg",
         "assets/img/villa/rooms/g/acc-2.jpg",

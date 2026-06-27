@@ -247,6 +247,7 @@ const ICONS = {
   wifi: svg('<path d="M2 8.5a16 16 0 0 1 20 0"/><path d="M5 12a11 11 0 0 1 14 0"/><path d="M8.5 15.5a6 6 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/>'),
   kitchenette: svg('<path d="M6 3v8M4 3v4a2 2 0 0 0 4 0V3M6 11v10"/><path d="M16 3c-2 0-3 2-3 5s1 4 3 4 3-1 3-4-1-5-3-5zM16 12v9"/>'),
   coffee: svg('<path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8z"/><path d="M17 9h2.5a2.5 2.5 0 0 1 0 5H17"/><path d="M7 3v2M11 3v2"/>'),
+  fridge: svg('<rect x="6" y="2" width="12" height="20" rx="1.5"/><path d="M6 9h12"/><path d="M9 5v2M9 12v3"/>'),
   heating: svg('<path d="M12 3c1 3-2 4-2 7a2 2 0 0 0 4 0c0-1 0-1.5-.5-2 2 1.5 3 3.5 3 5.5a4.5 4.5 0 0 1-9 0C7.5 9 12 7 12 3z"/>'),
   accessible: svg('<circle cx="11" cy="4" r="1.6"/><path d="M11 6v6h5l3 6"/><path d="M11 12a5 5 0 1 0 4 8"/>')
 };
@@ -258,8 +259,9 @@ const FLABEL = {
   bath: { ro: "Baie privată", en: "Private bathroom", fr: "Salle de bain privée", it: "Bagno privato", de: "Eigenes Bad" },
   tv: { ro: "TV cu ecran plat", en: "Flat-screen TV", fr: "TV à écran plat", it: "TV a schermo piatto", de: "Flachbild-TV" },
   wifi: { ro: "WiFi gratuit", en: "Free WiFi", fr: "WiFi gratuit", it: "WiFi gratuito", de: "Kostenloses WLAN" },
-  kitchenette: { ro: "Chicinetă privată", en: "Private kitchenette", fr: "Kitchenette privée", it: "Angolo cottura privato", de: "Eigene Küchenzeile" },
+  kitchenette: { ro: "Chicinetă utilată (plită + microunde)", en: "Equipped kitchenette (hob + microwave)", fr: "Kitchenette équipée (plaque + micro-ondes)", it: "Angolo cottura attrezzato (piano + microonde)", de: "Ausgestattete Küchenzeile (Kochfeld + Mikrowelle)" },
   coffee: { ro: "Ceai/cafea", en: "Tea/coffee", fr: "Thé/café", it: "Tè/caffè", de: "Tee/Kaffee" },
+  fridge: { ro: "Frigider", en: "Fridge", fr: "Réfrigérateur", it: "Frigorifero", de: "Kühlschrank" },
   heating: { ro: "Încălzire", en: "Heating", fr: "Chauffage", it: "Riscaldamento", de: "Heizung" },
   accessible: { ro: "Acces la parter", en: "Step-free access", fr: "Accès de plain-pied", it: "Accesso senza gradini", de: "Stufenloser Zugang" }
 };
