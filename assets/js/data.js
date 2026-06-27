@@ -39,12 +39,12 @@ const SITE = {
       bed: "double",
       features: ["balcony", "view", "bath", "tv", "sound", "wifi"],
       gallery: [
-        "assets/img/villa/rooms/dubla-balcon.jpg",
-        "assets/img/villa/rooms/g/dubla-2.jpg",
-        "assets/img/villa/rooms/g/dubla-3.jpg",
-        "assets/img/villa/rooms/g/dubla-4.jpg",
-        "assets/img/villa/rooms/g/dubla-bath.jpg",
-        "assets/img/villa/gallery/balcony-view.jpg"
+        "assets/img/villa/rooms/g/b1.jpg",
+        "assets/img/villa/rooms/g/b2.jpg",
+        "assets/img/villa/rooms/g/b3.jpg",
+        "assets/img/villa/rooms/g/b4.jpg",
+        "assets/img/villa/rooms/g/b5.jpg",
+        "assets/img/villa/rooms/g/b6.jpg"
       ],
       amenities: {
         ro: ["Pat dublu mare", "Balcon & vedere", "Baie proprie (duș)", "TV cu cablu", "Frigider", "Ceai/cafea", "Izolare fonică", "Wi-Fi gratuit"],
