@@ -104,6 +104,16 @@
     .book-item .b-actions .btn { padding: 5px 10px; font-size: .76rem; }
     #book-list { max-height: 70vh; overflow-y: auto; padding-right: 4px; }
 
+    /* visit counter */
+    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .stat-tile { background: var(--cream); border: 1px solid var(--cream-2); border-radius: 11px; padding: 12px 10px; text-align: center; }
+    .stat-num { font-family: var(--serif); font-size: 1.7rem; font-weight: 700; color: #0b3a67; line-height: 1; }
+    .stat-lbl { font-size: .74rem; color: var(--muted); margin-top: 5px; }
+    .spark { display: flex; align-items: flex-end; gap: 4px; height: 56px; margin-top: 14px; padding: 0 2px; }
+    .spark-bar { flex: 1; min-height: 2px; background: linear-gradient(var(--amber, #c98a2b), #e3b765); border-radius: 3px 3px 0 0; }
+    .spark-cap { text-align: center; margin-top: 4px; }
+    @media (max-width: 540px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+
     /* feed admin thumbnails */
     .feed-admin { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
     .feed-admin .fa-item { position: relative; border-radius: 10px; overflow: hidden; border: 1px solid var(--cream-2); }
@@ -134,6 +144,16 @@
     <!-- EDITOR -->
     <div id="editor" class="hidden">
       <div class="editor-main">
+      <!-- Visit counter (private) -->
+      <div class="admin-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <h3 style="margin:0">Vizite site</h3>
+          <button class="btn btn-outline" id="stats-refresh" style="padding:6px 10px;font-size:.8rem">↻</button>
+        </div>
+        <p class="hint" style="margin:6px 0 10px">Contor privat de vizite — vizibil doar pentru tine, aici.</p>
+        <div id="stats-body"><p class="hint">Se încarcă…</p></div>
+      </div>
+
       <!-- Base prices for all rooms -->
       <div class="admin-card">
         <h3>Prețuri de bază</h3>

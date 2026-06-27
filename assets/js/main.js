@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initReviews();
   initFeed();
   renderHeroPhotoDate();
+  trackVisit();
 
   document.addEventListener("langchange", () => {
     injectContact();
@@ -41,6 +42,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (document.getElementById("calendar")) { renderCalendar(); updateSummary(); renderRateTable(); }
   });
 });
+
+/* ---------------- Private visit counter (beacon) ---------------- */
+function trackVisit() {
+  try {
+    const p = location.pathname || "/";
+    if (p.startsWith("/admin")) return;                 // never count the admin area
+    if (localStorage.getItem("montania_owner") === "1") return; // don't count the owner
+    const body = JSON.stringify({ path: p });
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon("/api/hit", new Blob([body], { type: "application/json" }));
+    } else {
+      fetch("/api/hit", { method: "POST", headers: { "content-type": "application/json" }, body, keepalive: true });
+    }
+  } catch (e) { /* analytics must never break the page */ }
+}
 
 /* ---------------- Hero photo date (timeline stamp) ---------------- */
 const MONTHS_FULL = {

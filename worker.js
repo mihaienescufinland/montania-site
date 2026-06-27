@@ -27,6 +27,10 @@ export default {
     if (path === "/api/booking" && request.method === "POST") return submitBooking(request, env);
     if (path === "/api/booking/admin" && request.method === "POST") return adminBookings(request, env);
 
+    // Private visit counter
+    if (path === "/api/hit" && request.method === "POST") return recordHit(request, env);
+    if (path === "/api/stats/admin" && request.method === "POST") return adminStats(request, env);
+
     // Everything else: serve the static asset (HTML, CSS, JS, images).
     return env.ASSETS.fetch(request);
   }
@@ -269,4 +273,42 @@ async function adminBookings(request, env) {
   }
   await env.MONTANIA_KV.put("bookings", JSON.stringify(all));
   return json({ ok: true });
+}
+
+/* ---------------- Private visit counter ---------------- */
+// stats: { total, days: { "YYYY-MM-DD": n }, pages: { "/path": n } }
+async function recordHit(request, env) {
+  if (!env.MONTANIA_KV) return json({ ok: true });
+  // Ignore obvious bots/crawlers — we only want real visitors.
+  const ua = (request.headers.get("user-agent") || "").toLowerCase();
+  if (/bot|crawl|spider|slurp|bing|preview|facebookexternalhit|whatsapp|telegram|headless|lighthouse|monitor/.test(ua)) {
+    return json({ ok: true, skipped: "bot" });
+  }
+  let b = {};
+  try { b = await request.json(); } catch { /* ignore */ }
+  let p = clip((b && b.path) || "/", 80);
+  if (!p.startsWith("/")) p = "/" + p;
+  if (p.startsWith("/admin")) return json({ ok: true, skipped: "admin" });
+
+  const stats = await kvJSON(env, "stats", { total: 0, days: {}, pages: {} });
+  stats.total = (stats.total || 0) + 1;
+  const today = new Date().toISOString().slice(0, 10);
+  stats.days = stats.days || {};
+  stats.pages = stats.pages || {};
+  stats.days[today] = (stats.days[today] || 0) + 1;
+  stats.pages[p] = (stats.pages[p] || 0) + 1;
+
+  // Keep only the last ~180 days to bound the record size.
+  const dayKeys = Object.keys(stats.days).sort();
+  if (dayKeys.length > 180) {
+    for (const k of dayKeys.slice(0, dayKeys.length - 180)) delete stats.days[k];
+  }
+  await env.MONTANIA_KV.put("stats", JSON.stringify(stats));
+  return json({ ok: true });
+}
+
+async function adminStats(request, env) {
+  if (!isAdmin(request, env)) return json({ ok: false, error: "unauthorized" }, 401);
+  const stats = await kvJSON(env, "stats", { total: 0, days: {}, pages: {} });
+  return json({ ok: true, stats });
 }

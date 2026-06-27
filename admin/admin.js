@@ -47,6 +47,7 @@ async function showEditor(){
   $("editor").classList.remove("hidden");
   $("savebar").classList.remove("hidden");
   $("logout").classList.remove("hidden");
+  try { localStorage.setItem("montania_owner", "1"); } catch(e){} // exclude my own visits from the counter
   await loadModel();
   const now = startOfDay(new Date());
   state.winStart = now;
@@ -58,6 +59,52 @@ async function showEditor(){
   loadReviewsAdmin();
   loadFeedAdmin();
   loadBookings();
+  loadStats();
+}
+
+/* ---- visit counter ---- */
+async function loadStats() {
+  const box = $("stats-body");
+  if (!box) return;
+  try {
+    const res = await adminPost("/api/stats/admin", {});
+    if (!res.ok) { box.innerHTML = "<p class='hint'>Statisticile apar doar pe site-ul live.</p>"; return; }
+    const data = await res.json();
+    renderStats(data.stats || { total: 0, days: {}, pages: {} });
+  } catch (e) { box.innerHTML = "<p class='hint'>Statisticile apar doar pe site-ul live.</p>"; }
+}
+function renderStats(s) {
+  const box = $("stats-body");
+  const days = s.days || {}, pages = s.pages || {};
+  const ymdLocal = d => d.toISOString().slice(0, 10);
+  const sumLast = n => {
+    let t = 0;
+    for (let i = 0; i < n; i++) { const d = new Date(); d.setDate(d.getDate() - i); t += days[ymdLocal(d)] || 0; }
+    return t;
+  };
+  const today = days[ymdLocal(new Date())] || 0;
+  const last7 = sumLast(7), last30 = sumLast(30);
+  const topPages = Object.entries(pages).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const pageName = p => ({ "/": "Acasă", "/vila": "Vila TUI", "/vila.html": "Vila TUI", "/sinaia": "Sinaia", "/sinaia.html": "Sinaia", "/bio": "Bio de Maramu'", "/bio.html": "Bio de Maramu'", "/jurnal": "Jurnal", "/jurnal.html": "Jurnal", "/contact": "Contact", "/contact.html": "Contact" }[p] || p);
+  // last 14 days sparkline
+  const series = [];
+  for (let i = 13; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); series.push(days[ymdLocal(d)] || 0); }
+  const max = Math.max(1, ...series);
+  const bars = series.map(v => `<span class="spark-bar" style="height:${Math.round((v / max) * 100)}%" title="${v}"></span>`).join("");
+
+  box.innerHTML = `
+    <div class="stat-grid">
+      <div class="stat-tile"><div class="stat-num">${s.total || 0}</div><div class="stat-lbl">Total vizite</div></div>
+      <div class="stat-tile"><div class="stat-num">${today}</div><div class="stat-lbl">Azi</div></div>
+      <div class="stat-tile"><div class="stat-num">${last7}</div><div class="stat-lbl">Ultimele 7 zile</div></div>
+      <div class="stat-tile"><div class="stat-num">${last30}</div><div class="stat-lbl">Ultimele 30 zile</div></div>
+    </div>
+    <div class="spark" title="Ultimele 14 zile">${bars}</div>
+    <div class="spark-cap hint">Ultimele 14 zile</div>
+    ${topPages.length ? `<table class="base-table mt-2"><thead><tr><th>Pagină</th><th>Vizite</th></tr></thead><tbody>
+      ${topPages.map(([p, n]) => `<tr><td>${escA(pageName(p))}</td><td>${n}</td></tr>`).join("")}
+    </tbody></table>` : ""}
+    <p class="hint mt-1">Vizitele tale (când ești logat ca admin) nu sunt numărate. Boții sunt excluși.</p>`;
 }
 
 /* ---- shared admin POST ---- */
@@ -539,6 +586,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $("feed-upload").addEventListener("click", uploadPhotos);
 
   $("book-refresh").addEventListener("click", loadBookings);
+  $("stats-refresh")?.addEventListener("click", loadStats);
   $("book-clear").addEventListener("click", async () => {
     if (!confirm("Ștergi toate cererile marcate ca rezolvate?")) return;
     const res = await adminPost("/api/booking/admin", { action: "clearDone" });
