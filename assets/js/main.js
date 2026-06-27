@@ -166,7 +166,7 @@ function renderBV() {
   const grid = document.getElementById("bv-grid");
   if (!grid) return;
   const phoneEl = document.getElementById("bv-phone");
-  if (phoneEl) phoneEl.textContent = SITE.bv.phone;
+  if (phoneEl) phoneEl.innerHTML = `<a href="tel:${SITE.bv.phone.replace(/\s/g, "")}">${SITE.bv.phone}</a>`;
   grid.innerHTML = SITE.bv.products.map(p => `
     <div class="card">
       <img src="${p.img}" alt="${L(p.name)}" loading="lazy">

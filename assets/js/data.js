@@ -287,7 +287,7 @@ const SITE = {
   // Secțiune secundară: cartofi și legume din zona Brașov.
   bv: {
     sellerName: { ro: "Legume & cartofi din zona Brașov", en: "Vegetables & potatoes, Brașov area", fr: "Légumes & pommes de terre de la région de Brașov", it: "Verdure & patate della zona di Brașov", de: "Gemüse & Kartoffeln aus der Region Brașov" },
-    phone: "07xx xxx xxx",
+    phone: "0750 742 928",
     products: [
       { name: { ro: "Cartofi de munte", en: "Mountain potatoes", fr: "Pommes de terre de montagne", it: "Patate di montagna", de: "Bergkartoffeln" }, price: "3 lei/kg",
         img: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=700&q=80" },
