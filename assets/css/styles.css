@@ -362,6 +362,7 @@ h3 { font-size: 1.4rem; }
 .feed-item:hover img { transform: scale(1.04); }
 .feed-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 14px 12px; color: #fff; font-size: .9rem; background: linear-gradient(transparent, rgba(0,0,0,.7)); }
 .feed-place { display: block; font-size: .76rem; opacity: .85; margin-top: 2px; }
+.feed-date { position: absolute; top: 10px; left: 10px; z-index: 2; font-size: .72rem; font-weight: 600; letter-spacing: .01em; color: #fff; background: rgba(20,35,25,.55); backdrop-filter: blur(2px); padding: 4px 9px; border-radius: 999px; border: 1px solid rgba(255,255,255,.18); }
 .hidden { display: none !important; }
 
 /* ---------- Gallery (masonry) ---------- */

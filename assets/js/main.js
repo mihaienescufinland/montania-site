@@ -682,11 +682,20 @@ async function initFeed() {
   }
 }
 function renderFeed(container, posts, full) {
-  container.innerHTML = posts.map(p => `
+  const lang = getLang();
+  container.innerHTML = posts.map(p => {
+    const dateStr = (p.date || p.createdAt) ? fmtPhotoDate(p.date || p.createdAt, lang) : "";
+    const dateBadge = dateStr ? `<time class="feed-date">${dateStr}</time>` : "";
+    const cap = (p.caption || p.place)
+      ? `<div class="feed-cap">${esc(p.caption || "")}${p.place ? `<span class="feed-place">${esc(p.place)}</span>` : ""}</div>`
+      : "";
+    return `
     <a class="feed-item" href="/api/feed/img?id=${encodeURIComponent(p.id)}">
       <img loading="lazy" src="/api/feed/img?id=${encodeURIComponent(p.id)}" alt="${esc(p.caption || 'Montania')}">
-      ${(p.caption || p.place) ? `<div class="feed-cap">${esc(p.caption || "")}${p.place ? `<span class="feed-place">${esc(p.place)}</span>` : ""}</div>` : ""}
-    </a>`).join("");
+      ${dateBadge}
+      ${cap}
+    </a>`;
+  }).join("");
 }
 function bindFeedLightbox(container, posts) {
   const lb = document.getElementById("lightbox");
