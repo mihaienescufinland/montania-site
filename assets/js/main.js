@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ---- Page-specific renders ----
   renderRooms();
   renderBioProducts();
+  renderBioMeats();
   renderBV();
   initBooking();
   initReviews();
@@ -33,6 +34,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.addEventListener("langchange", () => {
     injectContact();
     renderRooms();
+    renderBioProducts();
+    renderBioMeats();
+    renderBV();
     renderHeroPhotoDate();
     if (document.getElementById("calendar")) { renderCalendar(); updateSummary(); renderRateTable(); }
   });
@@ -152,6 +156,20 @@ function renderBioProducts() {
   const grid = document.getElementById("bio-grid");
   if (!grid) return;
   grid.innerHTML = SITE.bioProducts.map(p => `
+    <div class="card">
+      <img src="${p.img}" alt="${L(p.name)}" loading="lazy">
+      <div class="card-body">
+        <h3>${L(p.name)}</h3>
+        <p style="color:var(--muted)">${L(p.desc)}</p>
+      </div>
+    </div>`).join("");
+}
+
+/* ---------------- Bio meats ---------------- */
+function renderBioMeats() {
+  const grid = document.getElementById("bio-meat-grid");
+  if (!grid || !window.SITE || !SITE.bioMeats) return;
+  grid.innerHTML = SITE.bioMeats.map(p => `
     <div class="card">
       <img src="${p.img}" alt="${L(p.name)}" loading="lazy">
       <div class="card-body">

@@ -263,23 +263,53 @@ const SITE = {
   // availability[roomId]["AAAA-LL-ZZ"] = { p: preț RON, a: camere disponibile }
   availability: {},
 
-  // ====================  BIO DE MARAMU' — PRODUSE  ===================
-  // Doar prezentare (fără vânzare online deocamdată).
+  // ====================  BIO DE MARAMU' — BRÂNZETURI  ================
+  // Făcute manual la ferma noastră. Doar prezentare (fără vânzare online deocamdată).
   bioProducts: [
     {
-      name: { ro: "Caș proaspăt de vacă", en: "Fresh cow's caș", fr: "Caș frais de vache", it: "Caș fresco di mucca", de: "Frischer Kuh-caș" },
-      desc: { ro: "Caș tradițional, dulce și fraged, făcut zilnic la stână.", en: "Traditional sweet, tender caș, made fresh daily at the farm.", fr: "Caș traditionnel, doux et tendre, fait chaque jour à la bergerie.", it: "Caș tradizionale, dolce e tenero, fatto ogni giorno all'alpeggio.", de: "Traditioneller, milder und zarter caș, täglich frisch auf der Alm." },
-      img: "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=800&q=80"
+      name: { ro: "Brânză maturată 3 ani", en: "3-year matured cheese", fr: "Fromage affiné 3 ans", it: "Formaggio stagionato 3 anni", de: "3 Jahre gereifter Käse" },
+      desc: { ro: "Maturată natural în pivniță, timp de 3 ani. Crustă naturală, gust intens și complex — făcută manual, la ferma noastră.", en: "Naturally cellar-aged for 3 years. Natural rind, deep and complex flavour — handmade at our farm.", fr: "Affiné naturellement en cave pendant 3 ans. Croûte naturelle, goût intense et complexe — fait main à notre ferme.", it: "Stagionato naturalmente in cantina per 3 anni. Crosta naturale, gusto intenso e complesso — fatto a mano nella nostra fattoria.", de: "Natürlich 3 Jahre im Keller gereift. Natürliche Rinde, intensiver und komplexer Geschmack — handgemacht auf unserem Hof." },
+      img: "assets/img/bio/cheese-matured.jpg"
     },
     {
-      name: { ro: "Brânză de burduf", en: "Burduf cheese", fr: "Fromage burduf", it: "Formaggio burduf", de: "Burduf-Käse" },
-      desc: { ro: "Maturată, cu aromă intensă de munte. Rețetă de familie.", en: "Matured, with an intense mountain aroma. A family recipe.", fr: "Affiné, à l'arôme intense de montagne. Recette de famille.", it: "Stagionato, con intenso aroma di montagna. Ricetta di famiglia.", de: "Gereift, mit intensivem Bergaroma. Ein Familienrezept." },
-      img: "https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=800&q=80"
+      name: { ro: "Cașcaval de casă, maturat", en: "Matured farmhouse cașcaval", fr: "Cașcaval fermier affiné", it: "Cașcaval di fattoria stagionato", de: "Gereifter Bauernhof-cașcaval" },
+      desc: { ro: "Cașcaval copt și maturat, cu pastă fină și gust plin. Făcut manual, fără adaosuri.", en: "Ripened and matured cașcaval, fine paste and full flavour. Handmade, no additives.", fr: "Cașcaval affiné, pâte fine et goût généreux. Fait main, sans additifs.", it: "Cașcaval maturato, pasta fine e gusto pieno. Fatto a mano, senza additivi.", de: "Gereifter cașcaval, feine Textur und voller Geschmack. Handgemacht, ohne Zusätze." },
+      img: "assets/img/bio/cheese-cascaval.jpg"
+    }
+  ],
+
+  // ====================  BIO DE MARAMU' — CARNE MATURATĂ  ============
+  // Carne de porc sărată și maturată natural, la ferma noastră.
+  bioMeats: [
+    {
+      name: { ro: "Jambon maturat", en: "Matured ham", fr: "Jambon affiné", it: "Prosciutto stagionato", de: "Gereifter Schinken" },
+      desc: { ro: "Pulpă întreagă, sărată și maturată natural la aer rece de munte. Feliată subțire, e desăvârșită.", en: "Whole leg, salted and naturally matured in cold mountain air. Sublime sliced thin.", fr: "Cuisse entière, salée et affinée naturellement à l'air froid de la montagne. Sublime en fines tranches.", it: "Coscia intera, salata e stagionata naturalmente all'aria fredda di montagna. Sublime affettata sottile.", de: "Ganze Keule, gesalzen und natürlich in kalter Bergluft gereift. Dünn geschnitten ein Genuss." },
+      img: "assets/img/bio/meat-ham.jpg"
     },
     {
-      name: { ro: "Cașcaval de Maramureș", en: "Maramureș cașcaval", fr: "Cașcaval du Maramureș", it: "Cașcaval del Maramureș", de: "Maramureș-cașcaval" },
-      desc: { ro: "Cașcaval afumat natural, perfect la grătar sau pe pâine.", en: "Naturally smoked cașcaval, perfect grilled or on bread.", fr: "Cașcaval fumé naturellement, parfait grillé ou sur du pain.", it: "Cașcaval affumicato naturalmente, perfetto alla griglia o sul pane.", de: "Natürlich geräucherter cașcaval, perfekt gegrillt oder auf Brot." },
-      img: "https://images.unsplash.com/photo-1631379578550-7038263db699?auto=format&fit=crop&w=800&q=80"
+      name: { ro: "Mușchiuleț maturat", en: "Matured pork tenderloin", fr: "Filet mignon affiné", it: "Filetto di maiale stagionato", de: "Gereiftes Schweinefilet" },
+      desc: { ro: "Mușchiuleț de porc legat manual și maturat lent. Fraged, aromat, fără conservanți.", en: "Pork tenderloin tied by hand and slowly matured. Tender, aromatic, no preservatives.", fr: "Filet de porc ficelé à la main et affiné lentement. Tendre, aromatique, sans conservateurs.", it: "Filetto di maiale legato a mano e stagionato lentamente. Tenero, aromatico, senza conservanti.", de: "Handgebundenes Schweinefilet, langsam gereift. Zart, aromatisch, ohne Konservierungsstoffe." },
+      img: "assets/img/bio/meat-muschi.jpg"
+    },
+    {
+      name: { ro: "Ceafă maturată", en: "Matured pork neck", fr: "Échine de porc affinée", it: "Coppa di maiale stagionata", de: "Gereifter Schweinenacken" },
+      desc: { ro: "Ceafă de porc maturată, cu marmorare frumoasă și aromă profundă.", en: "Matured pork neck, beautifully marbled with deep flavour.", fr: "Échine de porc affinée, joliment persillée et au goût profond.", it: "Coppa di maiale stagionata, ben marezzata e dal gusto profondo.", de: "Gereifter Schweinenacken, schön marmoriert mit tiefem Aroma." },
+      img: "assets/img/bio/meat-ceafa.jpg"
+    },
+    {
+      name: { ro: "Antricot maturat", en: "Matured pork loin", fr: "Carré de porc affiné", it: "Lonza di maiale stagionata", de: "Gereiftes Schweinekotelett" },
+      desc: { ro: "Antricot cu os, maturat natural — felii cu marmorare fină și gust bogat.", en: "Bone-in loin, naturally matured — finely marbled slices, rich flavour.", fr: "Carré avec os, affiné naturellement — tranches finement persillées, goût riche.", it: "Lonza con osso, stagionata naturalmente — fette finemente marezzate, gusto ricco.", de: "Kotelett mit Knochen, natürlich gereift — fein marmorierte Scheiben, reicher Geschmack." },
+      img: "assets/img/bio/meat-antricot.jpg"
+    },
+    {
+      name: { ro: "Coaste maturate", en: "Matured pork ribs", fr: "Côtes de porc affinées", it: "Costine di maiale stagionate", de: "Gereifte Schweinerippchen" },
+      desc: { ro: "Coaste de porc sărate și maturate, numai bune pentru un platou rustic.", en: "Salted, matured pork ribs — perfect for a rustic platter.", fr: "Côtes de porc salées et affinées — parfaites pour un plateau rustique.", it: "Costine di maiale salate e stagionate — perfette per un tagliere rustico.", de: "Gesalzene, gereifte Schweinerippchen — perfekt für eine rustikale Platte." },
+      img: "assets/img/bio/meat-coaste.jpg"
+    },
+    {
+      name: { ro: "Cotlet maturat", en: "Matured pork chops", fr: "Côtelettes de porc affinées", it: "Braciole di maiale stagionate", de: "Gereifte Schweinekoteletts" },
+      desc: { ro: "Cotlet cu os, maturat natural — gust autentic de altădată.", en: "Bone-in chops, naturally matured — authentic old-time taste.", fr: "Côtelettes avec os, affinées naturellement — goût authentique d'autrefois.", it: "Braciole con osso, stagionate naturalmente — autentico sapore di una volta.", de: "Koteletts mit Knochen, natürlich gereift — authentischer Geschmack von früher." },
+      img: "assets/img/bio/meat-cotlet.jpg"
     }
   ],
 
