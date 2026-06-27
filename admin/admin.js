@@ -232,12 +232,23 @@ function renderMatrix(){
   const today = startOfDay(new Date());
   const dows = ["Du","Lu","Ma","Mi","Jo","Vi","Sâ"];
 
-  let head = `<tr><th class="corner">Cameră</th>`;
+  // month band (groups consecutive days by month) + day header row
+  const groups = [];
+  days.forEach(d => {
+    const label = d.toLocaleDateString("ro-RO", { month: "long", year: "numeric" });
+    if (groups.length && groups[groups.length - 1].label === label) groups[groups.length - 1].count++;
+    else groups.push({ label, count: 1 });
+  });
+  let monthRow = `<th class="corner" rowspan="2">Cameră</th>`;
+  groups.forEach(g => { monthRow += `<th class="monthhead" colspan="${g.count}">${g.label.charAt(0).toUpperCase() + g.label.slice(1)}</th>`; });
+
+  let dayRow = "";
   days.forEach(d => {
     const wknd = (d.getDay()===0 || d.getDay()===6) ? " weekend" : "";
-    head += `<th class="dayhead${wknd}" data-col="${ymd(d)}"><div class="wd">${dows[d.getDay()]}</div><div class="dn">${d.getDate()}</div></th>`;
+    const mstart = d.getDate()===1 ? " mstart" : "";
+    dayRow += `<th class="dayhead${wknd}${mstart}" data-col="${ymd(d)}"><div class="wd">${dows[d.getDay()]}</div><div class="dn">${d.getDate()}</div></th>`;
   });
-  head += `</tr>`;
+  const head = `<tr>${monthRow}</tr><tr>${dayRow}</tr>`;
 
   let body = "";
   SITE.rooms.forEach(r => {
@@ -245,14 +256,15 @@ function renderMatrix(){
     body += `<tr><th class="roomcell" data-row="${r.id}">${r.name.ro}<small>bază ${b.price} RON · ${b.units} cam.</small></th>`;
     days.forEach(d => {
       const key = ymd(d);
+      const mstart = d.getDate()===1 ? " mstart" : "";
       const past = d < today;
-      if (past){ body += `<td class="past"></td>`; return; }
+      if (past){ body += `<td class="past${mstart}"></td>`; return; }
       const info = dayInfo(r.id, key);
       const sold = info.a<=0;
       const sel = state.selected.has(r.id+"|"+key);
       const ov = (state.availability[r.id]||{})[key];
       const over = ov ? " over" : "";
-      let cls = "cell"+(sold?" sold":"")+(sel?" sel":"")+over;
+      let cls = "cell"+(sold?" sold":"")+(sel?" sel":"")+over+mstart;
       body += `<td class="${cls}" data-room="${r.id}" data-key="${key}"><div class="p">${sold?"–":info.p}</div><div class="a">${sold?"0":info.a}</div></td>`;
     });
     body += `</tr>`;
