@@ -307,6 +307,8 @@ h3 { font-size: 1.4rem; }
 .rate-note { background: #fbf3e1; border: 1px solid #f0dcae; color: #6b4e16; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; font-size: .92rem; line-height: 1.5; }
 .rate-minstay { margin-top: 6px; font-size: .78rem; font-weight: 600; color: #8a5a00; background: #fbeccd; border-radius: 7px; padding: 4px 9px; line-height: 1.35; }
 .rate-common { margin-top: 6px; font-size: .92rem; color: var(--muted); }
+.video-wrap { display: flex; justify-content: center; margin-top: 24px; }
+.tour-video { width: 100%; max-width: 380px; border-radius: 16px; box-shadow: 0 18px 50px rgba(0,0,0,.22); background: #000; display: block; }
 .rate-thumb-wrap { position: relative; width: 150px; cursor: pointer; }
 .rate-thumb-wrap .rate-thumb { width: 100%; transition: filter .2s ease; }
 .rate-thumb-wrap:hover .rate-thumb { filter: brightness(.9); }
