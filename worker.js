@@ -290,13 +290,29 @@ async function recordHit(request, env) {
   if (!p.startsWith("/")) p = "/" + p;
   if (p.startsWith("/admin")) return json({ ok: true, skipped: "admin" });
 
-  const stats = await kvJSON(env, "stats", { total: 0, days: {}, pages: {} });
+  const stats = await kvJSON(env, "stats", { total: 0, days: {}, pages: {}, countries: {}, cities: {} });
   stats.total = (stats.total || 0) + 1;
   const today = new Date().toISOString().slice(0, 10);
   stats.days = stats.days || {};
   stats.pages = stats.pages || {};
+  stats.countries = stats.countries || {};
+  stats.cities = stats.cities || {};
   stats.days[today] = (stats.days[today] || 0) + 1;
   stats.pages[p] = (stats.pages[p] || 0) + 1;
+
+  // Cloudflare provides visitor geo for free via request.cf.
+  const cf = request.cf || {};
+  const country = clip(cf.country || "", 4);
+  if (country && country !== "T1" /* Tor */) {
+    stats.countries[country] = (stats.countries[country] || 0) + 1;
+    const city = clip(cf.city || "", 40);
+    const region = clip(cf.region || "", 40);
+    const place = city ? (region && region !== city ? city + ", " + region : city) : region;
+    if (place) {
+      const label = clip(place + " (" + country + ")", 60);
+      stats.cities[label] = (stats.cities[label] || 0) + 1;
+    }
+  }
 
   // Keep only the last ~180 days to bound the record size.
   const dayKeys = Object.keys(stats.days).sort();

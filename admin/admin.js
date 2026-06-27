@@ -90,6 +90,12 @@ function renderStats(s) {
   const last7 = sumLast(7), last30 = sumLast(30);
   const topPages = Object.entries(pages).sort((a, b) => b[1] - a[1]).slice(0, 6);
   const pageName = p => ({ "/": "Acasă", "/vila": "Vila TUI", "/vila.html": "Vila TUI", "/sinaia": "Sinaia", "/sinaia.html": "Sinaia", "/bio": "Bio de Maramu'", "/bio.html": "Bio de Maramu'", "/jurnal": "Jurnal", "/jurnal.html": "Jurnal", "/contact": "Contact", "/contact.html": "Contact" }[p] || p);
+  const countries = s.countries || {}, cities = s.cities || {};
+  const topCountries = Object.entries(countries).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  const topCities = Object.entries(cities).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  const flag = cc => (cc && cc.length === 2 && /^[A-Z]{2}$/.test(cc)) ? String.fromCodePoint(...[...cc].map(c => 0x1F1E6 + c.charCodeAt(0) - 65)) : "🌍";
+  const cName = { RO: "România", MD: "Moldova", DE: "Germania", FR: "Franța", IT: "Italia", GB: "Marea Britanie", US: "SUA", NL: "Olanda", AT: "Austria", ES: "Spania", BE: "Belgia", CH: "Elveția", HU: "Ungaria", BG: "Bulgaria", PL: "Polonia", UA: "Ucraina", IL: "Israel", FI: "Finlanda", SE: "Suedia", DK: "Danemarca", IE: "Irlanda", CZ: "Cehia", GR: "Grecia", PT: "Portugalia", TR: "Turcia", CA: "Canada", AU: "Australia", NO: "Norvegia" };
+  const countryName = cc => cName[cc] || cc;
   // last 14 days sparkline
   const series = [];
   for (let i = 13; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); series.push(days[ymdLocal(d)] || 0); }
@@ -105,10 +111,19 @@ function renderStats(s) {
     </div>
     <div class="spark" title="Ultimele 14 zile">${bars}</div>
     <div class="spark-cap hint">Ultimele 14 zile</div>
-    ${topPages.length ? `<table class="base-table mt-2"><thead><tr><th>Pagină</th><th>Vizite</th></tr></thead><tbody>
+    ${topCountries.length ? `<h4 class="mt-2" style="margin:14px 0 4px">De unde vin vizitatorii — țări</h4>
+      <table class="base-table"><thead><tr><th>Țară</th><th>Vizite</th></tr></thead><tbody>
+      ${topCountries.map(([c, n]) => `<tr><td>${flag(c)} ${escA(countryName(c))}</td><td>${n}</td></tr>`).join("")}
+    </tbody></table>` : ""}
+    ${topCities.length ? `<h4 class="mt-2" style="margin:14px 0 4px">Orașe / regiuni</h4>
+      <table class="base-table"><thead><tr><th>Loc</th><th>Vizite</th></tr></thead><tbody>
+      ${topCities.map(([c, n]) => `<tr><td>${escA(c)}</td><td>${n}</td></tr>`).join("")}
+    </tbody></table>` : ""}
+    ${topPages.length ? `<h4 class="mt-2" style="margin:14px 0 4px">Pagini vizitate</h4>
+      <table class="base-table"><thead><tr><th>Pagină</th><th>Vizite</th></tr></thead><tbody>
       ${topPages.map(([p, n]) => `<tr><td>${escA(pageName(p))}</td><td>${n}</td></tr>`).join("")}
     </tbody></table>` : ""}
-    <p class="hint mt-1">Vizitele tale (când ești logat ca admin) nu sunt numărate. Boții sunt excluși.</p>`;
+    <p class="hint mt-1">Locația e aproximativă (oferită de Cloudflare, fără date personale). Vizitele tale ca admin nu se numără; boții sunt excluși. Datele geografice se adună de acum înainte.</p>`;
 }
 
 /* ---- shared admin POST ---- */
