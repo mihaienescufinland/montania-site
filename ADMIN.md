@@ -11,30 +11,27 @@ Apeși **„Publică live”** și modificările apar pe site în câteva secund
 
 ## Configurare unică în Cloudflare (≈5 minute)
 
-Trebuie făcută o singură dată. Toate sunt gratuite.
+Proiectul `montania-site` este un **Worker cu static assets**. Codul serverului (`worker.js` + `wrangler.jsonc`) e deja în repo. Mai rămâne:
 
 ### 1) Creează baza de date (KV)
-1. Cloudflare dashboard → **Storage & Databases → KV**.
+1. Cloudflare dashboard → **Storage & Databases → KV** (sau **Workers & Pages → KV**).
 2. **Create namespace**, nume: `montania` → Create.
+3. Copiază **Namespace ID** (un șir lung) — e nevoie de el la pasul 2.
 
-### 2) Leagă KV de site
-1. **Workers & Pages** → proiectul **montania-site** → **Settings → Bindings** (sau **Functions → KV namespace bindings**).
-2. **Add binding**:
-   - Variable name: **`MONTANIA_KV`** (exact așa, cu majuscule)
-   - KV namespace: **montania**
-3. Save.
+### 2) Leagă KV în config
+- Trimite-mi **Namespace ID**-ul și îl adaug în `wrangler.jsonc` (secțiunea `kv_namespaces`, binding `MONTANIA_KV`) și dau push.
+- (Pe Workers, binding-urile se definesc în `wrangler.jsonc`, nu din dashboard — altfel sunt suprascrise la deploy.)
 
-### 3) Setează parola de admin
-1. Tot la proiectul **montania-site** → **Settings → Variables and Secrets** (Environment variables).
-2. **Add variable**:
+### 3) Setează parola de admin (secret)
+1. **Workers & Pages → montania-site → Settings → Variables and Secrets**.
+   - (Devine disponibil după ce se face primul deploy cu `worker.js`.)
+2. **Add** → tip **Secret**:
    - Name: **`ADMIN_PASSWORD`**
-   - Value: *parola voastră* (alege una bună, de ex. 12+ caractere)
-   - Bifează **Encrypt** (o face secretă).
-3. Save.
+   - Value: *parola voastră* (12+ caractere)
+3. Save. (Secretele rămân setate între deploy-uri.)
 
-### 4) Re-deploy
-- **Deployments → Retry deployment** (sau orice push nou în GitHub declanșează automat un deploy).
-- Gata: intră pe **/admin**, pune parola, gata de operat.
+### 4) Deploy
+- Orice push declanșează un deploy. După ce KV e în config și secretul e setat, intră pe **/admin**.
 
 ---
 

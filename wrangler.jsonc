@@ -1,0 +1,14 @@
+{
+  "name": "montania-site",
+  "main": "worker.js",
+  "compatibility_date": "2026-06-27",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS"
+  }
+  // KV is added after you create the namespace — paste its ID here:
+  // "kv_namespaces": [
+  //   { "binding": "MONTANIA_KV", "id": "PASTE_KV_NAMESPACE_ID" }
+  // ]
+}
