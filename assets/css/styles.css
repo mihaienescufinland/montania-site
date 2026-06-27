@@ -227,6 +227,11 @@ h3 { font-size: 1.4rem; }
 .cal-day.empty { visibility: hidden; }
 .cal-day.available { background: var(--cream-2); color: var(--charcoal); }
 .cal-day.available:hover { background: var(--amber-soft); color: #fff; }
+.cal-day.outside .cal-num { opacity: .42; }
+.cal-day.outside.available { background: transparent; }
+.cal-day.outside.available:hover { background: var(--amber-soft); }
+.cal-day.outside.available:hover .cal-num { opacity: 1; color: #fff; }
+.cal-day.outside.selected .cal-num, .cal-day.outside.in-range .cal-num { opacity: 1; }
 .cal-day.booked { background: #efd6d2; color: #b14b3c; cursor: not-allowed; text-decoration: line-through; opacity: .8; }
 .cal-day.past { color: #c4bdac; cursor: not-allowed; }
 .cal-day.selected { background: var(--green); color: #fff; }

@@ -328,20 +328,26 @@ function renderCalendar() {
     </div>
     <div class="cal-grid">${dows.map(d => `<div class="cal-dow">${d}</div>`).join("")}`;
 
-  for (let i = 0; i < firstDow; i++) html += `<div class="cal-day empty"></div>`;
-
   const ci = booking.state.checkIn, co = booking.state.checkOut;
-  for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(y, m, day);
+  const cell = (date, outside) => {
     const key = ymd(date);
     let cls = "cal-day", clickable = true;
+    if (outside) cls += " outside";
     if (date < today) { cls += " past"; clickable = false; }
     else cls += " available";
     if (ci && key === ymd(ci)) cls += " selected";
     else if (co && key === ymd(co)) cls += " selected";
     else if (ci && co && date > ci && date < co) cls += " in-range";
-    html += `<div class="${cls}" ${clickable ? `data-day="${key}"` : ""}><span class="cal-num">${day}</span></div>`;
-  }
+    return `<div class="${cls}" ${clickable ? `data-day="${key}"` : ""}><span class="cal-num">${date.getDate()}</span></div>`;
+  };
+
+  // Leading days from the previous month (continuous calendar).
+  for (let i = firstDow; i > 0; i--) html += cell(new Date(y, m, 1 - i), true);
+  // Days of the current month.
+  for (let day = 1; day <= daysInMonth; day++) html += cell(new Date(y, m, day), false);
+  // Trailing days from the next month to complete the last week row.
+  const trailing = (7 - ((firstDow + daysInMonth) % 7)) % 7;
+  for (let i = 1; i <= trailing; i++) html += cell(new Date(y, m, daysInMonth + i), true);
   html += `</div>`;
   cal.innerHTML = html;
 
