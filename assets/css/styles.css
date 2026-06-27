@@ -72,6 +72,9 @@ h3 { font-size: 1.4rem; }
 .logo span { color: var(--amber); }
 .logo img { height: 46px; width: auto; display: block; }
 @media (max-width: 560px) { .logo img { height: 38px; } }
+.logo-wm { flex-direction: column; align-items: flex-start; gap: 1px; line-height: 1; }
+.logo-wm .wm-main { font-family: var(--serif); font-size: 1.55rem; font-weight: 700; color: var(--green); }
+.logo-wm .wm-sub { font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: var(--amber); font-weight: 600; }
 .nav-links { display: flex; align-items: center; gap: 26px; }
 .nav-links a { font-weight: 500; font-size: .95rem; color: var(--charcoal); transition: color .2s; }
 .nav-links a:hover, .nav-links a.active { color: var(--amber); }
@@ -190,6 +193,25 @@ h3 { font-size: 1.4rem; }
 .tag-secondary { font-size: .8rem; color: var(--muted); font-style: italic; }
 .best-price { font-size: .92rem; color: var(--green); font-weight: 700; }
 
+/* ---------- Pictogram pills (Booking-style) ---------- */
+.pills { display: flex; flex-wrap: wrap; gap: 7px; margin: 10px 0 2px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: .8rem; color: var(--charcoal); background: var(--cream-2); border: 1px solid rgba(0,0,0,.05); padding: 4px 10px; border-radius: 8px; line-height: 1.2; }
+.pill svg { flex: none; color: var(--green); }
+
+/* ---------- All-rooms rate table ---------- */
+.rate-heading { font-family: var(--serif); font-size: 1.5rem; }
+.rate-table { display: flex; flex-direction: column; gap: 14px; }
+.rate-row { display: grid; grid-template-columns: 150px 1fr 230px; gap: 18px; align-items: center; background: var(--cream); border: 1px solid var(--cream-2); border-radius: 14px; padding: 14px; box-shadow: 0 4px 16px rgba(0,0,0,.05); }
+.rate-thumb { width: 150px; height: 110px; object-fit: cover; border-radius: 10px; }
+.rate-main h3 { font-family: var(--serif); font-size: 1.25rem; margin: 0; }
+.rate-side { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; text-align: right; }
+.rate-price { font-size: 1.35rem; font-weight: 700; color: var(--charcoal); }
+.rate-price small { font-size: .75rem; font-weight: 600; color: var(--muted); }
+.rate-sub { font-size: .8rem; color: var(--muted); }
+.rate-side .btn { width: 100%; justify-content: center; }
+.badge-ok { display: inline-block; font-size: .78rem; font-weight: 700; color: var(--green); background: rgba(60,120,80,.1); padding: 3px 10px; border-radius: 7px; margin-top: 6px; }
+.badge-no { display: inline-block; font-size: .78rem; font-weight: 700; color: #b4453a; background: #f6e2df; padding: 3px 10px; border-radius: 7px; margin-top: 6px; }
+
 /* ---------- Gallery (masonry) ---------- */
 .gallery-grid { column-count: 3; column-gap: 14px; }
 .gallery-item { display: block; margin: 0 0 14px; break-inside: avoid; border-radius: 12px; overflow: hidden; cursor: zoom-in; box-shadow: 0 4px 16px rgba(0,0,0,.08); }
@@ -212,6 +234,9 @@ h3 { font-size: 1.4rem; }
   .nav-links.open { display: flex; }
   .burger { display: block; }
   .doors, .split, .booking-wrap, .footer-grid { grid-template-columns: 1fr; }
+  .rate-row { grid-template-columns: 100px 1fr; }
+  .rate-side { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; text-align: left; }
+  .rate-side .btn { width: auto; }
   .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
   .gallery-grid { column-count: 2; }
   .split.reverse > div:first-child { order: 2; }

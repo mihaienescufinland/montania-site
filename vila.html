@@ -13,7 +13,7 @@
 <body>
   <header class="header">
     <div class="container nav">
-      <a href="index.html" class="logo"><img src="assets/img/montania-logo.png" alt="Vila TUI · montania.ro"></a>
+      <a href="index.html" class="logo logo-wm"><span class="wm-main">Vila TUI</span><span class="wm-sub">montania.ro</span></a>
       <nav class="nav-links">
         <a href="index.html" data-i18n="nav.home">Acasă</a>
         <a href="vila.html" class="active" data-i18n="nav.vila">Vila TUI</a>
@@ -47,53 +47,30 @@
       <div class="booking-wrap mt-3">
         <!-- Calendar panel -->
         <div class="panel">
-          <div class="field">
-            <label data-i18n="vila.book.room">Camera</label>
-            <select id="room-select"></select>
-          </div>
           <div id="calendar"></div>
           <div class="cal-legend">
             <span><span class="dot" style="background:var(--cream-2)"></span><span data-i18n="vila.book.legend.avail">Disponibil</span></span>
-            <span><span class="dot" style="background:#efd6d2"></span><span data-i18n="vila.book.legend.booked">Ocupat</span></span>
             <span><span class="dot" style="background:var(--green)"></span><span data-i18n="vila.book.legend.selected">Selectat</span></span>
           </div>
         </div>
 
-        <!-- Request form -->
+        <!-- Dates summary + guests -->
         <div class="panel">
           <div class="summary-box" id="summary"></div>
-          <form id="booking-form">
-            <input type="hidden" id="f-checkin"><input type="hidden" id="f-checkout">
-            <div class="field">
-              <label data-i18n="vila.book.name">Nume</label>
-              <input type="text" id="f-name" required>
-            </div>
-            <div class="field">
-              <label data-i18n="vila.book.guests">Număr persoane</label>
-              <input type="number" id="f-guests" min="1" max="24" value="2" required>
-            </div>
-            <div class="field">
-              <label data-i18n="vila.book.message">Mesaj</label>
-              <textarea id="f-message"></textarea>
-            </div>
-            <a href="#" id="wa-btn" class="btn btn-primary" style="width:100%;justify-content:center" data-i18n="vila.book.whatsapp">Rezervă pe WhatsApp</a>
-            <p class="best-price mt-1 center" data-i18n="vila.book.bestprice">★ Cel mai bun preț — rezervi direct, fără comision.</p>
-            <p class="tag-secondary mt-1 center" data-i18n="vila.book.note">Plata nu se face online.</p>
-          </form>
+          <div class="field">
+            <label data-i18n="vila.book.guests">Număr persoane</label>
+            <input type="number" id="f-guests" min="1" max="24" value="2">
+          </div>
+          <p class="best-price mt-1" data-i18n="vila.book.bestprice">★ Cel mai bun preț — rezervi direct, fără comision.</p>
+          <p class="tag-secondary mt-1" data-i18n="vila.book.note">Plata nu se face online.</p>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- ROOMS -->
-  <section class="section bg-cream2">
-    <div class="container">
-      <div class="center mb-2">
-        <p class="eyebrow" data-i18n="vila.rooms.eyebrow">Cazare</p>
-        <h2 data-i18n="vila.rooms.title">Camerele noastre</h2>
-        <p class="lead" data-i18n="vila.rooms.text">Prețuri pe noapte.</p>
+      <!-- All-rooms rate table (Booking-style) -->
+      <div class="center mb-1 mt-3">
+        <h3 class="rate-heading" data-i18n="rate.title">Camerele noastre pentru aceste date</h3>
       </div>
-      <div class="grid grid-3 mt-3" id="rooms-grid"></div>
+      <div id="rate-table" class="rate-table"></div>
     </div>
   </section>
 

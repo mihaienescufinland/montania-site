@@ -8,30 +8,59 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/styles.css">
   <style>
-    body { background: var(--cream); }
-    .admin-wrap { max-width: 760px; margin: 0 auto; padding: 22px 16px 80px; }
+    body { background: var(--cream); font-family: var(--sans, Inter), system-ui, sans-serif; }
+    .admin-wrap { max-width: 1180px; margin: 0 auto; padding: 22px 16px 96px; }
     .admin-card { background: #fff; border-radius: 14px; box-shadow: var(--shadow); padding: 20px; margin-bottom: 18px; }
+    .admin-card h3 { font-family: var(--serif); font-size: 1.35rem; margin-bottom: 4px; }
     .admin-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
-    .admin-head h1 { font-size: 1.5rem; }
+    .admin-head h1 { font-family: var(--serif); font-size: 1.7rem; }
     .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
     .row .field { flex: 1; min-width: 120px; margin: 0; }
     label { display: block; font-size: .82rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
     input, select { width: 100%; padding: 10px 12px; border: 1px solid var(--cream-2); border-radius: 9px; font: inherit; background: #fff; }
-    .cal-toolbar { display: flex; align-items: center; justify-content: space-between; margin: 12px 0; }
-    .cal-toolbar button { background: var(--cream-2); border: 0; border-radius: 8px; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; }
-    .cal-month { font-family: var(--serif); font-size: 1.3rem; font-weight: 700; }
-    .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: .82rem; color: var(--muted); margin-top: 10px; }
-    .legend .dot { display: inline-block; width: 12px; height: 12px; border-radius: 4px; vertical-align: middle; margin-right: 5px; }
     .hint { font-size: .85rem; color: var(--muted); }
-    .savebar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; box-shadow: 0 -4px 20px rgba(0,0,0,.12); padding: 12px 16px; display: flex; gap: 12px; align-items: center; justify-content: space-between; z-index: 50; }
-    .savebar .status { font-size: .9rem; }
     .ok { color: var(--green); } .err { color: #b14b3c; }
     .seg { display: flex; gap: 8px; flex-wrap: wrap; }
-    .seg button { flex: 1; min-width: 110px; }
     .hidden { display: none; }
-    .cal-day .cal-avail { font-size: .56rem; font-weight: 700; opacity: .8; }
-    .cal-day.sold { background: #efd6d2; color: #b14b3c; }
-    .cal-day.sel { outline: 3px solid var(--amber); outline-offset: -3px; }
+
+    /* base price table */
+    .base-table { width: 100%; border-collapse: collapse; }
+    .base-table th, .base-table td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--cream-2); font-size: .9rem; vertical-align: middle; }
+    .base-table th { color: var(--muted); font-weight: 600; }
+    .base-table td:first-child { font-weight: 600; }
+    .base-table input { width: 120px; padding: 7px 9px; }
+
+    /* matrix toolbar */
+    .matrix-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+    .matrix-toolbar button.nav { background: var(--cream-2); border: 0; border-radius: 8px; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; }
+    .matrix-toolbar input, .matrix-toolbar select { width: auto; }
+
+    /* matrix grid (Booking-style) */
+    .matrix-scroll { overflow-x: auto; border: 1px solid var(--cream-2); border-radius: 10px; }
+    table.matrix { border-collapse: collapse; font-size: .78rem; width: 100%; }
+    table.matrix th, table.matrix td { border: 1px solid var(--cream-2); }
+    table.matrix thead th { background: #0b3a67; color: #fff; padding: 6px 4px; text-align: center; font-weight: 600; white-space: nowrap; min-width: 56px; cursor: pointer; }
+    table.matrix thead th.weekend { background: #082a4b; }
+    table.matrix thead th .dn { font-size: .9rem; }
+    table.matrix thead th .wd { font-size: .62rem; opacity: .8; text-transform: uppercase; }
+    table.matrix th.corner { position: sticky; left: 0; z-index: 3; min-width: 160px; text-align: left; padding-left: 12px; }
+    table.matrix th.roomcell { position: sticky; left: 0; z-index: 2; background: #fff; text-align: left; padding: 8px 12px; min-width: 160px; cursor: pointer; }
+    table.matrix th.roomcell small { display: block; color: var(--muted); font-weight: 500; font-size: .72rem; }
+    table.matrix th.roomcell:hover { background: var(--cream-2); }
+    table.matrix td.cell { text-align: center; padding: 5px 3px; cursor: pointer; background: #eef7f0; line-height: 1.25; }
+    table.matrix td.cell .p { font-weight: 700; }
+    table.matrix td.cell .a { font-size: .64rem; color: var(--muted); }
+    table.matrix td.cell.sold { background: #f6e0dd; color: #b14b3c; }
+    table.matrix td.cell.sold .a { color: #b14b3c; }
+    table.matrix td.cell.over { box-shadow: inset 0 0 0 1px var(--green); }
+    table.matrix td.cell.sel { outline: 3px solid var(--amber); outline-offset: -3px; background: #fdf2d8; }
+    table.matrix td.past { background: #f2f2f2; color: #bbb; cursor: default; }
+
+    .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: .82rem; color: var(--muted); margin-top: 12px; }
+    .legend .dot { display: inline-block; width: 12px; height: 12px; border-radius: 4px; vertical-align: middle; margin-right: 5px; }
+
+    .savebar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; box-shadow: 0 -4px 20px rgba(0,0,0,.12); padding: 12px 16px; display: flex; gap: 12px; align-items: center; justify-content: space-between; z-index: 50; }
+    .savebar .status { font-size: .9rem; }
   </style>
 </head>
 <body>
@@ -52,45 +81,49 @@
 
     <!-- EDITOR -->
     <div id="editor" class="hidden">
+      <!-- Base prices for all rooms -->
       <div class="admin-card">
-        <div class="field"><label>Tip cameră</label><select id="room"></select></div>
-        <div class="row mt-2">
-          <div class="field"><label>Preț de bază (RON/noapte)</label><input type="number" id="base-price" min="0"></div>
-          <div class="field"><label>Nr. camere (acest tip)</label><input type="number" id="base-units" min="0"></div>
-          <button class="btn btn-outline" id="save-base">Salvează baza</button>
-        </div>
-        <p class="hint mt-1">Prețul/numărul de bază se aplică zilelor fără setare specială.</p>
+        <h3>Prețuri de bază</h3>
+        <p class="hint" style="margin-bottom:10px">Se aplică zilelor fără setare specială din calendar. Modificările se salvează cu „Publică live”.</p>
+        <table class="base-table">
+          <thead><tr><th>Cameră</th><th>Preț bază (RON/noapte)</th><th>Nr. camere</th></tr></thead>
+          <tbody id="base-body"></tbody>
+        </table>
       </div>
 
+      <!-- All-rooms availability & price matrix -->
       <div class="admin-card">
-        <div class="cal-toolbar">
-          <button id="prev">‹</button>
-          <span class="cal-month" id="month"></span>
-          <button id="next">›</button>
+        <h3>Calendar prețuri & disponibilitate — toate camerele</h3>
+        <div class="matrix-toolbar mt-1">
+          <button class="nav" id="prev" aria-label="prev">‹</button>
+          <div class="field" style="margin:0"><label>De la</label><input type="date" id="win-start"></div>
+          <div class="field" style="margin:0"><label>Zile</label>
+            <select id="win-span"><option value="7">7</option><option value="14" selected>14</option><option value="30">30</option></select>
+          </div>
+          <button class="nav" id="next" aria-label="next">›</button>
         </div>
-        <div class="cal-grid" id="cal"></div>
+        <div class="matrix-scroll"><div id="matrix"></div></div>
         <div class="legend">
-          <span><span class="dot" style="background:var(--cream-2)"></span>liber</span>
-          <span><span class="dot" style="background:#efd6d2"></span>ocupat (0 camere)</span>
+          <span><span class="dot" style="background:#eef7f0;border:1px solid var(--cream-2)"></span>liber (preț · nr.)</span>
+          <span><span class="dot" style="background:#f6e0dd"></span>ocupat (0 camere)</span>
           <span><span class="dot" style="background:var(--amber)"></span>selectat</span>
         </div>
-        <p class="hint mt-1">Apasă pe o zi (sau apasă început + sfârșit pentru un interval), apoi aplică mai jos.</p>
+        <p class="hint mt-1">Apasă pe celule pentru a le selecta. Apasă pe <b>numele camerei</b> = tot rândul, pe <b>o zi (sus)</b> = toate camerele în acea zi. Apoi aplică mai jos.</p>
       </div>
 
+      <!-- Bulk apply to selection -->
       <div class="admin-card">
-        <h3 style="margin-bottom:10px">Aplică pe zilele selectate</h3>
-        <div class="row">
-          <div class="field"><label>Preț (RON)</label><input type="number" id="set-price" min="0" placeholder="(lasă gol = preț bază)"></div>
-          <div class="field"><label>Camere disponibile</label><input type="number" id="set-avail" min="0"></div>
+        <h3>Aplică pe selecție (<span id="sel-count">0</span>)</h3>
+        <div class="row mt-1">
+          <div class="field"><label>Preț (RON)</label><input type="number" id="set-price" min="0" placeholder="(gol = preț bază)"></div>
+          <div class="field"><label>Camere disponibile</label><input type="number" id="set-avail" min="0" placeholder="(gol = nu schimba)"></div>
+          <button class="btn btn-primary" id="apply">Aplică</button>
         </div>
         <div class="seg mt-2">
-          <button class="btn btn-primary" id="apply">Aplică preț + disponibilitate</button>
-        </div>
-        <div class="seg mt-1">
           <button class="btn btn-dark" id="mark-sold">Marchează OCUPAT</button>
           <button class="btn btn-outline" id="mark-free">Marchează LIBER (revine la bază)</button>
+          <button class="btn btn-outline" id="clear-sel">Deselectează tot</button>
         </div>
-        <p class="hint mt-1" id="sel-info">Nicio zi selectată.</p>
       </div>
     </div>
   </div>

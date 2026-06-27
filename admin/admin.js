@@ -1,6 +1,6 @@
 /* =====================================================================
    MONTANIA — Admin (prețuri & disponibilitate)
-   Editează prețul de bază + nr. camere pe tip și suprascrieri pe zile.
+   Grilă tip Booking: toate camerele × zile, editare prețuri + disponibilitate.
    Publică în KV prin /api/save (parolă partajată).
    ===================================================================== */
 
@@ -10,9 +10,9 @@ const state = {
   pw: sessionStorage.getItem(PW_KEY) || "",
   prices: {},        // { roomId: { price, units } }
   availability: {},  // { roomId: { "YYYY-MM-DD": { p, a } } }
-  roomId: null,
-  viewY: 0, viewM: 0,
-  selStart: null, selEnd: null,
+  winStart: null,    // Date (start of visible window)
+  span: 14,
+  selected: new Set(),// "roomId|YYYY-MM-DD"
   dirty: false
 };
 
@@ -48,15 +48,15 @@ async function showEditor(){
   $("savebar").classList.remove("hidden");
   $("logout").classList.remove("hidden");
   await loadModel();
-  buildRoomSelect();
   const now = startOfDay(new Date());
-  state.viewY = now.getFullYear(); state.viewM = now.getMonth();
-  selectRoom(SITE.rooms[0].id);
+  state.winStart = now;
+  $("win-start").value = ymd(now);
+  buildBaseTable();
+  renderMatrix();
 }
 
 /* ---- model ---- */
 async function loadModel(){
-  // seed base prices/units from data.js
   state.prices = {};
   SITE.rooms.forEach(r => { state.prices[r.id] = { price: r.price, units: r.units || 1 }; });
   state.availability = {};
@@ -70,82 +70,125 @@ async function loadModel(){
   } catch(e){ /* local preview */ }
 }
 
-function buildRoomSelect(){
-  $("room").innerHTML = SITE.rooms.map(r => `<option value="${r.id}">${r.name.ro}</option>`).join("");
+/* ---- base price table ---- */
+function buildBaseTable(){
+  $("base-body").innerHTML = SITE.rooms.map(r => {
+    const b = base(r.id);
+    return `<tr>
+      <td>${r.name.ro}</td>
+      <td><input type="number" min="0" data-base-price="${r.id}" value="${b.price}"></td>
+      <td><input type="number" min="0" data-base-units="${r.id}" value="${b.units}"></td>
+    </tr>`;
+  }).join("");
+  $("base-body").querySelectorAll("[data-base-price]").forEach(inp => {
+    inp.addEventListener("change", () => {
+      const id = inp.dataset.basePrice, v = parseInt(inp.value,10);
+      if (!isNaN(v)){ state.prices[id] = Object.assign(base(id), { price: v }); markDirty(); renderMatrix(); }
+    });
+  });
+  $("base-body").querySelectorAll("[data-base-units]").forEach(inp => {
+    inp.addEventListener("change", () => {
+      const id = inp.dataset.baseUnits, v = parseInt(inp.value,10);
+      if (!isNaN(v)){ state.prices[id] = Object.assign(base(id), { units: v }); markDirty(); renderMatrix(); }
+    });
+  });
 }
 
-function selectRoom(id){
-  state.roomId = id;
-  $("room").value = id;
-  const b = base(id);
-  $("base-price").value = b.price;
-  $("base-units").value = b.units;
-  state.selStart = state.selEnd = null;
-  renderCalendar();
-  updateSelInfo();
-}
-
-/* ---- calendar ---- */
-function shift(delta){
-  let m = state.viewM + delta, y = state.viewY;
-  if (m<0){ m=11; y--; } if (m>11){ m=0; y++; }
-  state.viewM = m; state.viewY = y; renderCalendar();
-}
-function inSelection(date){
-  if (!state.selStart) return false;
-  const end = state.selEnd || state.selStart;
-  return date >= state.selStart && date <= end;
-}
-function renderCalendar(){
-  const y = state.viewY, m = state.viewM, today = startOfDay(new Date());
-  $("month").textContent = new Date(y,m,1).toLocaleDateString("ro-RO",{month:"long",year:"numeric"});
-  const dows = ["Lu","Ma","Mi","Jo","Vi","Sâ","Du"];
-  let firstDow = new Date(y,m,1).getDay(); firstDow = (firstDow+6)%7;
-  const days = new Date(y,m+1,0).getDate();
-  let html = dows.map(d=>`<div class="cal-dow">${d}</div>`).join("");
-  for (let i=0;i<firstDow;i++) html += `<div class="cal-day empty"></div>`;
-  for (let day=1; day<=days; day++){
-    const date = new Date(y,m,day), key = ymd(date);
-    const info = dayInfo(state.roomId, key);
-    let cls = "cal-day";
-    let clickable = true;
-    if (date < today){ cls += " past"; clickable = false; }
-    else { cls += info.a<=0 ? " sold" : " available"; }
-    if (inSelection(date)) cls += " sel";
-    const sub = clickable ? `<span class="cal-avail">${info.a<=0?"ocupat":info.p+"·"+info.a}</span>` : "";
-    html += `<div class="${cls}" ${clickable?`data-day="${key}"`:""}><span class="cal-num">${day}</span>${sub}</div>`;
-  }
-  $("cal").innerHTML = html;
-  $("cal").querySelectorAll("[data-day]").forEach(el => el.addEventListener("click", ()=>onDay(el.dataset.day)));
-}
-function onDay(key){
-  const date = parseYmd(key);
-  if (!state.selStart || (state.selStart && state.selEnd)) { state.selStart = date; state.selEnd = null; }
-  else if (date >= state.selStart) { state.selEnd = date; }
-  else { state.selStart = date; state.selEnd = null; }
-  renderCalendar(); updateSelInfo();
-}
-function selectedDates(){
-  if (!state.selStart) return [];
-  const out = [], end = state.selEnd || state.selStart;
-  const d = new Date(state.selStart);
-  while (d <= end){ out.push(ymd(d)); d.setDate(d.getDate()+1); }
+/* ---- matrix ---- */
+function windowDays(){
+  const out = [];
+  const d = new Date(state.winStart);
+  for (let i=0; i<state.span; i++){ out.push(new Date(d)); d.setDate(d.getDate()+1); }
   return out;
 }
-function updateSelInfo(){
-  const ds = selectedDates();
-  if (!ds.length){ $("sel-info").textContent = "Nicio zi selectată."; return; }
-  $("sel-info").textContent = ds.length===1 ? `Selectat: ${ds[0]}` : `Selectat: ${ds[0]} → ${ds[ds.length-1]} (${ds.length} zile)`;
+function shiftWindow(deltaDays){
+  state.winStart = new Date(state.winStart);
+  state.winStart.setDate(state.winStart.getDate()+deltaDays);
+  $("win-start").value = ymd(state.winStart);
+  renderMatrix();
+}
+function renderMatrix(){
+  const days = windowDays();
+  const today = startOfDay(new Date());
+  const dows = ["Du","Lu","Ma","Mi","Jo","Vi","Sâ"];
+
+  let head = `<tr><th class="corner">Cameră</th>`;
+  days.forEach(d => {
+    const wknd = (d.getDay()===0 || d.getDay()===6) ? " weekend" : "";
+    head += `<th class="dayhead${wknd}" data-col="${ymd(d)}"><div class="wd">${dows[d.getDay()]}</div><div class="dn">${d.getDate()}</div></th>`;
+  });
+  head += `</tr>`;
+
+  let body = "";
+  SITE.rooms.forEach(r => {
+    const b = base(r.id);
+    body += `<tr><th class="roomcell" data-row="${r.id}">${r.name.ro}<small>bază ${b.price} RON · ${b.units} cam.</small></th>`;
+    days.forEach(d => {
+      const key = ymd(d);
+      const past = d < today;
+      if (past){ body += `<td class="past"></td>`; return; }
+      const info = dayInfo(r.id, key);
+      const sold = info.a<=0;
+      const sel = state.selected.has(r.id+"|"+key);
+      const ov = (state.availability[r.id]||{})[key];
+      const over = ov ? " over" : "";
+      let cls = "cell"+(sold?" sold":"")+(sel?" sel":"")+over;
+      body += `<td class="${cls}" data-room="${r.id}" data-key="${key}"><div class="p">${sold?"–":info.p}</div><div class="a">${sold?"0":info.a}</div></td>`;
+    });
+    body += `</tr>`;
+  });
+
+  $("matrix").innerHTML = `<table class="matrix"><thead>${head}</thead><tbody>${body}</tbody></table>`;
+
+  // cell selection
+  $("matrix").querySelectorAll("td.cell").forEach(td => {
+    td.addEventListener("click", () => toggleCell(td.dataset.room, td.dataset.key));
+  });
+  // whole-row select (room name)
+  $("matrix").querySelectorAll("th.roomcell").forEach(th => {
+    th.addEventListener("click", () => selectRow(th.dataset.row));
+  });
+  // whole-column select (day header)
+  $("matrix").querySelectorAll("th.dayhead").forEach(th => {
+    th.addEventListener("click", () => selectCol(th.dataset.col));
+  });
+
+  updateSelCount();
+}
+
+function toggleCell(roomId, key){
+  const k = roomId+"|"+key;
+  if (state.selected.has(k)) state.selected.delete(k); else state.selected.add(k);
+  renderMatrix();
+}
+function selectRow(roomId){
+  const cells = $("matrix").querySelectorAll(`td.cell[data-room="${roomId}"]`);
+  const keys = Array.from(cells).map(td => roomId+"|"+td.dataset.key);
+  const allSel = keys.every(k => state.selected.has(k));
+  keys.forEach(k => allSel ? state.selected.delete(k) : state.selected.add(k));
+  renderMatrix();
+}
+function selectCol(key){
+  const cells = $("matrix").querySelectorAll(`td.cell[data-key="${key}"]`);
+  const keys = Array.from(cells).map(td => td.dataset.room+"|"+key);
+  const allSel = keys.every(k => state.selected.has(k));
+  keys.forEach(k => allSel ? state.selected.delete(k) : state.selected.add(k));
+  renderMatrix();
+}
+function updateSelCount(){
+  const n = state.selected.size;
+  $("sel-count").textContent = n ? `${n} celule` : "0";
 }
 
 /* ---- mutations ---- */
-function ensureRoomAvail(){ if (!state.availability[state.roomId]) state.availability[state.roomId] = {}; return state.availability[state.roomId]; }
-function applyToSelection(mut){
-  const ds = selectedDates();
-  if (!ds.length){ alert("Selectează una sau mai multe zile în calendar."); return; }
-  const av = ensureRoomAvail();
-  ds.forEach(key => mut(av, key));
-  markDirty(); renderCalendar();
+function applyBulk(mut){
+  if (!state.selected.size){ alert("Selectează una sau mai multe celule în grilă."); return; }
+  state.selected.forEach(k => {
+    const [roomId, key] = k.split("|");
+    if (!state.availability[roomId]) state.availability[roomId] = {};
+    mut(state.availability[roomId], key, roomId);
+  });
+  markDirty(); renderMatrix();
 }
 
 /* ---- events ---- */
@@ -158,29 +201,26 @@ document.addEventListener("DOMContentLoaded", () => {
   $("pw").addEventListener("keydown", e => { if (e.key==="Enter") $("login-btn").click(); });
   $("logout").addEventListener("click", () => { sessionStorage.removeItem(PW_KEY); location.reload(); });
 
-  $("room").addEventListener("change", () => selectRoom($("room").value));
-  $("prev").addEventListener("click", ()=>shift(-1));
-  $("next").addEventListener("click", ()=>shift(1));
-
-  $("save-base").addEventListener("click", () => {
-    const p = parseInt($("base-price").value,10), u = parseInt($("base-units").value,10);
-    if (isNaN(p)||isNaN(u)){ alert("Completează preț și nr. camere."); return; }
-    state.prices[state.roomId] = { price: p, units: u };
-    markDirty(); renderCalendar();
+  $("prev").addEventListener("click", ()=>shiftWindow(-state.span));
+  $("next").addEventListener("click", ()=>shiftWindow(state.span));
+  $("win-start").addEventListener("change", () => {
+    const v = $("win-start").value; if (v){ state.winStart = startOfDay(parseYmd(v)); renderMatrix(); }
   });
+  $("win-span").addEventListener("change", () => { state.span = parseInt($("win-span").value,10); renderMatrix(); });
 
   $("apply").addEventListener("click", () => {
     const pv = $("set-price").value.trim(), avv = $("set-avail").value.trim();
-    if (avv===""){ alert("Completează „Camere disponibile”."); return; }
-    const a = parseInt(avv,10);
-    applyToSelection((av, key) => {
-      const entry = { a };
-      if (pv!=="") entry.p = parseInt(pv,10);
-      av[key] = entry;
+    if (pv==="" && avv===""){ alert("Completează preț și/sau camere disponibile."); return; }
+    applyBulk((av, key, roomId) => {
+      const cur = Object.assign({}, av[key]);
+      if (pv!=="") cur.p = parseInt(pv,10);
+      if (avv!=="") cur.a = parseInt(avv,10);
+      av[key] = cur;
     });
   });
-  $("mark-sold").addEventListener("click", () => applyToSelection((av,key)=>{ av[key] = Object.assign({}, av[key], { a:0 }); }));
-  $("mark-free").addEventListener("click", () => applyToSelection((av,key)=>{ delete av[key]; }));
+  $("mark-sold").addEventListener("click", () => applyBulk((av,key)=>{ av[key] = Object.assign({}, av[key], { a:0 }); }));
+  $("mark-free").addEventListener("click", () => applyBulk((av,key)=>{ delete av[key]; }));
+  $("clear-sel").addEventListener("click", () => { state.selected.clear(); renderMatrix(); });
 
   $("save-all").addEventListener("click", saveAll);
 
