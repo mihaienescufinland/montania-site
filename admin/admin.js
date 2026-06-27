@@ -373,17 +373,9 @@ function renderMatrix(){
   updateSelCount();
 }
 
-function toggleCell(roomId, key){
-  const k = roomId+"|"+key;
-  if (state.selected.has(k)) state.selected.delete(k); else state.selected.add(k);
-  // incremental update (no full re-render) so multi-select stays snappy & stable
-  const td = $("matrix").querySelector(`td.cell[data-room="${roomId}"][data-key="${key}"]`);
-  if (td) td.classList.toggle("sel", state.selected.has(k));
-  updateSelCount();
-}
-
-/* ---- per-cell inline editor (price + rooms available for that day) ---- */
+/* ---- popup editor (auto-opens for the current selection) ---- */
 let pop = null;
+let popOnClose = null;
 function popKey(e){ if (e.key==="Escape") closePop(); }
 function popOutside(e){ if (pop && !pop.contains(e.target)) closePop(); }
 function closePop(){
@@ -391,84 +383,10 @@ function closePop(){
   pop.remove(); pop = null;
   document.removeEventListener("keydown", popKey);
   document.removeEventListener("click", popOutside);
+  const cb = popOnClose; popOnClose = null;
+  if (cb) cb();
 }
-function openCellEditor(roomId, key, td){
-  closePop();
-  const room = roomById(roomId);
-  const info = dayInfo(roomId, key);
-  const b = base(roomId);
-  pop = document.createElement("div");
-  pop.className = "cellpop";
-  pop.innerHTML = `
-    <div class="cellpop-h">${room.name.ro}<br><small>${key}</small></div>
-    <label>Preț (RON / noapte)</label>
-    <input type="number" id="pop-price" min="0" value="${info.p}">
-    <label>Camere disponibile (din ${b.units})</label>
-    <input type="number" id="pop-avail" min="0" max="99" value="${info.a}">
-    <div class="cellpop-btns">
-      <button class="btn btn-primary" id="pop-save">Salvează</button>
-      <button class="btn btn-dark" id="pop-sold">Ocupat</button>
-    </div>
-    <button class="btn btn-outline" id="pop-reset" style="width:100%;margin-top:6px;font-size:.8rem">Resetează la bază</button>`;
-  document.body.appendChild(pop);
-
-  const r = td.getBoundingClientRect();
-  const pw = 220;
-  let left = window.scrollX + r.left;
-  const maxLeft = window.scrollX + document.documentElement.clientWidth - pw - 10;
-  if (left > maxLeft) left = maxLeft;
-  if (left < window.scrollX + 8) left = window.scrollX + 8;
-  pop.style.left = left + "px";
-  pop.style.top = (window.scrollY + r.bottom + 6) + "px";
-
-  const save = () => {
-    const p = parseInt($("pop-price").value, 10);
-    const a = parseInt($("pop-avail").value, 10);
-    if (isNaN(a)){ alert("Completează numărul de camere disponibile."); return; }
-    if (!state.availability[roomId]) state.availability[roomId] = {};
-    const entry = { a };
-    if (!isNaN(p)) entry.p = p;
-    state.availability[roomId][key] = entry;
-    markDirty(); closePop(); renderMatrix();
-  };
-  $("pop-save").addEventListener("click", save);
-  $("pop-avail").addEventListener("keydown", e => { if (e.key==="Enter") save(); });
-  $("pop-price").addEventListener("keydown", e => { if (e.key==="Enter") save(); });
-  $("pop-sold").addEventListener("click", () => {
-    if (!state.availability[roomId]) state.availability[roomId] = {};
-    state.availability[roomId][key] = Object.assign({}, state.availability[roomId][key], { a: 0 });
-    markDirty(); closePop(); renderMatrix();
-  });
-  $("pop-reset").addEventListener("click", () => {
-    if (state.availability[roomId]) delete state.availability[roomId][key];
-    markDirty(); closePop(); renderMatrix();
-  });
-
-  $("pop-price").focus(); $("pop-price").select();
-  document.addEventListener("keydown", popKey);
-  setTimeout(() => document.addEventListener("click", popOutside), 0);
-}
-
-/* ---- bulk editor popup (same look as single cell, applies to whole selection) ---- */
-function openBulkEditor(anchorEl){
-  if (!state.selected.size){ alert("Selectează una sau mai multe celule din calendar (click pe ele)."); return; }
-  closePop();
-  const n = state.selected.size;
-  pop = document.createElement("div");
-  pop.className = "cellpop";
-  pop.innerHTML = `
-    <div class="cellpop-h">${n} ${n===1?"celulă":"celule"} selectate<br><small>modificările se aplică tuturor</small></div>
-    <label>Preț (RON / noapte)</label>
-    <input type="number" id="pop-price" min="0" placeholder="(gol = nu schimba)">
-    <label>Camere disponibile</label>
-    <input type="number" id="pop-avail" min="0" max="99" placeholder="(gol = nu schimba)">
-    <div class="cellpop-btns">
-      <button class="btn btn-primary" id="pop-save">Salvează</button>
-      <button class="btn btn-dark" id="pop-sold">Ocupat</button>
-    </div>
-    <button class="btn btn-outline" id="pop-reset" style="width:100%;margin-top:6px;font-size:.8rem">Resetează la bază (liber)</button>`;
-  document.body.appendChild(pop);
-
+function positionPop(anchorEl){
   const r = (anchorEl || $("matrix")).getBoundingClientRect();
   const pw = 220;
   let left = window.scrollX + r.left;
@@ -477,6 +395,43 @@ function openBulkEditor(anchorEl){
   if (left < window.scrollX + 8) left = window.scrollX + 8;
   pop.style.left = left + "px";
   pop.style.top = (window.scrollY + r.bottom + 6) + "px";
+}
+// Opens automatically once a selection is made. Edits price/availability for the
+// whole selection. Closing (save / occupied / reset / cancel) clears the selection.
+function openSelectionEditor(anchorEl){
+  if (!state.selected.size) return;
+  closePop();
+  const keys = Array.from(state.selected);
+  const single = keys.length === 1 ? keys[0].split("|") : null;
+
+  let headerHtml, priceAttr = 'placeholder="(gol = nu schimba)"', availAttr = 'placeholder="(gol = nu schimba)"';
+  if (single){
+    const info = dayInfo(single[0], single[1]);
+    headerHtml = `${roomById(single[0]).name.ro}<br><small>${single[1]}</small>`;
+    priceAttr = `value="${info.p}"`;
+    availAttr = `value="${info.a}"`;
+  } else {
+    headerHtml = `${keys.length} zile selectate<br><small>se aplică tuturor</small>`;
+  }
+
+  pop = document.createElement("div");
+  pop.className = "cellpop";
+  pop.innerHTML = `
+    <div class="cellpop-h">${headerHtml}</div>
+    <label>Preț (RON / noapte)</label>
+    <input type="number" id="pop-price" min="0" ${priceAttr}>
+    <label>Camere disponibile</label>
+    <input type="number" id="pop-avail" min="0" max="99" ${availAttr}>
+    <div class="cellpop-btns">
+      <button class="btn btn-primary" id="pop-save">Salvează</button>
+      <button class="btn btn-dark" id="pop-sold">Ocupat</button>
+    </div>
+    <button class="btn btn-outline" id="pop-reset" style="width:100%;margin-top:6px;font-size:.8rem">Resetează la bază (liber)</button>`;
+  document.body.appendChild(pop);
+  positionPop(anchorEl);
+
+  // closing the popup for any reason clears the selection
+  popOnClose = () => { if (state.selected.size){ state.selected.clear(); renderMatrix(); } };
 
   const save = () => {
     const pv = $("pop-price").value.trim(), avv = $("pop-avail").value.trim();
@@ -495,27 +450,28 @@ function openBulkEditor(anchorEl){
   $("pop-sold").addEventListener("click", () => { applyBulk((av,key)=>{ av[key] = Object.assign({}, av[key], { a:0 }); }); closePop(); });
   $("pop-reset").addEventListener("click", () => { applyBulk((av,key)=>{ delete av[key]; }); closePop(); });
 
-  $("pop-price").focus();
+  $("pop-price").focus(); $("pop-price").select();
   document.addEventListener("keydown", popKey);
   setTimeout(() => document.addEventListener("click", popOutside), 0);
 }
+
+// click a room name = select whole row, then auto-open the editor
 function selectRow(roomId){
-  const cells = $("matrix").querySelectorAll(`td.cell[data-room="${roomId}"]`);
-  const keys = Array.from(cells).map(td => roomId+"|"+td.dataset.key);
-  const allSel = keys.every(k => state.selected.has(k));
-  keys.forEach(k => allSel ? state.selected.delete(k) : state.selected.add(k));
+  state.selected.clear();
+  $("matrix").querySelectorAll(`td.cell[data-room="${roomId}"]`).forEach(td => state.selected.add(roomId+"|"+td.dataset.key));
   renderMatrix();
+  openSelectionEditor($("matrix").querySelector(`th.roomcell[data-row="${roomId}"]`));
 }
+// click a day header = select that day for all rooms, then auto-open the editor
 function selectCol(key){
-  const cells = $("matrix").querySelectorAll(`td.cell[data-key="${key}"]`);
-  const keys = Array.from(cells).map(td => td.dataset.room+"|"+key);
-  const allSel = keys.every(k => state.selected.has(k));
-  keys.forEach(k => allSel ? state.selected.delete(k) : state.selected.add(k));
+  state.selected.clear();
+  $("matrix").querySelectorAll(`td.cell[data-key="${key}"]`).forEach(td => state.selected.add(td.dataset.room+"|"+key));
   renderMatrix();
+  openSelectionEditor($("matrix").querySelector(`th.dayhead[data-col="${key}"]`));
 }
 function updateSelCount(){
-  const n = state.selected.size;
-  $("sel-count").textContent = n ? `${n} celule` : "0";
+  const el = $("sel-count");
+  if (el) el.textContent = state.selected.size ? `${state.selected.size} celule` : "0";
 }
 
 /* ---- mouse drag selection (within one room row) ---- */
@@ -534,12 +490,17 @@ function highlightDrag(room, startKey, endKey){
     td.classList.toggle("dragsel", keys.has(td.dataset.key));
   });
 }
+// Build a fresh selection from the gesture (single click = 1 day, drag = range),
+// then auto-open the editor anchored on the last touched cell.
 function commitDrag(room, startKey, endKey){
-  // additive: add the dragged range to the existing selection (don't wipe it)
+  state.selected.clear();
   rangeKeys(startKey, endKey).forEach(k => {
     if ($("matrix").querySelector(`td.cell[data-room="${room}"][data-key="${k}"]`)) state.selected.add(room + "|" + k);
   });
   renderMatrix();
+  const anchor = $("matrix").querySelector(`td.cell[data-room="${room}"][data-key="${endKey}"]`)
+              || $("matrix").querySelector(`td.cell[data-room="${room}"][data-key="${startKey}"]`);
+  openSelectionEditor(anchor);
 }
 function initMatrixDrag(){
   if (drag.inited) return;
@@ -548,9 +509,10 @@ function initMatrixDrag(){
   m.addEventListener("mousedown", e => {
     const td = e.target.closest("td.cell"); if (!td) return;
     e.preventDefault();
+    const room = td.dataset.room, key = td.dataset.key;
     closePop();
     drag.active = true; drag.moved = false;
-    drag.room = td.dataset.room; drag.startKey = td.dataset.key; drag.endKey = td.dataset.key;
+    drag.room = room; drag.startKey = key; drag.endKey = key;
   });
   m.addEventListener("mouseover", e => {
     if (!drag.active) return;
@@ -562,17 +524,8 @@ function initMatrixDrag(){
   document.addEventListener("mouseup", () => {
     if (!drag.active) return;
     drag.active = false;
-    if (drag.moved) {
-      commitDrag(drag.room, drag.startKey, drag.endKey);
-    } else {
-      // simple click = toggle this cell in/out of the selection (Booking-style multi-select)
-      toggleCell(drag.room, drag.startKey);
-    }
-  });
-  // double-click a cell = open the detailed single-day editor
-  m.addEventListener("dblclick", e => {
-    const td = e.target.closest("td.cell"); if (!td) return;
-    openCellEditor(td.dataset.room, td.dataset.key, td);
+    // both a single click and a drag end here -> select & auto-open the editor
+    commitDrag(drag.room, drag.startKey, drag.endKey);
   });
 }
 
@@ -610,12 +563,6 @@ document.addEventListener("DOMContentLoaded", () => {
     state.winEnd = startOfDay(parseYmd(v));
     if (state.winEnd < state.winStart){ state.winStart = new Date(state.winEnd); $("win-start").value = ymd(state.winStart); }
     renderMatrix();
-  });
-
-  $("edit-sel").addEventListener("click", () => openBulkEditor($("edit-sel")));
-  $("clear-sel").addEventListener("click", () => { closePop(); state.selected.clear(); renderMatrix(); });
-  document.addEventListener("keydown", e => {
-    if (e.key === "Escape" && !pop && state.selected.size) { state.selected.clear(); renderMatrix(); }
   });
 
   $("save-all").addEventListener("click", saveAll);
