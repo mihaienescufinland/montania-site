@@ -140,9 +140,9 @@ function renderMatrix(){
 
   $("matrix").innerHTML = `<table class="matrix"><thead>${head}</thead><tbody>${body}</tbody></table>`;
 
-  // cell selection
+  // cell click = inline editor for that room + day
   $("matrix").querySelectorAll("td.cell").forEach(td => {
-    td.addEventListener("click", () => toggleCell(td.dataset.room, td.dataset.key));
+    td.addEventListener("click", (e) => { e.stopPropagation(); openCellEditor(td.dataset.room, td.dataset.key, td); });
   });
   // whole-row select (room name)
   $("matrix").querySelectorAll("th.roomcell").forEach(th => {
@@ -160,6 +160,73 @@ function toggleCell(roomId, key){
   const k = roomId+"|"+key;
   if (state.selected.has(k)) state.selected.delete(k); else state.selected.add(k);
   renderMatrix();
+}
+
+/* ---- per-cell inline editor (price + rooms available for that day) ---- */
+let pop = null;
+function popKey(e){ if (e.key==="Escape") closePop(); }
+function popOutside(e){ if (pop && !pop.contains(e.target)) closePop(); }
+function closePop(){
+  if (!pop) return;
+  pop.remove(); pop = null;
+  document.removeEventListener("keydown", popKey);
+  document.removeEventListener("click", popOutside);
+}
+function openCellEditor(roomId, key, td){
+  closePop();
+  const room = roomById(roomId);
+  const info = dayInfo(roomId, key);
+  const b = base(roomId);
+  pop = document.createElement("div");
+  pop.className = "cellpop";
+  pop.innerHTML = `
+    <div class="cellpop-h">${room.name.ro}<br><small>${key}</small></div>
+    <label>Preț (RON / noapte)</label>
+    <input type="number" id="pop-price" min="0" value="${info.p}">
+    <label>Camere disponibile (din ${b.units})</label>
+    <input type="number" id="pop-avail" min="0" max="99" value="${info.a}">
+    <div class="cellpop-btns">
+      <button class="btn btn-primary" id="pop-save">Salvează</button>
+      <button class="btn btn-dark" id="pop-sold">Ocupat</button>
+    </div>
+    <button class="btn btn-outline" id="pop-reset" style="width:100%;margin-top:6px;font-size:.8rem">Resetează la bază</button>`;
+  document.body.appendChild(pop);
+
+  const r = td.getBoundingClientRect();
+  const pw = 220;
+  let left = window.scrollX + r.left;
+  const maxLeft = window.scrollX + document.documentElement.clientWidth - pw - 10;
+  if (left > maxLeft) left = maxLeft;
+  if (left < window.scrollX + 8) left = window.scrollX + 8;
+  pop.style.left = left + "px";
+  pop.style.top = (window.scrollY + r.bottom + 6) + "px";
+
+  const save = () => {
+    const p = parseInt($("pop-price").value, 10);
+    const a = parseInt($("pop-avail").value, 10);
+    if (isNaN(a)){ alert("Completează numărul de camere disponibile."); return; }
+    if (!state.availability[roomId]) state.availability[roomId] = {};
+    const entry = { a };
+    if (!isNaN(p)) entry.p = p;
+    state.availability[roomId][key] = entry;
+    markDirty(); closePop(); renderMatrix();
+  };
+  $("pop-save").addEventListener("click", save);
+  $("pop-avail").addEventListener("keydown", e => { if (e.key==="Enter") save(); });
+  $("pop-price").addEventListener("keydown", e => { if (e.key==="Enter") save(); });
+  $("pop-sold").addEventListener("click", () => {
+    if (!state.availability[roomId]) state.availability[roomId] = {};
+    state.availability[roomId][key] = Object.assign({}, state.availability[roomId][key], { a: 0 });
+    markDirty(); closePop(); renderMatrix();
+  });
+  $("pop-reset").addEventListener("click", () => {
+    if (state.availability[roomId]) delete state.availability[roomId][key];
+    markDirty(); closePop(); renderMatrix();
+  });
+
+  $("pop-price").focus(); $("pop-price").select();
+  document.addEventListener("keydown", popKey);
+  setTimeout(() => document.addEventListener("click", popOutside), 0);
 }
 function selectRow(roomId){
   const cells = $("matrix").querySelectorAll(`td.cell[data-room="${roomId}"]`);

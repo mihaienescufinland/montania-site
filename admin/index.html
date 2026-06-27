@@ -56,6 +56,15 @@
     table.matrix td.cell.sel { outline: 3px solid var(--amber); outline-offset: -3px; background: #fdf2d8; }
     table.matrix td.past { background: #f2f2f2; color: #bbb; cursor: default; }
 
+    /* per-cell popover editor */
+    .cellpop { position: absolute; z-index: 100; width: 220px; background: #fff; border: 1px solid var(--cream-2); border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,.18); padding: 14px; }
+    .cellpop-h { font-family: var(--serif); font-weight: 700; font-size: 1.05rem; margin-bottom: 8px; line-height: 1.2; }
+    .cellpop-h small { font-weight: 500; color: var(--muted); font-family: var(--sans, Inter), sans-serif; font-size: .78rem; }
+    .cellpop label { margin-top: 8px; }
+    .cellpop input { margin-bottom: 2px; }
+    .cellpop-btns { display: flex; gap: 6px; margin-top: 10px; }
+    .cellpop-btns .btn { flex: 1; padding: 9px 6px; font-size: .82rem; justify-content: center; }
+
     .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: .82rem; color: var(--muted); margin-top: 12px; }
     .legend .dot { display: inline-block; width: 12px; height: 12px; border-radius: 4px; vertical-align: middle; margin-right: 5px; }
 
@@ -108,7 +117,7 @@
           <span><span class="dot" style="background:#f6e0dd"></span>ocupat (0 camere)</span>
           <span><span class="dot" style="background:var(--amber)"></span>selectat</span>
         </div>
-        <p class="hint mt-1">Apasă pe celule pentru a le selecta. Apasă pe <b>numele camerei</b> = tot rândul, pe <b>o zi (sus)</b> = toate camerele în acea zi. Apoi aplică mai jos.</p>
+        <p class="hint mt-1"><b>Apasă pe o celulă</b> pentru a edita prețul și nr. de camere disponibile în acea zi. Pentru modificări în masă: apasă pe <b>numele camerei</b> = tot rândul, pe <b>o zi (sus)</b> = toate camerele în acea zi, apoi folosește panoul de mai jos.</p>
       </div>
 
       <!-- Bulk apply to selection -->
