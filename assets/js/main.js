@@ -168,7 +168,7 @@ function renderBioProducts() {
 /* ---------------- Bio meats ---------------- */
 function renderBioMeats() {
   const grid = document.getElementById("bio-meat-grid");
-  if (!grid || !window.SITE || !SITE.bioMeats) return;
+  if (!grid || !SITE.bioMeats) return;
   grid.innerHTML = SITE.bioMeats.map(p => `
     <div class="card">
       <img src="${p.img}" alt="${L(p.name)}" loading="lazy">
