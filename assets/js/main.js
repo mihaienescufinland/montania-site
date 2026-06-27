@@ -83,7 +83,7 @@ function injectContact() {
   const c = SITE.contact;
   document.querySelectorAll("[data-contact='phone']").forEach(e => { e.textContent = c.phone; if (e.tagName === "A") e.href = "tel:" + c.phone.replace(/\s/g, ""); });
   document.querySelectorAll("[data-contact='email']").forEach(e => { e.textContent = c.email; if (e.tagName === "A") e.href = "mailto:" + c.email; });
-  document.querySelectorAll("[data-contact='address']").forEach(e => { e.textContent = getLang() === "en" ? c.addressEn : c.addressRo; });
+  document.querySelectorAll("[data-contact='address']").forEach(e => { e.textContent = getLang() === "ro" ? c.addressRo : c.addressEn; });
   document.querySelectorAll("[data-contact='maps']").forEach(e => { e.href = c.mapsUrl; });
   document.querySelectorAll("[data-contact='whatsapp']").forEach(e => { e.href = "https://wa.me/" + c.whatsapp; });
   document.querySelectorAll("[data-contact='booking']").forEach(e => { e.href = c.bookingUrl; });
@@ -98,10 +98,14 @@ function renderRooms() {
   const lang = getLang();
   grid.innerHTML = SITE.rooms.map(r => `
     <div class="card">
-      <img src="${r.img}" alt="${L(r.name)}" loading="lazy">
+      <div class="rate-thumb-wrap" data-detail="${r.id}" style="width:100%">
+        <img src="${r.img}" alt="${L(r.name)}" loading="lazy">
+        <span class="thumb-badge">📷 ${(r.gallery || [r.img]).length}</span>
+      </div>
       <div class="card-body">
-        <h3>${L(r.name)}</h3>
+        <h3 class="rdetail" data-detail="${r.id}">${L(r.name)}</h3>
         <div class="pills">${featurePills(r)}</div>
+        <button class="link-btn" data-detail="${r.id}">${t("room.details")}</button>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px">
           <span class="price-tag">${t("rate.from")} ${r.price} <small>RON / ${t("vila.book.night")}</small></span>
           <button class="btn btn-primary" data-bookroom="${r.id}">${t("vila.rooms.book")}</button>
@@ -114,6 +118,7 @@ function renderRooms() {
       document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
     });
   });
+  grid.querySelectorAll("[data-detail]").forEach(el => el.addEventListener("click", () => openRoomDetail(el.dataset.detail)));
 }
 
 /* ---------------- Bio products ---------------- */
@@ -168,23 +173,23 @@ const ICONS = {
   accessible: svg('<circle cx="11" cy="4" r="1.6"/><path d="M11 6v6h5l3 6"/><path d="M11 12a5 5 0 1 0 4 8"/>')
 };
 const FLABEL = {
-  balcony: { ro: "Balcon", en: "Balcony" },
-  view: { ro: "Vedere", en: "View" },
-  garden_view: { ro: "Vedere la grădină", en: "Garden view" },
-  courtyard_view: { ro: "Vedere la curtea interioară", en: "Inner courtyard view" },
-  bath: { ro: "Baie privată", en: "Private bathroom" },
-  tv: { ro: "TV cu ecran plat", en: "Flat-screen TV" },
-  sound: { ro: "Izolare fonică", en: "Soundproofing" },
-  wifi: { ro: "WiFi gratuit", en: "Free WiFi" },
-  kitchenette: { ro: "Chicinetă privată", en: "Private kitchenette" },
-  coffee: { ro: "Ceai/cafea", en: "Tea/coffee" },
-  heating: { ro: "Încălzire", en: "Heating" },
-  accessible: { ro: "Acces la parter", en: "Step-free access" }
+  balcony: { ro: "Balcon", en: "Balcony", fr: "Balcon", it: "Balcone", de: "Balkon" },
+  view: { ro: "Vedere", en: "View", fr: "Vue", it: "Vista", de: "Aussicht" },
+  garden_view: { ro: "Vedere la grădină", en: "Garden view", fr: "Vue sur le jardin", it: "Vista giardino", de: "Gartenblick" },
+  courtyard_view: { ro: "Vedere la curtea interioară", en: "Inner courtyard view", fr: "Vue sur la cour intérieure", it: "Vista cortile interno", de: "Blick auf den Innenhof" },
+  bath: { ro: "Baie privată", en: "Private bathroom", fr: "Salle de bain privée", it: "Bagno privato", de: "Eigenes Bad" },
+  tv: { ro: "TV cu ecran plat", en: "Flat-screen TV", fr: "TV à écran plat", it: "TV a schermo piatto", de: "Flachbild-TV" },
+  sound: { ro: "Izolare fonică", en: "Soundproofing", fr: "Insonorisation", it: "Insonorizzazione", de: "Schallisolierung" },
+  wifi: { ro: "WiFi gratuit", en: "Free WiFi", fr: "WiFi gratuit", it: "WiFi gratuito", de: "Kostenloses WLAN" },
+  kitchenette: { ro: "Chicinetă privată", en: "Private kitchenette", fr: "Kitchenette privée", it: "Angolo cottura privato", de: "Eigene Küchenzeile" },
+  coffee: { ro: "Ceai/cafea", en: "Tea/coffee", fr: "Thé/café", it: "Tè/caffè", de: "Tee/Kaffee" },
+  heating: { ro: "Încălzire", en: "Heating", fr: "Chauffage", it: "Riscaldamento", de: "Heizung" },
+  accessible: { ro: "Acces la parter", en: "Step-free access", fr: "Accès de plain-pied", it: "Accesso senza gradini", de: "Stufenloser Zugang" }
 };
 const BEDLABEL = {
-  double: { ro: "1 pat dublu mare", en: "1 large double bed" },
-  triple: { ro: "Pat dublu + 1 loc / canapea", en: "Double bed + 1 / sofa" },
-  two_double: { ro: "2 dormitoare · 2 paturi duble", en: "2 bedrooms · 2 double beds" }
+  double: { ro: "1 pat dublu mare", en: "1 large double bed", fr: "1 grand lit double", it: "1 letto matrimoniale grande", de: "1 großes Doppelbett" },
+  triple: { ro: "Pat dublu + 1 loc / canapea", en: "Double bed + 1 / sofa", fr: "Lit double + 1 / canapé", it: "Letto matrimoniale + 1 / divano", de: "Doppelbett + 1 / Sofa" },
+  two_double: { ro: "2 dormitoare · 2 paturi duble", en: "2 bedrooms · 2 double beds", fr: "2 chambres · 2 lits doubles", it: "2 camere · 2 letti matrimoniali", de: "2 Schlafzimmer · 2 Doppelbetten" }
 };
 function pill(icon, label) { return `<span class="pill">${icon || ""}<span>${label}</span></span>`; }
 function featurePills(room) {
@@ -206,10 +211,46 @@ function initBooking() {
   const now = startOfDay(new Date());
   booking.state.viewYear = now.getFullYear();
   booking.state.viewMonth = now.getMonth();
-  document.getElementById("f-guests")?.addEventListener("change", renderRateTable);
+  document.getElementById("f-adults")?.addEventListener("change", renderRateTable);
+  document.getElementById("f-children")?.addEventListener("change", () => { renderChildAges(); renderRateTable(); });
+  document.getElementById("child-ages")?.addEventListener("change", renderRateTable);
+  renderChildAges();
   renderCalendar();
   updateSummary();
   renderRateTable();
+}
+
+/* ---------------- Occupancy (adults + children with ages) ---------------- */
+const CHILD_FREE_MAX = 5; // children up to (and including) this age don't need extra capacity
+
+function renderChildAges() {
+  const wrap = document.getElementById("child-ages");
+  if (!wrap) return;
+  const n = parseInt(document.getElementById("f-children")?.value || "0", 10);
+  const lang = getLang();
+  if (!n) { wrap.innerHTML = ""; return; }
+  let html = "";
+  for (let i = 0; i < n; i++) {
+    let opts = "";
+    for (let a = 0; a <= 17; a++) {
+      const label = a === 0 ? "<1 " + t("vila.book.years") : a + " " + t("vila.book.years");
+      opts += `<option value="${a}">${label}</option>`;
+    }
+    html += `<div class="occ-ctl child-age">
+      <span class="occ-lbl">${t("vila.book.childage")} ${i + 1}</span>
+      <select class="f-child-age">${opts}</select>
+    </div>`;
+  }
+  wrap.innerHTML = `<div class="occ-row occ-row-ages">${html}</div>`;
+}
+
+function occupancy() {
+  const adults = parseInt(document.getElementById("f-adults")?.value || "2", 10);
+  const ageEls = document.querySelectorAll("#child-ages .f-child-age");
+  const childAges = Array.from(ageEls).map(el => parseInt(el.value || "0", 10));
+  const childrenNeedingBed = childAges.filter(a => a > CHILD_FREE_MAX).length;
+  const effective = Math.max(1, adults + childrenNeedingBed);
+  return { adults, children: childAges.length, childAges, effective };
 }
 
 function shiftMonth(delta) {
@@ -309,7 +350,13 @@ function renderRateTable() {
   const wrap = document.getElementById("rate-table");
   if (!wrap) return;
   const night = t("vila.book.night");
-  const rows = SITE.rooms.map(room => {
+  const occ = occupancy();
+  const fitting = SITE.rooms.filter(room => room.capacity >= occ.effective);
+  if (!fitting.length) {
+    wrap.innerHTML = `<div class="rate-empty">${t("rate.none")}</div>`;
+    return;
+  }
+  const rows = fitting.map(room => {
     const ri = roomRangeInfo(room);
     let priceHtml, availHtml, btn;
     if (ri.complete && ri.available) {
@@ -325,11 +372,16 @@ function renderRateTable() {
       availHtml = "";
       btn = `<button class="btn btn-primary" type="button" data-reserve="${room.id}">${t("vila.book.whatsapp")}</button>`;
     }
+    const nphotos = (room.gallery || [room.img]).length;
     return `<div class="rate-row">
-      <img class="rate-thumb" src="${room.img}" alt="${L(room.name)}" loading="lazy">
+      <div class="rate-thumb-wrap" data-detail="${room.id}">
+        <img class="rate-thumb" src="${room.img}" alt="${L(room.name)}" loading="lazy">
+        <span class="thumb-badge">📷 ${nphotos}</span>
+      </div>
       <div class="rate-main">
-        <h3>${L(room.name)}</h3>
+        <h3 class="rdetail" data-detail="${room.id}">${L(room.name)}</h3>
         <div class="pills">${featurePills(room)}</div>
+        <button class="link-btn" data-detail="${room.id}">${t("room.details")}</button>
         ${availHtml}
       </div>
       <div class="rate-side">${priceHtml}${btn}</div>
@@ -337,16 +389,82 @@ function renderRateTable() {
   }).join("");
   wrap.innerHTML = rows;
   wrap.querySelectorAll("[data-reserve]").forEach(b => b.addEventListener("click", () => reserveRoom(b.dataset.reserve)));
+  wrap.querySelectorAll("[data-detail]").forEach(el => el.addEventListener("click", () => openRoomDetail(el.dataset.detail)));
+}
+
+/* ---------------- Room detail (Booking-style) ---------------- */
+const roomDetail = { imgs: [], cur: 0 };
+function rmShow(i) {
+  const m = document.getElementById("room-modal"); if (!m) return;
+  const n = roomDetail.imgs.length; if (!n) return;
+  roomDetail.cur = (i + n) % n;
+  m.querySelector(".rm-main").src = roomDetail.imgs[roomDetail.cur];
+  m.querySelectorAll(".rm-thumbs img").forEach((th, j) => th.classList.toggle("active", j === roomDetail.cur));
+}
+function rmClose() { const m = document.getElementById("room-modal"); if (m) m.classList.remove("open"); }
+function openRoomDetail(roomId) {
+  const room = SITE.rooms.find(r => r.id === roomId); if (!room) return;
+  const imgs = (room.gallery && room.gallery.length) ? room.gallery.slice() : [room.img];
+  roomDetail.imgs = imgs; roomDetail.cur = 0;
+  let m = document.getElementById("room-modal");
+  if (!m) {
+    m = document.createElement("div");
+    m.id = "room-modal"; m.className = "room-modal";
+    document.body.appendChild(m);
+    document.addEventListener("keydown", e => {
+      if (!m.classList.contains("open")) return;
+      if (e.key === "Escape") rmClose();
+      else if (e.key === "ArrowLeft") rmShow(roomDetail.cur - 1);
+      else if (e.key === "ArrowRight") rmShow(roomDetail.cur + 1);
+    });
+  }
+  const ri = roomRangeInfo(room);
+  const night = t("vila.book.night");
+  const priceLine = (ri.complete && ri.available)
+    ? `<div class="rate-price">${ri.total} <small>RON · ${ri.nights} ${ri.nights === 1 ? night : t("vila.book.nights")}</small></div>`
+    : `<div class="rate-price">${t("rate.from")} ${room.price} <small>RON/${night}</small></div>`;
+  m.innerHTML = `
+    <div class="rm-backdrop"></div>
+    <div class="rm-dialog">
+      <button class="rm-close" aria-label="Close">&times;</button>
+      <div class="rm-gallery">
+        <button class="rm-nav rm-prev" aria-label="prev">‹</button>
+        <img class="rm-main" src="${imgs[0]}" alt="${esc(L(room.name))}">
+        <button class="rm-nav rm-next" aria-label="next">›</button>
+      </div>
+      <div class="rm-thumbs">${imgs.map((src, i) => `<img data-i="${i}" class="${i === 0 ? "active" : ""}" src="${src}" alt="" loading="lazy">`).join("")}</div>
+      <div class="rm-body">
+        <h2>${esc(L(room.name))}</h2>
+        <div class="pills">${featurePills(room)}</div>
+        <div class="rm-foot">
+          ${priceLine}
+          <button class="btn btn-primary" id="rm-reserve">${t("vila.book.whatsapp")}</button>
+        </div>
+      </div>
+    </div>`;
+  m.querySelectorAll(".rm-thumbs img").forEach(th => th.addEventListener("click", () => rmShow(parseInt(th.dataset.i, 10))));
+  m.querySelector(".rm-prev").addEventListener("click", () => rmShow(roomDetail.cur - 1));
+  m.querySelector(".rm-next").addEventListener("click", () => rmShow(roomDetail.cur + 1));
+  m.querySelector(".rm-close").addEventListener("click", rmClose);
+  m.querySelector(".rm-backdrop").addEventListener("click", rmClose);
+  m.querySelector("#rm-reserve").addEventListener("click", () => { rmClose(); reserveRoom(room.id); });
+  m.classList.add("open");
 }
 
 function reserveRoom(id) {
   const room = SITE.rooms.find(r => r.id === id);
   if (!room) return;
   const s = booking.state;
-  const guests = document.getElementById("f-guests")?.value || "";
+  const o = occupancy();
+  let guests = `${o.adults} ${t("vila.book.adults").toLowerCase()}`;
+  if (o.children) {
+    const ages = o.childAges.map(a => (a === 0 ? "<1" : a)).join(", ");
+    guests += `, ${o.children} ${t("vila.book.children").toLowerCase()} (${ages} ${t("vila.book.years")})`;
+  }
   const lang = getLang();
   const lines = [
     lang === "en" ? "Booking request — TUI Villa" : "Cerere rezervare — Vila TUI",
+    "🌐 via montania.ro",
     `${t("vila.book.room")}: ${L(room.name)}`,
     `${t("vila.book.checkin")}: ${s.checkIn ? ymd(s.checkIn) : "-"}`,
     `${t("vila.book.checkout")}: ${s.checkOut ? ymd(s.checkOut) : "-"}`,
