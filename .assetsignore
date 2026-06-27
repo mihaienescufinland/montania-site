@@ -1,6 +1,12 @@
-worker.js
-wrangler.jsonc
-functions/
-*.md
+.git
 .gitignore
 .assetsignore
+node_modules
+.DS_Store
+**/.DS_Store
+*.pack
+wrangler.jsonc
+worker.js
+functions
+README.md
+*.md
