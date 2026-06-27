@@ -57,6 +57,8 @@ const I18N = {
     "faq.a3": "Acceptăm numerar, card (Visa, Mastercard) și carduri de vacanță (Edenred, Pluxee, Up).",
     "faq.q4": "Aveți parcare, Wi-Fi și cameră accesibilă?",
     "faq.a4": "Da — Wi-Fi gratuit, parcare și o cameră accesibilă la parter, fără trepte.",
+    "faq.q5": "Care este ora de check-in și check-out?",
+    "faq.a5": "Check-in după ora 13:00, check-out până la ora 11:00.",
 
     "exp.hero.title": "Sinaia & Munții Bucegi",
     "exp.hero.sub": "Tot ce iubim la muntele românesc — la câțiva pași de Vila TUI.",
@@ -283,6 +285,8 @@ const I18N = {
     "faq.a3": "We accept cash, cards (Visa, Mastercard) and Romanian holiday cards (Edenred, Pluxee, Up).",
     "faq.q4": "Do you have parking, Wi-Fi and an accessible room?",
     "faq.a4": "Yes — free Wi-Fi, parking and a step-free, ground-floor accessible room.",
+    "faq.q5": "What are the check-in and check-out times?",
+    "faq.a5": "Check-in after 13:00, check-out by 11:00.",
 
     "exp.hero.title": "Sinaia & the Bucegi Mountains",
     "exp.hero.sub": "Everything we love about the Romanian mountains — steps from TUI Villa.",
@@ -509,6 +513,8 @@ const I18N = {
     "faq.a3": "Nous acceptons les espèces, les cartes (Visa, Mastercard) et les cartes vacances roumaines (Edenred, Pluxee, Up).",
     "faq.q4": "Avez-vous parking, Wi-Fi et une chambre accessible ?",
     "faq.a4": "Oui — Wi-Fi gratuit, parking et une chambre accessible de plain-pied au rez-de-chaussée.",
+    "faq.q5": "Quelles sont les heures d'arrivée et de départ ?",
+    "faq.a5": "Arrivée après 13h00, départ avant 11h00.",
 
     "exp.hero.title": "Sinaia & les montagnes Bucegi",
     "exp.hero.sub": "Tout ce que nous aimons dans la montagne roumaine — à quelques pas de la Villa TUI.",
@@ -735,6 +741,8 @@ const I18N = {
     "faq.a3": "Accettiamo contanti, carte (Visa, Mastercard) e carte vacanze rumene (Edenred, Pluxee, Up).",
     "faq.q4": "Avete parcheggio, Wi-Fi e una camera accessibile?",
     "faq.a4": "Sì — Wi-Fi gratuito, parcheggio e una camera accessibile al piano terra, senza gradini.",
+    "faq.q5": "Quali sono gli orari di check-in e check-out?",
+    "faq.a5": "Check-in dopo le 13:00, check-out entro le 11:00.",
 
     "exp.hero.title": "Sinaia & i monti Bucegi",
     "exp.hero.sub": "Tutto ciò che amiamo della montagna romena — a pochi passi dalla Villa TUI.",
@@ -961,6 +969,8 @@ const I18N = {
     "faq.a3": "Wir akzeptieren Bargeld, Karten (Visa, Mastercard) und rumänische Urlaubskarten (Edenred, Pluxee, Up).",
     "faq.q4": "Haben Sie Parkplatz, WLAN und ein barrierefreies Zimmer?",
     "faq.a4": "Ja — kostenloses WLAN, Parkplatz und ein barrierefreies Zimmer im Erdgeschoss, ohne Stufen.",
+    "faq.q5": "Wann sind Check-in und Check-out?",
+    "faq.a5": "Check-in ab 13:00 Uhr, Check-out bis 11:00 Uhr.",
 
     "exp.hero.title": "Sinaia & das Bucegi-Gebirge",
     "exp.hero.sub": "Alles, was wir an den rumänischen Bergen lieben — wenige Schritte von der Villa TUI.",
