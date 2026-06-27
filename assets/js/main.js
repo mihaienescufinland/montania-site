@@ -244,7 +244,6 @@ const ICONS = {
   courtyard_view: svg('<path d="M12 2c3 2 4 5 4 7a4 4 0 0 1-8 0c0-2 1-5 4-7z"/><path d="M12 13v8"/>'),
   bath: svg('<path d="M12 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.5 2-5 5-9z"/>'),
   tv: svg('<rect x="3" y="5" width="18" height="12" rx="1.5"/><path d="M9 21h6M12 17v4"/>'),
-  sound: svg('<path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9a4 4 0 0 1 0 6"/>'),
   wifi: svg('<path d="M2 8.5a16 16 0 0 1 20 0"/><path d="M5 12a11 11 0 0 1 14 0"/><path d="M8.5 15.5a6 6 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/>'),
   kitchenette: svg('<path d="M6 3v8M4 3v4a2 2 0 0 0 4 0V3M6 11v10"/><path d="M16 3c-2 0-3 2-3 5s1 4 3 4 3-1 3-4-1-5-3-5zM16 12v9"/>'),
   coffee: svg('<path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8z"/><path d="M17 9h2.5a2.5 2.5 0 0 1 0 5H17"/><path d="M7 3v2M11 3v2"/>'),
@@ -258,7 +257,6 @@ const FLABEL = {
   courtyard_view: { ro: "Vedere la curtea interioară", en: "Inner courtyard view", fr: "Vue sur la cour intérieure", it: "Vista cortile interno", de: "Blick auf den Innenhof" },
   bath: { ro: "Baie privată", en: "Private bathroom", fr: "Salle de bain privée", it: "Bagno privato", de: "Eigenes Bad" },
   tv: { ro: "TV cu ecran plat", en: "Flat-screen TV", fr: "TV à écran plat", it: "TV a schermo piatto", de: "Flachbild-TV" },
-  sound: { ro: "Izolare fonică", en: "Soundproofing", fr: "Insonorisation", it: "Insonorizzazione", de: "Schallisolierung" },
   wifi: { ro: "WiFi gratuit", en: "Free WiFi", fr: "WiFi gratuit", it: "WiFi gratuito", de: "Kostenloses WLAN" },
   kitchenette: { ro: "Chicinetă privată", en: "Private kitchenette", fr: "Kitchenette privée", it: "Angolo cottura privato", de: "Eigene Küchenzeile" },
   coffee: { ro: "Ceai/cafea", en: "Tea/coffee", fr: "Thé/café", it: "Tè/caffè", de: "Tee/Kaffee" },
@@ -267,7 +265,7 @@ const FLABEL = {
 };
 const BEDLABEL = {
   double: { ro: "1 pat dublu mare", en: "1 large double bed", fr: "1 grand lit double", it: "1 letto matrimoniale grande", de: "1 großes Doppelbett" },
-  triple: { ro: "Pat dublu + 1 loc / canapea", en: "Double bed + 1 / sofa", fr: "Lit double + 1 / canapé", it: "Letto matrimoniale + 1 / divano", de: "Doppelbett + 1 / Sofa" },
+  triple: { ro: "Pat dublu + pat single sau canapea extensibilă", en: "Double bed + single or sofa bed", fr: "Lit double + lit simple ou canapé-lit", it: "Letto matrimoniale + letto singolo o divano letto", de: "Doppelbett + Einzelbett oder Schlafsofa" },
   two_double: { ro: "2 dormitoare · 2 paturi duble", en: "2 bedrooms · 2 double beds", fr: "2 chambres · 2 lits doubles", it: "2 camere · 2 letti matrimoniali", de: "2 Schlafzimmer · 2 Doppelbetten" }
 };
 function pill(icon, label) { return `<span class="pill">${icon || ""}<span>${label}</span></span>`; }

@@ -101,7 +101,7 @@ const SITE = {
       units: 2,
       img: "assets/img/villa/rooms/dubla-balcon.jpg",
       bed: "double",
-      features: ["balcony", "view", "bath", "tv", "sound", "wifi"],
+      features: ["balcony", "view", "bath", "tv", "coffee", "wifi"],
       gallery: [
         "assets/img/villa/rooms/g/b1.jpg",
         "assets/img/villa/rooms/g/b2.jpg",
@@ -111,8 +111,8 @@ const SITE = {
         "assets/img/villa/rooms/g/b6.jpg"
       ],
       amenities: {
-        ro: ["Pat dublu mare", "Balcon & vedere", "Baie proprie (duș)", "TV cu cablu", "Frigider", "Ceai/cafea", "Izolare fonică", "Wi-Fi gratuit"],
-        en: ["Large double bed", "Balcony & view", "Private bathroom (shower)", "Cable TV", "Fridge", "Tea/coffee", "Soundproofing", "Free Wi-Fi"]
+        ro: ["Pat dublu mare", "Balcon & vedere", "Baie proprie (duș)", "TV cu cablu", "Frigider", "Ceai/cafea", "Wi-Fi gratuit"],
+        en: ["Large double bed", "Balcony & view", "Private bathroom (shower)", "Cable TV", "Fridge", "Tea/coffee", "Free Wi-Fi"]
       },
       booked: []
     },
@@ -125,7 +125,7 @@ const SITE = {
       units: 1,
       img: "assets/img/villa/rooms/queen.jpg",
       bed: "double",
-      features: ["bath", "tv", "sound", "wifi", "coffee", "heating"],
+      features: ["bath", "tv", "wifi", "coffee", "heating"],
       gallery: [
         "assets/img/villa/rooms/g/q1.jpg",
         "assets/img/villa/rooms/g/q2.jpg",
@@ -143,8 +143,8 @@ const SITE = {
         "assets/img/villa/rooms/g/q14.jpg"
       ],
       amenities: {
-        ro: ["Pat dublu mare", "Baie proprie (duș/cadă)", "TV cu cablu", "Dulap", "Ceai/cafea", "Încălzire", "Izolare fonică", "Wi-Fi gratuit"],
-        en: ["Large double bed", "Private bathroom (shower/tub)", "Cable TV", "Wardrobe", "Tea/coffee", "Heating", "Soundproofing", "Free Wi-Fi"]
+        ro: ["Pat dublu mare", "Baie proprie (duș/cadă)", "TV cu cablu", "Dulap", "Ceai/cafea", "Încălzire", "Wi-Fi gratuit"],
+        en: ["Large double bed", "Private bathroom (shower/tub)", "Cable TV", "Wardrobe", "Tea/coffee", "Heating", "Free Wi-Fi"]
       },
       booked: []
     },
@@ -157,7 +157,7 @@ const SITE = {
       units: 1,
       img: "assets/img/villa/rooms/deluxe.jpg",
       bed: "double",
-      features: ["bath", "tv", "sound", "wifi", "coffee", "heating"],
+      features: ["bath", "tv", "wifi", "coffee", "heating"],
       gallery: [
         "assets/img/villa/rooms/deluxe.jpg",
         "assets/img/villa/rooms/g/deluxe-2.jpg",
@@ -167,8 +167,8 @@ const SITE = {
         "assets/img/villa/rooms/g/deluxe-bath2.jpg"
       ],
       amenities: {
-        ro: ["Pat dublu mare", "Baie proprie (duș sau cadă)", "TV cu cablu", "Dulap", "Ceai/cafea", "Încălzire", "Izolare fonică", "Wi-Fi gratuit"],
-        en: ["Large double bed", "Private bathroom (shower or tub)", "Cable TV", "Wardrobe", "Tea/coffee", "Heating", "Soundproofing", "Free Wi-Fi"]
+        ro: ["Pat dublu mare", "Baie proprie (duș sau cadă)", "TV cu cablu", "Dulap", "Ceai/cafea", "Încălzire", "Wi-Fi gratuit"],
+        en: ["Large double bed", "Private bathroom (shower or tub)", "Cable TV", "Wardrobe", "Tea/coffee", "Heating", "Free Wi-Fi"]
       },
       booked: []
     },
@@ -181,7 +181,7 @@ const SITE = {
       units: 2,
       img: "assets/img/villa/rooms/tripla.jpg",
       bed: "triple",
-      features: ["courtyard_view", "bath", "tv", "sound", "wifi", "coffee"],
+      features: ["courtyard_view", "bath", "tv", "wifi", "coffee"],
       gallery: [
         "assets/img/villa/rooms/g/t1.jpg",
         "assets/img/villa/rooms/g/t2.jpg",
@@ -205,8 +205,8 @@ const SITE = {
         "assets/img/villa/rooms/g/t20.jpg"
       ],
       amenities: {
-        ro: ["Pat dublu + pat single / canapea extensibilă", "Vedere la curtea interioară", "Baie proprie", "TV cu cablu", "Ceai/cafea", "Izolare fonică", "Wi-Fi gratuit"],
-        en: ["Double bed + single / sofa bed", "Inner courtyard view", "Private bathroom", "Cable TV", "Tea/coffee", "Soundproofing", "Free Wi-Fi"]
+        ro: ["Pat dublu mare + pat single sau canapea extensibilă (în funcție de cameră)", "Vedere la curtea interioară", "Baie proprie", "TV cu cablu", "Ceai/cafea", "Wi-Fi gratuit"],
+        en: ["Large double bed + single bed or sofa bed (depending on the room)", "Inner courtyard view", "Private bathroom", "Cable TV", "Tea/coffee", "Free Wi-Fi"]
       },
       booked: []
     },
@@ -219,7 +219,7 @@ const SITE = {
       units: 1,
       img: "assets/img/villa/rooms/apartament.jpg",
       bed: "two_double",
-      features: ["kitchenette", "bath", "balcony", "garden_view", "tv", "wifi"],
+      features: ["kitchenette", "bath", "balcony", "garden_view", "tv", "coffee", "wifi"],
       gallery: [
         "assets/img/villa/rooms/g/a1.jpg",
         "assets/img/villa/rooms/g/a2.jpg",
