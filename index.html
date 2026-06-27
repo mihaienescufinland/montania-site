@@ -58,6 +58,21 @@
       { "@type": "LocationFeatureSpecification", "name": "Mic dejun", "value": true },
       { "@type": "LocationFeatureSpecification", "name": "Acces fără trepte (parter)", "value": true }
     ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "9.8",
+      "bestRating": "10",
+      "worstRating": "1",
+      "reviewCount": "8"
+    },
+    "makesOffer": [
+      { "@type": "Offer", "priceCurrency": "RON", "price": "373", "availability": "https://schema.org/InStock", "url": "https://www.montania.ro/vila", "itemOffered": { "@type": "HotelRoom", "name": "Cameră dublă cu balcon" } },
+      { "@type": "Offer", "priceCurrency": "RON", "price": "350", "availability": "https://schema.org/InStock", "url": "https://www.montania.ro/vila", "itemOffered": { "@type": "HotelRoom", "name": "Cameră Queen" } },
+      { "@type": "Offer", "priceCurrency": "RON", "price": "390", "availability": "https://schema.org/InStock", "url": "https://www.montania.ro/vila", "itemOffered": { "@type": "HotelRoom", "name": "Cameră deluxe" } },
+      { "@type": "Offer", "priceCurrency": "RON", "price": "352", "availability": "https://schema.org/InStock", "url": "https://www.montania.ro/vila", "itemOffered": { "@type": "HotelRoom", "name": "Cameră triplă" } },
+      { "@type": "Offer", "priceCurrency": "RON", "price": "579", "availability": "https://schema.org/InStock", "url": "https://www.montania.ro/vila", "itemOffered": { "@type": "HotelRoom", "name": "Apartament cu balcon (45 m²)" } },
+      { "@type": "Offer", "priceCurrency": "RON", "price": "350", "availability": "https://schema.org/InStock", "url": "https://www.montania.ro/vila", "itemOffered": { "@type": "HotelRoom", "name": "Cameră accesibilă la parter" } }
+    ],
     "sameAs": [
       "https://www.booking.com/hotel/ro/pensiunea-tui.html"
     ]
@@ -216,6 +231,47 @@
       <img src="https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=900&q=80" alt="Brânză bio">
     </div>
   </section>
+
+  <!-- FAQ (SEO + AI answers) -->
+  <section class="section bg-cream2">
+    <div class="container container-narrow">
+      <div class="center mb-2">
+        <p class="eyebrow" data-i18n="faq.eyebrow">Întrebări frecvente</p>
+        <h2 data-i18n="faq.title">Bine de știut despre Vila TUI</h2>
+      </div>
+      <div class="faq mt-3">
+        <details class="faq-item">
+          <summary data-i18n="faq.q1">Unde este situată Vila TUI?</summary>
+          <p data-i18n="faq.a1">Vila TUI este ultracentrală în Sinaia, pe Str. Aosta nr. 5, la câțiva pași de telecabină, pârtii și de Castelul Peleș, cu Munții Bucegi în apropiere.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq.q2">Cum rezerv direct, la cel mai bun preț?</summary>
+          <p data-i18n="faq.a2">Verifici disponibilitatea și prețurile pe pagina Vila TUI și rezervi direct pe WhatsApp — fără comisioane, cu cel mai bun preț oferit de proprietar.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq.q3">Ce metode de plată acceptați?</summary>
+          <p data-i18n="faq.a3">Acceptăm numerar, card (Visa, Mastercard) și carduri de vacanță (Edenred, Pluxee, Up).</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq.q4">Aveți parcare, Wi-Fi și cameră accesibilă?</summary>
+          <p data-i18n="faq.a4">Da — Wi-Fi gratuit, parcare și o cameră accesibilă la parter, fără trepte.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Unde este situată Vila TUI?", "acceptedAnswer": { "@type": "Answer", "text": "Vila TUI este ultracentrală în Sinaia, pe Str. Aosta nr. 5, la câțiva pași de telecabină, pârtii și de Castelul Peleș, cu Munții Bucegi în apropiere." } },
+      { "@type": "Question", "name": "Cum rezerv direct, la cel mai bun preț?", "acceptedAnswer": { "@type": "Answer", "text": "Verifici disponibilitatea și prețurile pe pagina Vila TUI și rezervi direct pe WhatsApp — fără comisioane, cu cel mai bun preț oferit de proprietar." } },
+      { "@type": "Question", "name": "Ce metode de plată acceptați?", "acceptedAnswer": { "@type": "Answer", "text": "Acceptăm numerar, card (Visa, Mastercard) și carduri de vacanță (Edenred, Pluxee, Up)." } },
+      { "@type": "Question", "name": "Aveți parcare, Wi-Fi și cameră accesibilă?", "acceptedAnswer": { "@type": "Answer", "text": "Da — Wi-Fi gratuit, parcare și o cameră accesibilă la parter, fără trepte." } }
+    ]
+  }
+  </script>
 
   <!-- FOOTER -->
   <footer class="footer">
