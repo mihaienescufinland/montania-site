@@ -156,11 +156,19 @@ const SITE = {
       bed: "two_double",
       features: ["kitchenette", "bath", "balcony", "garden_view", "tv", "wifi"],
       gallery: [
-        "assets/img/villa/rooms/apartament.jpg",
-        "assets/img/villa/rooms/g/apt-2.jpg",
-        "assets/img/villa/rooms/g/apt-bedroom.jpg",
-        "assets/img/villa/rooms/g/apt-kitchen.jpg",
-        "assets/img/villa/rooms/g/apt-bath.jpg"
+        "assets/img/villa/rooms/g/a1.jpg",
+        "assets/img/villa/rooms/g/a2.jpg",
+        "assets/img/villa/rooms/g/a3.jpg",
+        "assets/img/villa/rooms/g/a4.jpg",
+        "assets/img/villa/rooms/g/a5.jpg",
+        "assets/img/villa/rooms/g/a6.jpg",
+        "assets/img/villa/rooms/g/a7.jpg",
+        "assets/img/villa/rooms/g/a8.jpg",
+        "assets/img/villa/rooms/g/a9.jpg",
+        "assets/img/villa/rooms/g/a10.jpg",
+        "assets/img/villa/rooms/g/a11.jpg",
+        "assets/img/villa/rooms/g/a12.jpg",
+        "assets/img/villa/rooms/g/a13.jpg"
       ],
       amenities: {
         ro: ["2 dormitoare (paturi duble)", "2 băi (duș & cadă)", "Chicinetă privată utilată", "Balcon & vedere la grădină", "Intrare privată", "TV cu cablu", "Wi-Fi gratuit"],
