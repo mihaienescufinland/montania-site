@@ -70,6 +70,27 @@
 
     .savebar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; box-shadow: 0 -4px 20px rgba(0,0,0,.12); padding: 12px 16px; display: flex; gap: 12px; align-items: center; justify-content: space-between; z-index: 50; }
     .savebar .status { font-size: .9rem; }
+
+    /* reviews moderation */
+    .add-block { border: 1px dashed var(--cream-2); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; }
+    .add-block summary { cursor: pointer; font-weight: 600; color: var(--green); }
+    .rev-item { border: 1px solid var(--cream-2); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+    .rev-item.pending { background: #fffaf0; border-color: #f0d9a8; }
+    .rev-h { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+    .rev-badge { font-size: .7rem; font-weight: 700; padding: 2px 8px; border-radius: 6px; }
+    .rev-badge.p { background: #fbe6c0; color: #9a6b16; }
+    .rev-badge.a { background: rgba(60,120,80,.12); color: var(--green); }
+    .rev-score { background: var(--green); color: #fff; font-weight: 700; padding: 3px 8px; border-radius: 6px; font-size: .85rem; }
+    .rev-item textarea { width: 100%; margin-top: 8px; min-height: 52px; }
+    .rev-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .rev-actions .btn { padding: 7px 12px; font-size: .82rem; }
+
+    /* feed admin thumbnails */
+    .feed-admin { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+    .feed-admin .fa-item { position: relative; border-radius: 10px; overflow: hidden; border: 1px solid var(--cream-2); }
+    .feed-admin .fa-item img { width: 100%; height: 110px; object-fit: cover; display: block; }
+    .feed-admin .fa-del { position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,.6); color: #fff; border: 0; border-radius: 6px; width: 26px; height: 26px; cursor: pointer; font-size: 1rem; }
+    .feed-admin .fa-cap { font-size: .7rem; padding: 5px 6px; color: var(--muted); }
   </style>
 </head>
 <body>
@@ -131,6 +152,46 @@
           <button class="btn btn-outline" id="mark-free">Marchează LIBER (revine la bază)</button>
           <button class="btn btn-outline" id="clear-sel">Deselectează tot</button>
         </div>
+      </div>
+
+      <!-- Reviews moderation -->
+      <div class="admin-card">
+        <h3>Recenzii</h3>
+        <p class="hint" style="margin-bottom:10px">Aprobă, răspunde sau șterge recenziile. Poți adăuga manual o recenzie (ex. copiată de pe Booking.com).</p>
+        <details class="add-block">
+          <summary>+ Adaugă o recenzie manual</summary>
+          <div class="row mt-2">
+            <div class="field"><label>Nume</label><input type="text" id="arv-name"></div>
+            <div class="field"><label>Țara / orașul</label><input type="text" id="arv-country"></div>
+            <div class="field" style="max-width:120px"><label>Notă (1–10)</label><input type="number" id="arv-rating" min="1" max="10" value="10"></div>
+          </div>
+          <div class="row mt-1">
+            <div class="field" style="max-width:160px"><label>Data</label><input type="date" id="arv-date"></div>
+            <div class="field" style="max-width:160px"><label>Sursă</label>
+              <select id="arv-source"><option value="booking">Booking.com</option><option value="guest">Site</option></select>
+            </div>
+          </div>
+          <div class="field mt-1"><label>Text recenzie</label><textarea id="arv-text" rows="3" style="width:100%"></textarea></div>
+          <div class="field mt-1"><label>Răspunsul gazdei (opțional)</label><textarea id="arv-reply" rows="2" style="width:100%"></textarea></div>
+          <button class="btn btn-primary mt-1" id="arv-add">Adaugă recenzia</button>
+        </details>
+        <div id="rev-admin-list" class="mt-2"></div>
+      </div>
+
+      <!-- Media feed upload -->
+      <div class="admin-card">
+        <h3>Jurnal — încarcă poze</h3>
+        <p class="hint" style="margin-bottom:10px">Pozele sunt redimensionate automat în browser și publicate în feed (pagina Jurnal + prima pagină).</p>
+        <div class="row">
+          <div class="field"><label>Poză(e)</label><input type="file" id="feed-file" accept="image/*" multiple></div>
+        </div>
+        <div class="row mt-1">
+          <div class="field"><label>Descriere (opțional)</label><input type="text" id="feed-caption" placeholder="ex. Răsărit peste Bucegi"></div>
+          <div class="field" style="max-width:200px"><label>Loc (opțional)</label><input type="text" id="feed-place" placeholder="ex. Vârful Omu"></div>
+        </div>
+        <button class="btn btn-primary mt-2" id="feed-upload">Încarcă</button>
+        <span id="feed-msg" class="hint" style="margin-left:10px"></span>
+        <div id="feed-admin-list" class="feed-admin mt-2"></div>
       </div>
     </div>
   </div>

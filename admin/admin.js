@@ -55,6 +55,119 @@ async function showEditor(){
   $("win-end").value = ymd(state.winEnd);
   buildBaseTable();
   renderMatrix();
+  loadReviewsAdmin();
+  loadFeedAdmin();
+}
+
+/* ---- shared admin POST ---- */
+async function adminPost(path, body) {
+  return fetch(path, { method: "POST", headers: { "content-type": "application/json", "x-admin-password": state.pw }, body: JSON.stringify(body) });
+}
+function escA(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+/* ---- reviews moderation ---- */
+async function loadReviewsAdmin() {
+  const box = $("rev-admin-list"); if (!box) return;
+  try {
+    const res = await adminPost("/api/reviews/admin", { action: "list" });
+    if (!res.ok) { box.innerHTML = "<p class='hint'>Nu pot încărca recenziile.</p>"; return; }
+    const data = await res.json();
+    renderReviewsAdmin(data.reviews || []);
+  } catch (e) { box.innerHTML = "<p class='hint'>Recenziile apar doar pe site-ul live.</p>"; }
+}
+function renderReviewsAdmin(list) {
+  const box = $("rev-admin-list");
+  if (!list.length) { box.innerHTML = "<p class='hint'>Nicio recenzie încă.</p>"; return; }
+  box.innerHTML = list.map(r => `
+    <div class="rev-item ${r.status === 'pending' ? 'pending' : ''}">
+      <div class="rev-h">
+        <span class="rev-score">${r.rating}/10</span>
+        <strong>${escA(r.author)}</strong>
+        ${r.country ? `<span class="hint">${escA(r.country)}</span>` : ""}
+        <span class="hint">${escA(r.date || "")}${r.source === 'booking' ? ' · Booking' : ''}</span>
+        <span class="rev-badge ${r.status === 'pending' ? 'p' : 'a'}">${r.status === 'pending' ? 'În așteptare' : 'Publicată'}</span>
+      </div>
+      <div>${escA(r.text)}</div>
+      <textarea data-reply="${r.id}" placeholder="Răspunsul gazdei…">${escA(r.reply || "")}</textarea>
+      <div class="rev-actions">
+        ${r.status === 'pending'
+          ? `<button class="btn btn-primary" data-approve="${r.id}">Aprobă</button>`
+          : `<button class="btn btn-outline" data-unapprove="${r.id}">Retrage</button>`}
+        <button class="btn btn-dark" data-savereply="${r.id}">Salvează răspuns</button>
+        <button class="btn btn-outline" data-del="${r.id}">Șterge</button>
+      </div>
+    </div>`).join("");
+  box.querySelectorAll("[data-approve]").forEach(b => b.addEventListener("click", () => revAction({ action: "approve", id: b.dataset.approve })));
+  box.querySelectorAll("[data-unapprove]").forEach(b => b.addEventListener("click", () => revAction({ action: "unapprove", id: b.dataset.unapprove })));
+  box.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", () => { if (confirm("Ștergi recenzia definitiv?")) revAction({ action: "delete", id: b.dataset.del }); }));
+  box.querySelectorAll("[data-savereply]").forEach(b => b.addEventListener("click", () => {
+    const ta = box.querySelector(`textarea[data-reply="${b.dataset.savereply}"]`);
+    revAction({ action: "reply", id: b.dataset.savereply, reply: ta.value });
+  }));
+}
+async function revAction(body) {
+  const res = await adminPost("/api/reviews/admin", body);
+  if (res.ok) loadReviewsAdmin(); else alert("Eroare la salvare.");
+}
+
+/* ---- media feed ---- */
+async function loadFeedAdmin() {
+  const box = $("feed-admin-list"); if (!box) return;
+  try {
+    const res = await fetch("/api/feed", { cache: "no-store" });
+    const data = await res.json();
+    renderFeedAdmin(data.posts || []);
+  } catch (e) { box.innerHTML = ""; }
+}
+function renderFeedAdmin(posts) {
+  const box = $("feed-admin-list");
+  box.innerHTML = posts.map(p => `
+    <div class="fa-item">
+      <img loading="lazy" src="/api/feed/img?id=${encodeURIComponent(p.id)}" alt="">
+      <button class="fa-del" data-delfeed="${p.id}" title="Șterge">×</button>
+      <div class="fa-cap">${escA(p.caption || "")}${p.place ? " · " + escA(p.place) : ""}</div>
+    </div>`).join("");
+  box.querySelectorAll("[data-delfeed]").forEach(b => b.addEventListener("click", async () => {
+    if (!confirm("Ștergi poza din feed?")) return;
+    const res = await adminPost("/api/feed/admin", { action: "delete", id: b.dataset.delfeed });
+    if (res.ok) loadFeedAdmin(); else alert("Eroare.");
+  }));
+}
+function resizeImage(file, maxEdge) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let w = img.width, h = img.height;
+      if (w > h && w > maxEdge) { h = Math.round(h * maxEdge / w); w = maxEdge; }
+      else if (h >= w && h > maxEdge) { w = Math.round(w * maxEdge / h); h = maxEdge; }
+      const c = document.createElement("canvas"); c.width = w; c.height = h;
+      c.getContext("2d").drawImage(img, 0, 0, w, h);
+      resolve(c.toDataURL("image/jpeg", 0.82));
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+async function uploadPhotos() {
+  const input = $("feed-file"); const files = Array.from(input.files || []);
+  if (!files.length) { alert("Alege una sau mai multe poze."); return; }
+  const caption = $("feed-caption").value, place = $("feed-place").value;
+  const msg = $("feed-msg");
+  let done = 0;
+  for (const f of files) {
+    msg.textContent = `Se încarcă ${done + 1}/${files.length}…`;
+    try {
+      const dataUrl = await resizeImage(f, 1400);
+      const res = await adminPost("/api/feed/admin", { action: "add", caption, place, dataUrl });
+      if (res.ok) done++;
+      else { const j = await res.json().catch(() => ({})); msg.textContent = "Eroare: " + (j.error || res.status); return; }
+    } catch (e) { msg.textContent = "Eroare la procesarea pozei."; return; }
+  }
+  msg.textContent = `Gata — ${done} poză(e) publicate.`;
+  input.value = ""; $("feed-caption").value = ""; $("feed-place").value = "";
+  loadFeedAdmin();
 }
 
 /* ---- model ---- */
@@ -305,6 +418,20 @@ document.addEventListener("DOMContentLoaded", () => {
   $("clear-sel").addEventListener("click", () => { state.selected.clear(); renderMatrix(); });
 
   $("save-all").addEventListener("click", saveAll);
+
+  $("arv-add").addEventListener("click", async () => {
+    const body = {
+      action: "add", author: $("arv-name").value, country: $("arv-country").value,
+      rating: $("arv-rating").value, date: $("arv-date").value, source: $("arv-source").value,
+      text: $("arv-text").value, reply: $("arv-reply").value
+    };
+    if (!body.text.trim()) { alert("Adaugă textul recenziei."); return; }
+    const res = await adminPost("/api/reviews/admin", body);
+    if (res.ok) { ["arv-name", "arv-country", "arv-text", "arv-reply"].forEach(id => $(id).value = ""); $("arv-rating").value = 10; loadReviewsAdmin(); }
+    else alert("Eroare la adăugare.");
+  });
+
+  $("feed-upload").addEventListener("click", uploadPhotos);
 
   tryAutoLogin();
 });

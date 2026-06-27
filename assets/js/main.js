@@ -26,6 +26,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderBioProducts();
   renderBV();
   initBooking();
+  initReviews();
+  initFeed();
 
   document.addEventListener("langchange", () => {
     injectContact();
@@ -63,6 +65,7 @@ function ymd(d) {
 function parseYmd(s) { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); }
 function startOfDay(d) { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; }
 function L(obj) { return obj[getLang()] || obj.ro; }
+function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
 
 /* Per-day price & availability for a room type.
    Falls back to the room's base price and total units when no override exists. */
@@ -354,4 +357,102 @@ function reserveRoom(id) {
     lines.push(`${t("vila.book.total")}: ${ri.total} RON (${ri.nights} ${ri.nights === 1 ? t("vila.book.night") : t("vila.book.nights")})`);
   }
   window.open(`https://wa.me/${SITE.contact.whatsapp}?text=${encodeURIComponent(lines.join("\n"))}`, "_blank");
+}
+
+/* ---------------- Reviews (public) ---------------- */
+function initReviews() {
+  const list = document.getElementById("reviews-list");
+  if (!list) return;
+  loadReviews();
+  const form = document.getElementById("review-form");
+  if (form) form.addEventListener("submit", submitReview);
+}
+async function loadReviews() {
+  const list = document.getElementById("reviews-list");
+  if (!list) return;
+  try {
+    const res = await fetch("/api/reviews", { cache: "no-store" });
+    const data = await res.json();
+    renderReviews(data.reviews || []);
+  } catch (e) { renderReviews([]); }
+}
+function renderReviews(reviews) {
+  const list = document.getElementById("reviews-list");
+  if (!list) return;
+  const countEl = document.getElementById("reviews-count");
+  if (countEl) countEl.textContent = reviews.length;
+  if (!reviews.length) { list.innerHTML = `<p style="color:var(--muted)">${t("rev.none")}</p>`; return; }
+  list.innerHTML = reviews.map(r => `
+    <div class="review">
+      <div class="review-top">
+        <span class="review-score">${r.rating}/10</span>
+        <div>
+          <strong>${esc(r.author)}</strong>${r.country ? ` · <span style="color:var(--muted)">${esc(r.country)}</span>` : ""}
+          <div class="review-date">${esc(r.date || "")}${r.source === "booking" ? " · Booking.com" : ""}</div>
+        </div>
+      </div>
+      <p class="review-text">${esc(r.text)}</p>
+      ${r.reply ? `<div class="review-reply"><strong>${t("rev.reply")}:</strong> ${esc(r.reply)}</div>` : ""}
+    </div>`).join("");
+}
+async function submitReview(e) {
+  e.preventDefault();
+  const author = document.getElementById("rv-name")?.value.trim() || "";
+  const country = document.getElementById("rv-country")?.value.trim() || "";
+  const rating = document.getElementById("rv-rating")?.value || "10";
+  const text = document.getElementById("rv-text")?.value.trim() || "";
+  const msg = document.getElementById("review-msg");
+  if (!author || !text) { if (msg) { msg.textContent = t("rev.required"); msg.className = "form-msg err"; } return; }
+  if (msg) { msg.textContent = t("rev.sending"); msg.className = "form-msg"; }
+  try {
+    const res = await fetch("/api/reviews", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ author, country, rating, text }) });
+    if (res.ok) { if (msg) { msg.textContent = t("rev.thanks"); msg.className = "form-msg ok"; } e.target.reset(); }
+    else { if (msg) { msg.textContent = t("rev.error"); msg.className = "form-msg err"; } }
+  } catch (err) { if (msg) { msg.textContent = t("rev.error"); msg.className = "form-msg err"; } }
+}
+
+/* ---------------- Media feed (Jurnal) ---------------- */
+async function initFeed() {
+  const teaser = document.getElementById("feed-teaser");
+  const grid = document.getElementById("feed-grid");
+  if (!teaser && !grid) return;
+  let posts = [];
+  try { const res = await fetch("/api/feed", { cache: "no-store" }); posts = (await res.json()).posts || []; } catch (e) { /* offline */ }
+  if (teaser) {
+    const wrap = document.getElementById("feed-teaser-wrap");
+    if (!posts.length) { if (wrap) wrap.classList.add("hidden"); }
+    else { renderFeed(teaser, posts.slice(0, 3), false); if (wrap) wrap.classList.remove("hidden"); }
+  }
+  if (grid) {
+    if (!posts.length) grid.innerHTML = `<p style="color:var(--muted)">${t("feed.none")}</p>`;
+    else { renderFeed(grid, posts, true); bindFeedLightbox(grid, posts); }
+  }
+}
+function renderFeed(container, posts, full) {
+  container.innerHTML = posts.map(p => `
+    <a class="feed-item" href="/api/feed/img?id=${encodeURIComponent(p.id)}">
+      <img loading="lazy" src="/api/feed/img?id=${encodeURIComponent(p.id)}" alt="${esc(p.caption || 'Montania')}">
+      ${(p.caption || p.place) ? `<div class="feed-cap">${esc(p.caption || "")}${p.place ? `<span class="feed-place">${esc(p.place)}</span>` : ""}</div>` : ""}
+    </a>`).join("");
+}
+function bindFeedLightbox(container, posts) {
+  const lb = document.getElementById("lightbox");
+  if (!lb) return;
+  const img = document.getElementById("lb-img");
+  const srcs = posts.map(p => `/api/feed/img?id=${encodeURIComponent(p.id)}`);
+  let cur = 0;
+  const show = i => { cur = (i + srcs.length) % srcs.length; img.src = srcs[cur]; };
+  const open = i => { show(i); lb.classList.add("open"); lb.setAttribute("aria-hidden", "false"); };
+  const close = () => { lb.classList.remove("open"); lb.setAttribute("aria-hidden", "true"); };
+  container.querySelectorAll(".feed-item").forEach((a, i) => a.addEventListener("click", e => { e.preventDefault(); open(i); }));
+  lb.querySelector(".lb-close").onclick = close;
+  lb.querySelector(".lb-prev").onclick = e => { e.stopPropagation(); show(cur - 1); };
+  lb.querySelector(".lb-next").onclick = e => { e.stopPropagation(); show(cur + 1); };
+  lb.onclick = e => { if (e.target === lb) close(); };
+  document.addEventListener("keydown", e => {
+    if (!lb.classList.contains("open")) return;
+    if (e.key === "Escape") close();
+    else if (e.key === "ArrowLeft") show(cur - 1);
+    else if (e.key === "ArrowRight") show(cur + 1);
+  });
 }

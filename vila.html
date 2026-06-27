@@ -18,6 +18,7 @@
         <a href="index.html" data-i18n="nav.home">Acasă</a>
         <a href="vila.html" class="active" data-i18n="nav.vila">Vila TUI</a>
         <a href="sinaia.html" data-i18n="nav.sinaia">Sinaia & Munți</a>
+        <a href="jurnal.html" data-i18n="nav.jurnal">Jurnal</a>
         <a href="bio.html" data-i18n="nav.bio">Bio de Maramu'</a>
         <a href="contact.html" data-i18n="nav.contact">Contact</a>
         <div class="lang-toggle"><button data-lang="ro">RO</button><button data-lang="en">EN</button></div>
@@ -124,6 +125,53 @@
     </div>
   </section>
 
+  <!-- REVIEWS -->
+  <section class="section" id="reviews">
+    <div class="container">
+      <div class="center mb-2">
+        <p class="eyebrow" data-i18n="rev.eyebrow">Recenzii</p>
+        <h2 data-i18n="rev.title">Ce spun oaspeții</h2>
+        <p class="lead" data-i18n="rev.lead">Păreri reale de la cei care au stat la Vila TUI.</p>
+        <p class="mt-1"><span class="review-score" style="border-radius:8px">★ <span data-contact="score">9.7</span>/10</span>
+          &nbsp; <a data-contact="booking" target="_blank" rel="noopener"><span data-contact="reviews">71</span> recenzii pe Booking.com</a></p>
+      </div>
+      <div class="reviews-wrap mt-3">
+        <div id="reviews-list" class="reviews-list"></div>
+        <div class="panel review-form-panel">
+          <h3 style="font-family:var(--serif);font-size:1.4rem;margin-bottom:12px" data-i18n="rev.leave">Lasă o recenzie</h3>
+          <form id="review-form">
+            <div class="field"><label data-i18n="rev.name">Numele tău</label><input type="text" id="rv-name" required></div>
+            <div class="field"><label data-i18n="rev.country">Țara / orașul (opțional)</label><input type="text" id="rv-country"></div>
+            <div class="field"><label data-i18n="rev.rating">Nota ta (1–10)</label>
+              <select id="rv-rating">
+                <option value="10">10</option><option value="9">9</option><option value="8">8</option>
+                <option value="7">7</option><option value="6">6</option><option value="5">5</option>
+                <option value="4">4</option><option value="3">3</option><option value="2">2</option><option value="1">1</option>
+              </select>
+            </div>
+            <div class="field"><label data-i18n="rev.text">Recenzia ta</label><textarea id="rv-text" required></textarea></div>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" data-i18n="rev.send">Trimite recenzia</button>
+            <p class="form-msg" id="review-msg"></p>
+            <p class="tag-secondary" data-i18n="rev.note">Recenzia apare pe site după ce o aprobăm.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAP -->
+  <section class="section bg-cream2" id="map">
+    <div class="container">
+      <div class="center mb-2">
+        <p class="eyebrow" data-i18n="map.eyebrow">Locație</p>
+        <h2 data-i18n="map.title">Unde ne găsești</h2>
+        <p class="lead" data-i18n="map.text">În inima stațiunii Sinaia, pe Strada Aosta nr. 5.</p>
+      </div>
+      <iframe class="map-frame mt-3" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen
+        src="https://www.google.com/maps?q=Pensiunea%20Tui%2C%20Strada%20Aosta%205%2C%20Sinaia%2C%20Romania&output=embed"></iframe>
+    </div>
+  </section>
+
   <!-- DISCOVER SINAIA teaser -->
   <section class="section bg-green">
     <div class="container split">
@@ -150,6 +198,7 @@
           <ul>
             <li><a href="vila.html" data-i18n="nav.vila">Vila TUI</a></li>
             <li><a href="sinaia.html" data-i18n="nav.sinaia">Sinaia & Munți</a></li>
+            <li><a href="jurnal.html" data-i18n="nav.jurnal">Jurnal</a></li>
             <li><a href="bio.html" data-i18n="nav.bio">Bio de Maramu'</a></li>
             <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
           </ul>
