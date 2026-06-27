@@ -27,6 +27,33 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
+
+  <!-- Structured data: hotel + room rates (Google rich results + AI assistants) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Hotel",
+    "@id": "https://www.montania.ro/#vila-tui",
+    "name": "Vila TUI Sinaia",
+    "url": "https://www.montania.ro/vila",
+    "image": "https://www.montania.ro/assets/img/og/og-cover.jpg",
+    "telephone": "+40722427636",
+    "priceRange": "350–579 RON / noapte",
+    "currenciesAccepted": "RON",
+    "paymentAccepted": "Cash, Visa, Mastercard, Edenred, Pluxee, Up",
+    "address": { "@type": "PostalAddress", "streetAddress": "Str. Aosta nr. 5", "addressLocality": "Sinaia", "addressRegion": "Prahova", "postalCode": "106100", "addressCountry": "RO" },
+    "geo": { "@type": "GeoCoordinates", "latitude": 45.3506, "longitude": 25.5494 },
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "9.8", "bestRating": "10", "worstRating": "1", "reviewCount": "8" },
+    "containsPlace": [
+      { "@type": "HotelRoom", "name": "Cameră dublă cu balcon", "occupancy": { "@type": "QuantitativeValue", "maxValue": 2 }, "potentialAction": { "@type": "ReserveAction", "result": { "@type": "LodgingReservation", "priceCurrency": "RON", "price": "373" } } },
+      { "@type": "HotelRoom", "name": "Cameră Queen", "occupancy": { "@type": "QuantitativeValue", "maxValue": 2 }, "potentialAction": { "@type": "ReserveAction", "result": { "@type": "LodgingReservation", "priceCurrency": "RON", "price": "350" } } },
+      { "@type": "HotelRoom", "name": "Cameră deluxe", "occupancy": { "@type": "QuantitativeValue", "maxValue": 2 }, "potentialAction": { "@type": "ReserveAction", "result": { "@type": "LodgingReservation", "priceCurrency": "RON", "price": "390" } } },
+      { "@type": "HotelRoom", "name": "Cameră triplă", "occupancy": { "@type": "QuantitativeValue", "maxValue": 3 }, "potentialAction": { "@type": "ReserveAction", "result": { "@type": "LodgingReservation", "priceCurrency": "RON", "price": "352" } } },
+      { "@type": "HotelRoom", "name": "Apartament cu balcon (45 m²)", "occupancy": { "@type": "QuantitativeValue", "maxValue": 4 }, "potentialAction": { "@type": "ReserveAction", "result": { "@type": "LodgingReservation", "priceCurrency": "RON", "price": "579" } } },
+      { "@type": "HotelRoom", "name": "Cameră accesibilă la parter", "occupancy": { "@type": "QuantitativeValue", "maxValue": 2 }, "potentialAction": { "@type": "ReserveAction", "result": { "@type": "LodgingReservation", "priceCurrency": "RON", "price": "350" } } }
+    ]
+  }
+  </script>
 </head>
 <body>
   <header class="header">
