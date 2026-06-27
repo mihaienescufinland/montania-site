@@ -138,7 +138,8 @@ function dayInfo(room, key) {
   const units = room.units != null ? room.units : 1;
   const a = ov && ov.a != null ? ov.a : units;
   const p = ov && ov.p != null ? ov.p : room.price;
-  return { a, p };
+  const m = ov && ov.m != null ? ov.m : 1;
+  return { a, p, m };
 }
 
 /* ---------------- Contact injection ---------------- */
@@ -436,7 +437,7 @@ function selectionNeedsQuote() {
 function roomRangeInfo(room) {
   const s = booking.state;
   if (!s.checkIn || !s.checkOut) return { complete: false, available: true, quote: dayNeedsQuote(s.checkIn || new Date(0)), perNight: room.price };
-  let total = 0, available = true, quote = false;
+  let total = 0, available = true, quote = false, minStay = 1;
   const booked = new Set(room.booked || []);
   const d = new Date(s.checkIn);
   while (d < s.checkOut) {
@@ -444,11 +445,12 @@ function roomRangeInfo(room) {
     if (dayNeedsQuote(d)) quote = true;
     const info = dayInfo(room, key);
     if (info.a <= 0 || booked.has(key)) available = false;
+    if (info.m > minStay) minStay = info.m;
     total += info.p;
     d.setDate(d.getDate() + 1);
   }
   const n = nightsBetween(s.checkIn, s.checkOut);
-  return { complete: true, available, quote, nights: n, total, perNight: Math.round(total / n) };
+  return { complete: true, available, quote, nights: n, total, perNight: Math.round(total / n), minStay, minStayOk: n >= minStay };
 }
 
 /* All-rooms rate table for the selected period (Booking-style) */
@@ -472,6 +474,7 @@ function renderRateTable() {
     } else if (ri.complete && ri.available) {
       priceHtml = `<div class="rate-price">${ri.total} <small>RON</small></div><div class="rate-sub">${ri.nights} ${ri.nights === 1 ? night : t("vila.book.nights")} · ${ri.perNight} RON/${night}</div>`;
       availHtml = `<span class="badge-ok">${t("rate.available")}</span>`;
+      if (!ri.minStayOk) availHtml += `<div class="rate-minstay">⚠ ${t("rate.minstay").replace("{n}", ri.minStay)}</div>`;
       btn = `<button class="btn btn-primary" type="button" data-reserve="${room.id}">${t("vila.book.whatsapp")}</button>`;
     } else if (ri.complete && !ri.available) {
       priceHtml = `<div class="rate-sub">${t("rate.from")} ${room.price} RON/${night}</div>`;
@@ -536,6 +539,9 @@ function openRoomDetail(roomId) {
     : (ri.complete && ri.available)
       ? `<div class="rate-price">${ri.total} <small>RON · ${ri.nights} ${ri.nights === 1 ? night : t("vila.book.nights")}</small></div>`
       : `<div class="rate-price">${t("rate.from")} ${room.price} <small>RON/${night}</small></div>`;
+  const minStayLine = (ri.complete && ri.available && !ri.minStayOk)
+    ? `<div class="rate-minstay">⚠ ${t("rate.minstay").replace("{n}", ri.minStay)}</div>`
+    : "";
   const reserveLabel = ri.quote ? t("rate.quote.cta") : t("vila.book.whatsapp");
   m.innerHTML = `
     <div class="rm-backdrop"></div>
@@ -551,7 +557,7 @@ function openRoomDetail(roomId) {
         <h2>${esc(L(room.name))}</h2>
         <div class="pills">${featurePills(room)}</div>
         <div class="rm-foot">
-          ${priceLine}
+          <div>${priceLine}${minStayLine}</div>
           <button class="btn btn-primary" id="rm-reserve">${reserveLabel}</button>
         </div>
       </div>
@@ -590,6 +596,7 @@ function reserveRoom(id) {
     lines.push(t("msg.quote.ask"));
   } else if (ri) {
     lines.push(`${t("vila.book.total")}: ${ri.total} RON (${ri.nights} ${ri.nights === 1 ? t("vila.book.night") : t("vila.book.nights")})`);
+    if (ri.minStayOk === false) lines.push(t("msg.minstay").replace("{n}", ri.minStay));
   }
   // Record the request so it shows up in /admin (best-effort; never blocks WhatsApp)
   try {

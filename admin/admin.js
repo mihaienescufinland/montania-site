@@ -26,7 +26,11 @@ function base(roomId){ return state.prices[roomId] || { price: roomById(roomId).
 function dayInfo(roomId, key){
   const ov = (state.availability[roomId]||{})[key];
   const b = base(roomId);
-  return { p: (ov && ov.p!=null) ? ov.p : b.price, a: (ov && ov.a!=null) ? ov.a : b.units };
+  return {
+    p: (ov && ov.p!=null) ? ov.p : b.price,
+    a: (ov && ov.a!=null) ? ov.a : b.units,
+    m: (ov && ov.m!=null) ? ov.m : 1
+  };
 }
 function markDirty(){ state.dirty = true; $("status").textContent = "Ai modificări nepublicate."; $("status").className = "status err"; }
 
@@ -352,7 +356,8 @@ function renderMatrix(){
       const sold = info.a<=0;
       const sel = state.selected.has(r.id+"|"+key);
       let cls = "cell"+(sold?" sold":"")+(sel?" sel":"")+mstart;
-      body += `<td class="${cls}" data-room="${r.id}" data-key="${key}"><div class="p">${sold?"–":info.p}</div><div class="a">${sold?"0":info.a}</div></td>`;
+      const minBadge = info.m>1 ? `<div class="mn">min ${info.m}n</div>` : "";
+      body += `<td class="${cls}" data-room="${r.id}" data-key="${key}"><div class="p">${sold?"–":info.p}</div><div class="a">${sold?"0":info.a}</div>${minBadge}</td>`;
     });
     body += `</tr>`;
   });
@@ -404,12 +409,13 @@ function openSelectionEditor(anchorEl){
   const keys = Array.from(state.selected);
   const single = keys.length === 1 ? keys[0].split("|") : null;
 
-  let headerHtml, priceAttr = 'placeholder="(gol = nu schimba)"', availAttr = 'placeholder="(gol = nu schimba)"';
+  let headerHtml, priceAttr = 'placeholder="(gol = nu schimba)"', availAttr = 'placeholder="(gol = nu schimba)"', minAttr = 'placeholder="(gol = nu schimba)"';
   if (single){
     const info = dayInfo(single[0], single[1]);
     headerHtml = `${roomById(single[0]).name.ro}<br><small>${single[1]}</small>`;
     priceAttr = `value="${info.p}"`;
     availAttr = `value="${info.a}"`;
+    minAttr = `value="${info.m}"`;
   } else {
     headerHtml = `${keys.length} zile selectate<br><small>se aplică tuturor</small>`;
   }
@@ -422,6 +428,8 @@ function openSelectionEditor(anchorEl){
     <input type="number" id="pop-price" min="0" ${priceAttr}>
     <label>Camere disponibile</label>
     <input type="number" id="pop-avail" min="0" max="99" ${availAttr}>
+    <label>Minim nopți (1 = fără minim)</label>
+    <input type="number" id="pop-min" min="1" max="30" ${minAttr}>
     <div class="cellpop-btns">
       <button class="btn btn-primary" id="pop-save">Salvează</button>
       <button class="btn btn-dark" id="pop-sold">Ocupat</button>
@@ -434,12 +442,13 @@ function openSelectionEditor(anchorEl){
   popOnClose = () => { if (state.selected.size){ state.selected.clear(); renderMatrix(); } };
 
   const save = () => {
-    const pv = $("pop-price").value.trim(), avv = $("pop-avail").value.trim();
-    if (pv==="" && avv===""){ alert("Completează preț și/sau camere disponibile."); return; }
+    const pv = $("pop-price").value.trim(), avv = $("pop-avail").value.trim(), mv = $("pop-min").value.trim();
+    if (pv==="" && avv==="" && mv===""){ alert("Completează preț, camere disponibile și/sau minim nopți."); return; }
     applyBulk((av, key) => {
       const cur = Object.assign({}, av[key]);
       if (pv!=="") cur.p = parseInt(pv,10);
       if (avv!=="") cur.a = parseInt(avv,10);
+      if (mv!==""){ const mi = parseInt(mv,10); if (mi>1) cur.m = mi; else delete cur.m; }
       av[key] = cur;
     });
     closePop();
@@ -447,6 +456,7 @@ function openSelectionEditor(anchorEl){
   $("pop-save").addEventListener("click", save);
   $("pop-price").addEventListener("keydown", e => { if (e.key==="Enter") save(); });
   $("pop-avail").addEventListener("keydown", e => { if (e.key==="Enter") save(); });
+  $("pop-min").addEventListener("keydown", e => { if (e.key==="Enter") save(); });
   $("pop-sold").addEventListener("click", () => { applyBulk((av,key)=>{ av[key] = Object.assign({}, av[key], { a:0 }); }); closePop(); });
   $("pop-reset").addEventListener("click", () => { applyBulk((av,key)=>{ delete av[key]; }); closePop(); });
 
