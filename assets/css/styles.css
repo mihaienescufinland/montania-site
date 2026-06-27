@@ -261,9 +261,17 @@ h3 { font-size: 1.4rem; }
 .mt-1 { margin-top: 10px; } .mt-2 { margin-top: 20px; } .mt-3 { margin-top: 32px; }
 .mb-2 { margin-bottom: 20px; }
 .tag-secondary { font-size: .8rem; color: var(--muted); font-style: italic; }
-.bio-cat-title { font-family: "Cormorant Garamond", serif; font-size: 1.7rem; color: var(--charcoal); text-align: center; margin: 0 0 4px; }
-.bio-cat-title.mt-4 { margin-top: 44px; }
-.bio-cat-sub { color: var(--muted); margin: 0 auto 6px; max-width: 560px; }
+.bio-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+.bio-col { min-width: 0; }
+.bio-cat-title { font-family: "Cormorant Garamond", serif; font-size: 1.7rem; color: var(--charcoal); margin: 0 0 4px; }
+.bio-cat-sub { color: var(--muted); margin: 0 0 16px; font-size: .92rem; }
+.bio-cards { grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 880px) {
+  .bio-cols { grid-template-columns: 1fr; gap: 36px; }
+}
+@media (max-width: 460px) {
+  .bio-cards { grid-template-columns: 1fr; }
+}
 .best-price { font-size: .92rem; color: var(--green); font-weight: 700; }
 
 /* ---------- Pictogram pills (Booking-style) ---------- */
