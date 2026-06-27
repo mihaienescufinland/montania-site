@@ -45,7 +45,7 @@ const I18N = {
 
     "home.bio.eyebrow": "În curând",
     "home.bio.title": "Bio de Maramu' — un gust de Maramureș",
-    "home.bio.text": "Pe lângă munte, familia noastră face brânză bio în Maramureș. Pregătim povestea și produsele — în curând aici.",
+    "home.bio.text": "Pe lângă munte, familia noastră face brânză si alte produse bio în Maramureș. Pregătim povestea și produsele — în curând aici.",
     "home.bio.cta": "Aruncă o privire",
 
     "exp.hero.title": "Sinaia & Munții Bucegi",
@@ -249,7 +249,7 @@ const I18N = {
 
     "home.bio.eyebrow": "Coming soon",
     "home.bio.title": "Bio de Maramu' — a taste of Maramureș",
-    "home.bio.text": "Beyond the mountains, our family makes organic cheese in Maramureș. We're preparing the story and the products — coming here soon.",
+    "home.bio.text": "Beyond the mountains, our family makes cheese and other organic products in Maramureș. We're preparing the story and the products — coming here soon.",
     "home.bio.cta": "Take a peek",
 
     "exp.hero.title": "Sinaia & the Bucegi Mountains",
@@ -453,7 +453,7 @@ const I18N = {
 
     "home.bio.eyebrow": "Bientôt",
     "home.bio.title": "Bio de Maramu' — un goût du Maramureș",
-    "home.bio.text": "Au-delà de la montagne, notre famille fabrique du fromage bio au Maramureș. Nous préparons l'histoire et les produits — bientôt ici.",
+    "home.bio.text": "Au-delà de la montagne, notre famille fabrique du fromage et d'autres produits bio au Maramureș. Nous préparons l'histoire et les produits — bientôt ici.",
     "home.bio.cta": "Jeter un œil",
 
     "exp.hero.title": "Sinaia & les montagnes Bucegi",
@@ -657,7 +657,7 @@ const I18N = {
 
     "home.bio.eyebrow": "Presto",
     "home.bio.title": "Bio de Maramu' — un sapore del Maramureș",
-    "home.bio.text": "Oltre alla montagna, la nostra famiglia produce formaggio biologico nel Maramureș. Stiamo preparando la storia e i prodotti — presto qui.",
+    "home.bio.text": "Oltre alla montagna, la nostra famiglia produce formaggio e altri prodotti biologici nel Maramureș. Stiamo preparando la storia e i prodotti — presto qui.",
     "home.bio.cta": "Dai un'occhiata",
 
     "exp.hero.title": "Sinaia & i monti Bucegi",
@@ -861,7 +861,7 @@ const I18N = {
 
     "home.bio.eyebrow": "Demnächst",
     "home.bio.title": "Bio de Maramu' — ein Geschmack des Maramureș",
-    "home.bio.text": "Neben den Bergen stellt unsere Familie Bio-Käse im Maramureș her. Wir bereiten die Geschichte und die Produkte vor — bald hier.",
+    "home.bio.text": "Neben den Bergen stellt unsere Familie Käse und andere Bio-Produkte im Maramureș her. Wir bereiten die Geschichte und die Produkte vor — bald hier.",
     "home.bio.cta": "Einen Blick werfen",
 
     "exp.hero.title": "Sinaia & das Bucegi-Gebirge",
