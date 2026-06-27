@@ -272,6 +272,16 @@ const SITE = {
       img: "assets/img/bio/cheese-matured.jpg"
     },
     {
+      name: { ro: "Cașcaval Tomme maturat 2,5 ani", en: "Tomme cașcaval, matured 2.5 years", fr: "Cașcaval Tomme affiné 2,5 ans", it: "Cașcaval Tomme stagionato 2,5 anni", de: "Tomme-cașcaval, 2,5 Jahre gereift" },
+      desc: { ro: "Tomme cu crustă naturală și vinișoare de mucegai nobil, maturat 2,5 ani. Aromă complexă, de pivniță.", en: "Natural-rind Tomme with noble blue veining, matured 2.5 years. Complex, cellar aroma.", fr: "Tomme à croûte naturelle et veines de moisissure noble, affinée 2,5 ans. Arôme complexe de cave.", it: "Tomme a crosta naturale con venature di muffa nobile, stagionata 2,5 anni. Aroma complesso di cantina.", de: "Tomme mit Naturrinde und edler Blauschimmel-Äderung, 2,5 Jahre gereift. Komplexes Kelleraroma." },
+      img: "assets/img/bio/cheese-tomme.jpg"
+    },
+    {
+      name: { ro: "Cheddar maturat 2 ani", en: "Cheddar, matured 2 years", fr: "Cheddar affiné 2 ans", it: "Cheddar stagionato 2 anni", de: "Cheddar, 2 Jahre gereift" },
+      desc: { ro: "Cheddar de casă, maturat 2 ani. Pastă fermă și fină, gust plin — făcut manual, la fermă.", en: "Farmhouse cheddar, matured 2 years. Firm, fine paste and full flavour — handmade at the farm.", fr: "Cheddar fermier, affiné 2 ans. Pâte ferme et fine, goût généreux — fait main à la ferme.", it: "Cheddar di fattoria, stagionato 2 anni. Pasta soda e fine, gusto pieno — fatto a mano in fattoria.", de: "Bauernhof-Cheddar, 2 Jahre gereift. Feste, feine Textur und voller Geschmack — handgemacht auf dem Hof." },
+      img: "assets/img/bio/cheese-cedar.jpg"
+    },
+    {
       name: { ro: "Cașcaval de casă, maturat", en: "Matured farmhouse cașcaval", fr: "Cașcaval fermier affiné", it: "Cașcaval di fattoria stagionato", de: "Gereifter Bauernhof-cașcaval" },
       desc: { ro: "Cașcaval copt și maturat, cu pastă fină și gust plin. Făcut manual, fără adaosuri.", en: "Ripened and matured cașcaval, fine paste and full flavour. Handmade, no additives.", fr: "Cașcaval affiné, pâte fine et goût généreux. Fait main, sans additifs.", it: "Cașcaval maturato, pasta fine e gusto pieno. Fatto a mano, senza additivi.", de: "Gereifter cașcaval, feine Textur und voller Geschmack. Handgemacht, ohne Zusätze." },
       img: "assets/img/bio/cheese-cascaval.jpg"
