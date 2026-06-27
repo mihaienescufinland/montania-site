@@ -37,7 +37,7 @@
 
     /* matrix grid (Booking-style) */
     .matrix-scroll { overflow-x: auto; border: 1px solid var(--cream-2); border-radius: 10px; }
-    table.matrix { border-collapse: collapse; font-size: .78rem; width: 100%; }
+    table.matrix { border-collapse: collapse; font-size: .78rem; width: 100%; user-select: none; }
     table.matrix th, table.matrix td { border: 1px solid var(--cream-2); }
     table.matrix thead th { background: #0b3a67; color: #fff; padding: 6px 4px; text-align: center; font-weight: 600; white-space: nowrap; min-width: 56px; cursor: pointer; }
     table.matrix thead th.weekend { background: #082a4b; }
@@ -56,6 +56,7 @@
     table.matrix td.cell.sold .a { color: #b14b3c; }
     table.matrix td.cell.over { box-shadow: inset 0 0 0 1px var(--green); }
     table.matrix td.cell.sel { outline: 3px solid var(--amber); outline-offset: -3px; background: #fdf2d8; }
+    table.matrix td.cell.dragsel { outline: 3px solid var(--amber); outline-offset: -3px; background: #fdf2d8; }
     table.matrix td.past { background: #f2f2f2; color: #bbb; cursor: default; }
 
     /* per-cell popover editor */
@@ -138,7 +139,7 @@
           <span><span class="dot" style="background:#f6e0dd"></span>ocupat (0 camere)</span>
           <span><span class="dot" style="background:var(--amber)"></span>selectat</span>
         </div>
-        <p class="hint mt-1"><b>Apasă pe o celulă</b> pentru a edita prețul și nr. de camere disponibile în acea zi. Pentru modificări în masă: apasă pe <b>numele camerei</b> = tot rândul, pe <b>o zi (sus)</b> = toate camerele în acea zi, apoi folosește panoul de mai jos.</p>
+        <p class="hint mt-1"><b>Apasă pe o celulă</b> = editezi prețul / nr. camere pentru acea zi. <b>Ține apăsat și trage cu mouse-ul</b> pe mai multe zile dintr-o cameră ca să le selectezi, apoi folosește panoul de mai jos (ex. „Marchează OCUPAT”). Mai poți selecta pe <b>numele camerei</b> = tot rândul, sau pe <b>o zi (sus)</b> = toate camerele în acea zi.</p>
       </div>
 
       <!-- Bulk apply to selection -->

@@ -271,11 +271,9 @@ function renderMatrix(){
   });
 
   $("matrix").innerHTML = `<table class="matrix"><thead>${head}</thead><tbody>${body}</tbody></table>`;
+  initMatrixDrag();
 
-  // cell click = inline editor for that room + day
-  $("matrix").querySelectorAll("td.cell").forEach(td => {
-    td.addEventListener("click", (e) => { e.stopPropagation(); openCellEditor(td.dataset.room, td.dataset.key, td); });
-  });
+  // (cell interaction handled by drag handlers bound once in initMatrixDrag)
   // whole-row select (room name)
   $("matrix").querySelectorAll("th.roomcell").forEach(th => {
     th.addEventListener("click", () => selectRow(th.dataset.row));
@@ -377,6 +375,59 @@ function selectCol(key){
 function updateSelCount(){
   const n = state.selected.size;
   $("sel-count").textContent = n ? `${n} celule` : "0";
+}
+
+/* ---- mouse drag selection (within one room row) ---- */
+const drag = { active: false, moved: false, room: null, startKey: null, endKey: null, inited: false };
+function rangeKeys(startKey, endKey){
+  let a = parseYmd(startKey), b = parseYmd(endKey);
+  if (a > b){ const tmp = a; a = b; b = tmp; }
+  const out = []; const d = new Date(a);
+  while (d <= b){ out.push(ymd(d)); d.setDate(d.getDate()+1); }
+  return out;
+}
+function highlightDrag(room, startKey, endKey){
+  drag.endKey = endKey;
+  const keys = new Set(rangeKeys(startKey, endKey));
+  $("matrix").querySelectorAll(`td.cell[data-room="${room}"]`).forEach(td => {
+    td.classList.toggle("dragsel", keys.has(td.dataset.key));
+  });
+}
+function commitDrag(room, startKey, endKey){
+  state.selected.clear();
+  rangeKeys(startKey, endKey).forEach(k => {
+    if ($("matrix").querySelector(`td.cell[data-room="${room}"][data-key="${k}"]`)) state.selected.add(room + "|" + k);
+  });
+  renderMatrix();
+}
+function initMatrixDrag(){
+  if (drag.inited) return;
+  drag.inited = true;
+  const m = $("matrix");
+  m.addEventListener("mousedown", e => {
+    const td = e.target.closest("td.cell"); if (!td) return;
+    e.preventDefault();
+    closePop();
+    drag.active = true; drag.moved = false;
+    drag.room = td.dataset.room; drag.startKey = td.dataset.key; drag.endKey = td.dataset.key;
+  });
+  m.addEventListener("mouseover", e => {
+    if (!drag.active) return;
+    const td = e.target.closest("td.cell"); if (!td) return;
+    if (td.dataset.room !== drag.room) return; // keep selection within one room row
+    if (td.dataset.key !== drag.startKey) drag.moved = true;
+    highlightDrag(drag.room, drag.startKey, td.dataset.key);
+  });
+  document.addEventListener("mouseup", () => {
+    if (!drag.active) return;
+    drag.active = false;
+    if (drag.moved) {
+      commitDrag(drag.room, drag.startKey, drag.endKey);
+    } else {
+      const td = $("matrix").querySelector(`td.cell[data-room="${drag.room}"][data-key="${drag.startKey}"]`);
+      if (td) openCellEditor(drag.room, drag.startKey, td);
+    }
+  });
 }
 
 /* ---- mutations ---- */
