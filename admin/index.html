@@ -150,7 +150,10 @@
       <div class="admin-card">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
           <h3 style="margin:0">Vizite site</h3>
-          <button class="btn btn-outline" id="stats-refresh" style="padding:6px 10px;font-size:.8rem">↻</button>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-outline" id="stats-reset" style="padding:6px 10px;font-size:.8rem" title="Resetează contorul la zero">Reset</button>
+            <button class="btn btn-outline" id="stats-refresh" style="padding:6px 10px;font-size:.8rem">↻</button>
+          </div>
         </div>
         <p class="hint" style="margin:6px 0 10px">Contor privat de vizite — vizibil doar pentru tine, aici.</p>
         <div id="stats-body"><p class="hint">Se încarcă…</p></div>

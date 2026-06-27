@@ -674,6 +674,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   $("book-refresh").addEventListener("click", loadBookings);
   $("stats-refresh")?.addEventListener("click", loadStats);
+  $("stats-reset")?.addEventListener("click", async () => {
+    if (!confirm("Resetezi contorul de vizite la zero? (inclusiv țări/orașe). Acțiune ireversibilă.")) return;
+    try {
+      const res = await adminPost("/api/stats/admin", { action: "reset" });
+      const data = await res.json();
+      if (data.ok) renderStats(data.stats || { total: 0, days: {}, pages: {} });
+    } catch (e) { alert("Nu am putut reseta."); }
+  });
   $("book-clear").addEventListener("click", async () => {
     if (!confirm("Ștergi toate cererile marcate ca rezolvate?")) return;
     const res = await adminPost("/api/booking/admin", { action: "clearDone" });

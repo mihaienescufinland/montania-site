@@ -320,11 +320,18 @@ async function recordHit(request, env) {
     for (const k of dayKeys.slice(0, dayKeys.length - 180)) delete stats.days[k];
   }
   await env.MONTANIA_KV.put("stats", JSON.stringify(stats));
-  return json({ ok: true, geo: country || null });
+  return json({ ok: true });
 }
 
 async function adminStats(request, env) {
   if (!isAdmin(request, env)) return json({ ok: false, error: "unauthorized" }, 401);
-  const stats = await kvJSON(env, "stats", { total: 0, days: {}, pages: {} });
+  let b = {};
+  try { b = await request.json(); } catch { /* ignore */ }
+  if (b && b.action === "reset") {
+    const fresh = { total: 0, days: {}, pages: {}, countries: {}, cities: {} };
+    if (env.MONTANIA_KV) await env.MONTANIA_KV.put("stats", JSON.stringify(fresh));
+    return json({ ok: true, stats: fresh });
+  }
+  const stats = await kvJSON(env, "stats", { total: 0, days: {}, pages: {}, countries: {}, cities: {} });
   return json({ ok: true, stats });
 }
