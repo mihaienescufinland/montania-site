@@ -36,22 +36,22 @@
     .matrix-toolbar input, .matrix-toolbar select { width: auto; }
 
     /* matrix grid (Booking-style) */
-    .matrix-scroll { overflow-x: auto; border: 1px solid var(--cream-2); border-radius: 10px; }
-    table.matrix { border-collapse: collapse; font-size: .78rem; width: 100%; user-select: none; }
+    .matrix-scroll { overflow-x: auto; border: 1px solid var(--cream-2); border-radius: 10px; max-width: 100%; }
+    table.matrix { border-collapse: collapse; font-size: .72rem; width: max-content; min-width: 100%; user-select: none; }
     table.matrix th, table.matrix td { border: 1px solid var(--cream-2); }
-    table.matrix thead th { background: #0b3a67; color: #fff; padding: 6px 4px; text-align: center; font-weight: 600; white-space: nowrap; min-width: 56px; cursor: pointer; }
+    table.matrix thead th { background: #0b3a67; color: #fff; padding: 5px 2px; text-align: center; font-weight: 600; white-space: nowrap; min-width: 42px; cursor: pointer; }
     table.matrix thead th.weekend { background: #082a4b; }
     table.matrix thead th.monthhead { background: var(--amber, #c98a2b); color: #fff; font-size: .92rem; letter-spacing: .02em; text-transform: capitalize; border-bottom: 2px solid #fff; }
     table.matrix .mstart { border-left: 3px solid var(--amber, #c98a2b); }
     table.matrix thead th .dn { font-size: .9rem; }
     table.matrix thead th .wd { font-size: .62rem; opacity: .8; text-transform: uppercase; }
-    table.matrix th.corner { position: sticky; left: 0; z-index: 3; min-width: 160px; text-align: left; padding-left: 12px; }
-    table.matrix th.roomcell { position: sticky; left: 0; z-index: 2; background: #fff; text-align: left; padding: 8px 12px; min-width: 160px; cursor: pointer; }
-    table.matrix th.roomcell small { display: block; color: var(--muted); font-weight: 500; font-size: .72rem; }
+    table.matrix th.corner { position: sticky; left: 0; z-index: 3; min-width: 132px; text-align: left; padding-left: 10px; }
+    table.matrix th.roomcell { position: sticky; left: 0; z-index: 2; background: #fff; text-align: left; padding: 6px 10px; min-width: 132px; cursor: pointer; }
+    table.matrix th.roomcell small { display: block; color: var(--muted); font-weight: 500; font-size: .68rem; }
     table.matrix th.roomcell:hover { background: var(--cream-2); }
-    table.matrix td.cell { text-align: center; padding: 5px 3px; cursor: pointer; background: #eef7f0; line-height: 1.25; }
+    table.matrix td.cell { text-align: center; padding: 3px 2px; cursor: pointer; background: #eef7f0; line-height: 1.2; }
     table.matrix td.cell .p { font-weight: 700; }
-    table.matrix td.cell .a { font-size: .64rem; color: var(--muted); }
+    table.matrix td.cell .a { font-size: .6rem; color: var(--muted); }
     table.matrix td.cell.sold { background: #f6e0dd; color: #b14b3c; }
     table.matrix td.cell.sold .a { color: #b14b3c; }
     table.matrix td.cell.over { box-shadow: inset 0 0 0 1px var(--green); }
@@ -89,8 +89,9 @@
     .rev-actions .btn { padding: 7px 12px; font-size: .82rem; }
 
     /* editor layout with side panel */
+    .editor-main { min-width: 0; }   /* prevents the wide matrix from stretching the whole page */
     @media (min-width: 1040px) {
-      #editor { display: grid; grid-template-columns: 1fr 340px; gap: 18px; align-items: start; }
+      #editor { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 18px; align-items: start; }
       .editor-side { position: sticky; top: 16px; }
     }
     .editor-side .admin-card { margin-bottom: 0; }
