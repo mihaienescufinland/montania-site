@@ -148,6 +148,7 @@ function injectContact() {
   document.querySelectorAll("[data-contact='email']").forEach(e => { e.textContent = c.email; if (e.tagName === "A") e.href = "mailto:" + c.email; });
   document.querySelectorAll("[data-contact='address']").forEach(e => { e.textContent = getLang() === "ro" ? c.addressRo : c.addressEn; });
   document.querySelectorAll("[data-contact='maps']").forEach(e => { e.href = c.mapsUrl; });
+  document.querySelectorAll("[data-contact='facebook']").forEach(e => { if (c.facebook) { e.href = c.facebook; } else { e.style.display = "none"; } });
   document.querySelectorAll("[data-contact='whatsapp']").forEach(e => { e.href = "https://wa.me/" + c.whatsapp; });
   document.querySelectorAll("[data-contact='booking']").forEach(e => { e.href = c.bookingUrl; });
   document.querySelectorAll("[data-contact='score']").forEach(e => { e.textContent = c.bookingScore; });

@@ -219,6 +219,7 @@ const I18N = {
     "contact.phone": "Telefon",
     "contact.email": "Email",
     "contact.address": "Adresă",
+    "contact.facebook": "Urmărește-ne pe Facebook",
     "contact.title": "Hai să vorbim",
 
     "footer.tag": "O familie, doi munți, gusturi autentice din România.",
@@ -447,6 +448,7 @@ const I18N = {
     "contact.phone": "Phone",
     "contact.email": "Email",
     "contact.address": "Address",
+    "contact.facebook": "Follow us on Facebook",
     "contact.title": "Let's talk",
 
     "footer.tag": "One family, two mountains, authentic Romanian flavors.",
@@ -675,6 +677,7 @@ const I18N = {
     "contact.phone": "Téléphone",
     "contact.email": "E-mail",
     "contact.address": "Adresse",
+    "contact.facebook": "Suivez-nous sur Facebook",
     "contact.title": "Parlons-en",
 
     "footer.tag": "Une famille, deux montagnes, des saveurs roumaines authentiques.",
@@ -903,6 +906,7 @@ const I18N = {
     "contact.phone": "Telefono",
     "contact.email": "E-mail",
     "contact.address": "Indirizzo",
+    "contact.facebook": "Seguici su Facebook",
     "contact.title": "Parliamone",
 
     "footer.tag": "Una famiglia, due montagne, autentici sapori romeni.",
@@ -1131,6 +1135,7 @@ const I18N = {
     "contact.phone": "Telefon",
     "contact.email": "E-Mail",
     "contact.address": "Adresse",
+    "contact.facebook": "Folgen Sie uns auf Facebook",
     "contact.title": "Sprechen wir",
 
     "footer.tag": "Eine Familie, zwei Berge, authentische rumänische Aromen.",

@@ -34,6 +34,7 @@ const SITE = {
     addressRo: "Str. Aosta nr. 5, Sinaia, jud. Prahova",
     addressEn: "5 Aosta St., Sinaia, Prahova county",
     mapsUrl: "https://maps.google.com/?q=Pensiunea+Tui+Str.+Aosta+5+Sinaia",
+    facebook: "https://www.facebook.com/pensiuneatui",
     bookingUrl: "https://www.booking.com/hotel/ro/pensiunea-tui.html",
     bookingScore: "9.7",
     bookingReviews: 71
