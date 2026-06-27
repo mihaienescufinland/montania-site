@@ -21,6 +21,11 @@ const SITE = {
   // o ofertă (nu spunem că nu avem locuri). Format AAAA-LL-ZZ.
   booking: { pricingUntil: "2026-09-01" },
 
+  // Cloudflare Web Analytics (gratuit, fără cookie-uri). Lasă gol pentru a dezactiva.
+  // Token-ul îl iei din: Cloudflare → Analytics & Logs → Web Analytics → Add a site →
+  // copiezi valoarea "token" din snippet (data-cf-beacon='{"token":"XXXX"}').
+  analytics: { cfToken: "" },
+
   contact: {
     phone: "0722 427 636",
     // WhatsApp: număr internațional fără + și fără spații

@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initFeed();
   renderHeroPhotoDate();
   trackVisit();
+  injectAnalytics();
 
   document.addEventListener("langchange", () => {
     injectContact();
@@ -42,6 +43,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (document.getElementById("calendar")) { renderCalendar(); updateSummary(); renderRateTable(); }
   });
 });
+
+/* ---------------- Cloudflare Web Analytics (optional) ---------------- */
+function injectAnalytics() {
+  try {
+    const token = (typeof SITE !== "undefined" && SITE.analytics && SITE.analytics.cfToken) || "";
+    if (!token) return;                                  // not configured yet
+    if (location.pathname.startsWith("/admin")) return;  // don't track the admin area
+    if (document.getElementById("cf-beacon")) return;    // avoid double injection
+    const s = document.createElement("script");
+    s.id = "cf-beacon";
+    s.defer = true;
+    s.src = "https://static.cloudflareinsights.com/beacon.min.js";
+    s.setAttribute("data-cf-beacon", JSON.stringify({ token }));
+    document.head.appendChild(s);
+  } catch (e) { /* analytics must never break the page */ }
+}
 
 /* ---------------- Private visit counter (beacon) ---------------- */
 function trackVisit() {
