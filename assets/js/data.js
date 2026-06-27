@@ -274,12 +274,7 @@ const SITE = {
     {
       name: { ro: "Cașcaval de Maramureș", en: "Maramureș cașcaval", fr: "Cașcaval du Maramureș", it: "Cașcaval del Maramureș", de: "Maramureș-cașcaval" },
       desc: { ro: "Cașcaval afumat natural, perfect la grătar sau pe pâine.", en: "Naturally smoked cașcaval, perfect grilled or on bread.", fr: "Cașcaval fumé naturellement, parfait grillé ou sur du pain.", it: "Cașcaval affumicato naturalmente, perfetto alla griglia o sul pane.", de: "Natürlich geräucherter cașcaval, perfekt gegrillt oder auf Brot." },
-      img: "https://images.unsplash.com/photo-1624806992066-5ffaa3d63e25?auto=format&fit=crop&w=800&q=80"
-    },
-    {
-      name: { ro: "Brânză de capră", en: "Goat cheese", fr: "Fromage de chèvre", it: "Formaggio di capra", de: "Ziegenkäse" },
-      desc: { ro: "Cremoasă și fină, din lapte de capră crescute liber.", en: "Creamy and delicate, from free-grazing goats.", fr: "Crémeux et fin, de chèvres élevées en liberté.", it: "Cremoso e delicato, da capre allevate al pascolo.", de: "Cremig und fein, von frei weidenden Ziegen." },
-      img: "https://images.unsplash.com/photo-1559561853-08451507cbe7?auto=format&fit=crop&w=800&q=80"
+      img: "https://images.unsplash.com/photo-1631379578550-7038263db699?auto=format&fit=crop&w=800&q=80"
     }
   ],
 
