@@ -27,7 +27,7 @@
   </header>
 
   <!-- HERO -->
-  <section class="hero" style="min-height:62vh;background:linear-gradient(rgba(20,35,25,.4),rgba(20,35,25,.6)),url('https://images.unsplash.com/photo-1551524559-8af4e6624178?auto=format&fit=crop&w=1900&q=80') center/cover">
+  <section class="hero" style="min-height:62vh;background:linear-gradient(rgba(20,35,25,.34),rgba(20,35,25,.58)),url('assets/img/villa/hero/entrance.jpg') center/cover">
     <div class="hero-inner">
       <h1 data-i18n="vila.hero.title">Vila TUI · Sinaia</h1>
       <p data-i18n="vila.hero.sub">Cazare ultracentrală pe Strada Aosta.</p>
@@ -114,6 +114,40 @@
     </div>
   </section>
 
+  <!-- GALLERY -->
+  <section class="section bg-cream2" id="gallery">
+    <div class="container">
+      <div class="center mb-2">
+        <p class="eyebrow" data-i18n="vila.gallery.eyebrow">Galerie foto</p>
+        <h2 data-i18n="vila.gallery.title">Vila TUI în imagini</h2>
+        <p class="lead" data-i18n="vila.gallery.text">Camere, spații comune, terasă și împrejurimi.</p>
+      </div>
+      <div class="gallery-grid mt-3">
+        <a class="gallery-item" href="assets/img/villa/hero/entrance.jpg"><img loading="lazy" src="assets/img/villa/hero/entrance.jpg" alt="Intrarea Vila TUI"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/lounge-fireplace.jpg"><img loading="lazy" src="assets/img/villa/gallery/lounge-fireplace.jpg" alt="Living cu șemineu"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/balcony-view.jpg"><img loading="lazy" src="assets/img/villa/gallery/balcony-view.jpg" alt="Balcon cu vedere"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/terrace.jpg"><img loading="lazy" src="assets/img/villa/gallery/terrace.jpg" alt="Terasă"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/room-beige.jpg"><img loading="lazy" src="assets/img/villa/gallery/room-beige.jpg" alt="Cameră"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/lounge-piano.jpg"><img loading="lazy" src="assets/img/villa/gallery/lounge-piano.jpg" alt="Salon cu pian"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/conservatory.jpg"><img loading="lazy" src="assets/img/villa/gallery/conservatory.jpg" alt="Verandă cu mușcate"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/bath-marble.jpg"><img loading="lazy" src="assets/img/villa/gallery/bath-marble.jpg" alt="Baie marmură"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/room-pink.jpg"><img loading="lazy" src="assets/img/villa/gallery/room-pink.jpg" alt="Cameră"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/bbq.jpg"><img loading="lazy" src="assets/img/villa/gallery/bbq.jpg" alt="Grătar"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/lounge.jpg"><img loading="lazy" src="assets/img/villa/gallery/lounge.jpg" alt="Spațiu comun"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/terrace2.jpg"><img loading="lazy" src="assets/img/villa/gallery/terrace2.jpg" alt="Terasă"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/room-purple.jpg"><img loading="lazy" src="assets/img/villa/gallery/room-purple.jpg" alt="Cameră"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/kitchen.jpg"><img loading="lazy" src="assets/img/villa/gallery/kitchen.jpg" alt="Bucătărie"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/lounge-fireplace2.jpg"><img loading="lazy" src="assets/img/villa/gallery/lounge-fireplace2.jpg" alt="Living cu șemineu"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/bath-blue.jpg"><img loading="lazy" src="assets/img/villa/gallery/bath-blue.jpg" alt="Baie"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/room-grey.jpg"><img loading="lazy" src="assets/img/villa/gallery/room-grey.jpg" alt="Cameră"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/minibar.jpg"><img loading="lazy" src="assets/img/villa/gallery/minibar.jpg" alt="Minibar"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/room-burgundy.jpg"><img loading="lazy" src="assets/img/villa/gallery/room-burgundy.jpg" alt="Cameră"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/kitchenette.jpg"><img loading="lazy" src="assets/img/villa/gallery/kitchenette.jpg" alt="Chicinetă"></a>
+        <a class="gallery-item" href="assets/img/villa/gallery/bath-pink.jpg"><img loading="lazy" src="assets/img/villa/gallery/bath-pink.jpg" alt="Baie"></a>
+      </div>
+    </div>
+  </section>
+
   <!-- DISCOVER SINAIA teaser -->
   <section class="section bg-green">
     <div class="container split">
@@ -165,9 +199,38 @@
     <a href="#" data-contact="phone" class="btn btn-outline">📞</a>
   </div>
 
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <span class="lb-close" aria-label="Close">&times;</span>
+    <span class="lb-nav lb-prev" aria-label="Previous">&#10094;</span>
+    <img id="lb-img" src="" alt="">
+    <span class="lb-nav lb-next" aria-label="Next">&#10095;</span>
+  </div>
+
   <script src="assets/js/data.js"></script>
   <script src="assets/js/i18n.js"></script>
   <script src="assets/js/main.js"></script>
-  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    (function(){
+      var items = Array.prototype.slice.call(document.querySelectorAll(".gallery-item"));
+      if(!items.length) return;
+      var lb = document.getElementById("lightbox"), img = document.getElementById("lb-img"), cur = 0;
+      function show(i){ cur = (i + items.length) % items.length; img.src = items[cur].getAttribute("href"); }
+      function open(i){ show(i); lb.classList.add("open"); lb.setAttribute("aria-hidden","false"); }
+      function close(){ lb.classList.remove("open"); lb.setAttribute("aria-hidden","true"); }
+      items.forEach(function(a,i){ a.addEventListener("click", function(e){ e.preventDefault(); open(i); }); });
+      lb.querySelector(".lb-close").addEventListener("click", close);
+      lb.querySelector(".lb-prev").addEventListener("click", function(e){ e.stopPropagation(); show(cur-1); });
+      lb.querySelector(".lb-next").addEventListener("click", function(e){ e.stopPropagation(); show(cur+1); });
+      lb.addEventListener("click", function(e){ if(e.target === lb) close(); });
+      document.addEventListener("keydown", function(e){
+        if(!lb.classList.contains("open")) return;
+        if(e.key === "Escape") close();
+        else if(e.key === "ArrowLeft") show(cur-1);
+        else if(e.key === "ArrowRight") show(cur+1);
+      });
+    })();
+  </script>
 </body>
 </html>

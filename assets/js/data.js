@@ -29,69 +29,69 @@ const SITE = {
   // Editează: price (RON/noapte) și booked (zile ocupate).
   rooms: [
     {
-      id: "dubla-superioara",
-      name: { ro: "Cameră dublă superioară", en: "Superior double room" },
+      id: "dubla-balcon",
+      name: { ro: "Cameră dublă cu balcon", en: "Double room with balcony" },
       capacity: 2,
-      size: 16,
-      price: 220,
-      img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80",
+      size: 15,
+      price: 373,
+      img: "assets/img/villa/rooms/dubla-balcon.jpg",
       amenities: {
-        ro: ["Pat matrimonial 160/180", "Baie proprie", "TV LCD", "Frigider", "Ceai/cafea", "Wi-Fi gratuit"],
-        en: ["King bed 160/180", "Private bathroom", "LCD TV", "Fridge", "Tea/coffee", "Free Wi-Fi"]
+        ro: ["Pat dublu mare", "Balcon & vedere", "Baie proprie (duș)", "TV cu cablu", "Frigider", "Ceai/cafea", "Izolare fonică", "Wi-Fi gratuit"],
+        en: ["Large double bed", "Balcony & view", "Private bathroom (shower)", "Cable TV", "Fridge", "Tea/coffee", "Soundproofing", "Free Wi-Fi"]
       },
-      booked: ["2026-06-27", "2026-06-28", "2026-07-04", "2026-07-05"]
+      booked: []
     },
     {
-      id: "dubla-lux",
-      name: { ro: "Cameră dublă de lux", en: "Deluxe double room" },
+      id: "queen",
+      name: { ro: "Cameră Queen", en: "Queen room" },
       capacity: 2,
-      size: 16,
-      price: 250,
-      img: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=900&q=80",
+      size: 15,
+      price: 350,
+      img: "assets/img/villa/rooms/queen.jpg",
       amenities: {
-        ro: ["Pat matrimonial 160/180", "Baie proprie", "TV LCD", "Frigider", "Produse cosmetice", "Wi-Fi gratuit"],
-        en: ["King bed 160/180", "Private bathroom", "LCD TV", "Fridge", "Toiletries", "Free Wi-Fi"]
+        ro: ["Pat dublu mare", "Baie proprie (duș/cadă)", "TV cu cablu", "Dulap", "Ceai/cafea", "Încălzire", "Izolare fonică", "Wi-Fi gratuit"],
+        en: ["Large double bed", "Private bathroom (shower/tub)", "Cable TV", "Wardrobe", "Tea/coffee", "Heating", "Soundproofing", "Free Wi-Fi"]
       },
-      booked: ["2026-07-01", "2026-07-02", "2026-07-03"]
+      booked: []
     },
     {
-      id: "camera-balcon",
-      name: { ro: "Cameră cu balcon & vedere la munte", en: "Room with balcony & mountain view" },
+      id: "deluxe",
+      name: { ro: "Cameră deluxe", en: "Deluxe room" },
       capacity: 2,
       size: 16,
-      price: 270,
-      img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=80",
+      price: 390,
+      img: "assets/img/villa/rooms/deluxe.jpg",
       amenities: {
-        ro: ["Balcon", "Vedere la munte", "Baie proprie", "Uscător de păr", "Frigider", "Wi-Fi gratuit"],
-        en: ["Balcony", "Mountain view", "Private bathroom", "Hair dryer", "Fridge", "Free Wi-Fi"]
+        ro: ["Pat dublu mare", "Baie proprie (duș sau cadă)", "TV cu cablu", "Dulap", "Ceai/cafea", "Încălzire", "Izolare fonică", "Wi-Fi gratuit"],
+        en: ["Large double bed", "Private bathroom (shower or tub)", "Cable TV", "Wardrobe", "Tea/coffee", "Heating", "Soundproofing", "Free Wi-Fi"]
       },
-      booked: ["2026-06-29", "2026-06-30"]
+      booked: []
     },
     {
       id: "tripla",
       name: { ro: "Cameră triplă", en: "Triple room" },
       capacity: 3,
-      size: 18,
-      price: 300,
-      img: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=900&q=80",
+      size: 22,
+      price: 352,
+      img: "assets/img/villa/rooms/tripla.jpg",
       amenities: {
-        ro: ["3 locuri", "Baie proprie", "TV cablu", "Acces bucătărie", "Frigider", "Wi-Fi gratuit"],
-        en: ["Sleeps 3", "Private bathroom", "Cable TV", "Kitchen access", "Fridge", "Free Wi-Fi"]
+        ro: ["Pat dublu + pat single / canapea extensibilă", "Vedere la curtea interioară", "Baie proprie", "TV cu cablu", "Ceai/cafea", "Izolare fonică", "Wi-Fi gratuit"],
+        en: ["Double bed + single / sofa bed", "Inner courtyard view", "Private bathroom", "Cable TV", "Tea/coffee", "Soundproofing", "Free Wi-Fi"]
       },
       booked: []
     },
     {
       id: "apartament",
-      name: { ro: "Apartament cu bucătărie (50 m²)", en: "Apartment with kitchen (50 m²)" },
+      name: { ro: "Apartament cu balcon (45 m²)", en: "Apartment with balcony (45 m²)" },
       capacity: 4,
-      size: 50,
-      price: 450,
-      img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=900&q=80",
+      size: 45,
+      price: 579,
+      img: "assets/img/villa/rooms/apartament.jpg",
       amenities: {
-        ro: ["2 camere duble", "2 băi", "Bucătărie complet utilată", "Centrală proprie", "Clădire separată", "Wi-Fi gratuit"],
-        en: ["2 double rooms", "2 bathrooms", "Fully equipped kitchen", "Own heating", "Separate building", "Free Wi-Fi"]
+        ro: ["2 dormitoare (paturi duble)", "2 băi (duș & cadă)", "Chicinetă privată utilată", "Balcon & vedere la grădină", "Intrare privată", "TV cu cablu", "Wi-Fi gratuit"],
+        en: ["2 bedrooms (double beds)", "2 bathrooms (shower & tub)", "Private equipped kitchenette", "Balcony & garden view", "Private entrance", "Cable TV", "Free Wi-Fi"]
       },
-      booked: ["2026-07-10", "2026-07-11", "2026-07-12"]
+      booked: []
     }
   ],
 
