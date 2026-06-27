@@ -11,7 +11,7 @@ const state = {
   prices: {},        // { roomId: { price, units } }
   availability: {},  // { roomId: { "YYYY-MM-DD": { p, a } } }
   winStart: null,    // Date (start of visible window)
-  span: 14,
+  winEnd: null,      // Date (end of visible window, inclusive)
   selected: new Set(),// "roomId|YYYY-MM-DD"
   dirty: false
 };
@@ -50,7 +50,9 @@ async function showEditor(){
   await loadModel();
   const now = startOfDay(new Date());
   state.winStart = now;
-  $("win-start").value = ymd(now);
+  state.winEnd = new Date(now); state.winEnd.setDate(state.winEnd.getDate() + 60);
+  $("win-start").value = ymd(state.winStart);
+  $("win-end").value = ymd(state.winEnd);
   buildBaseTable();
   renderMatrix();
 }
@@ -95,16 +97,21 @@ function buildBaseTable(){
 }
 
 /* ---- matrix ---- */
+function windowLen(){
+  return Math.max(1, Math.round((state.winEnd - state.winStart) / 86400000) + 1);
+}
 function windowDays(){
   const out = [];
+  const n = Math.min(windowLen(), 400); // safety cap
   const d = new Date(state.winStart);
-  for (let i=0; i<state.span; i++){ out.push(new Date(d)); d.setDate(d.getDate()+1); }
+  for (let i=0; i<n; i++){ out.push(new Date(d)); d.setDate(d.getDate()+1); }
   return out;
 }
 function shiftWindow(deltaDays){
-  state.winStart = new Date(state.winStart);
-  state.winStart.setDate(state.winStart.getDate()+deltaDays);
+  state.winStart = new Date(state.winStart); state.winStart.setDate(state.winStart.getDate()+deltaDays);
+  state.winEnd = new Date(state.winEnd); state.winEnd.setDate(state.winEnd.getDate()+deltaDays);
   $("win-start").value = ymd(state.winStart);
+  $("win-end").value = ymd(state.winEnd);
   renderMatrix();
 }
 function renderMatrix(){
@@ -268,12 +275,20 @@ document.addEventListener("DOMContentLoaded", () => {
   $("pw").addEventListener("keydown", e => { if (e.key==="Enter") $("login-btn").click(); });
   $("logout").addEventListener("click", () => { sessionStorage.removeItem(PW_KEY); location.reload(); });
 
-  $("prev").addEventListener("click", ()=>shiftWindow(-state.span));
-  $("next").addEventListener("click", ()=>shiftWindow(state.span));
+  $("prev").addEventListener("click", ()=>shiftWindow(-windowLen()));
+  $("next").addEventListener("click", ()=>shiftWindow(windowLen()));
   $("win-start").addEventListener("change", () => {
-    const v = $("win-start").value; if (v){ state.winStart = startOfDay(parseYmd(v)); renderMatrix(); }
+    const v = $("win-start").value; if (!v) return;
+    state.winStart = startOfDay(parseYmd(v));
+    if (state.winEnd < state.winStart){ state.winEnd = new Date(state.winStart); $("win-end").value = ymd(state.winEnd); }
+    renderMatrix();
   });
-  $("win-span").addEventListener("change", () => { state.span = parseInt($("win-span").value,10); renderMatrix(); });
+  $("win-end").addEventListener("change", () => {
+    const v = $("win-end").value; if (!v) return;
+    state.winEnd = startOfDay(parseYmd(v));
+    if (state.winEnd < state.winStart){ state.winStart = new Date(state.winEnd); $("win-start").value = ymd(state.winStart); }
+    renderMatrix();
+  });
 
   $("apply").addEventListener("click", () => {
     const pv = $("set-price").value.trim(), avv = $("set-avail").value.trim();
