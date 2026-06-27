@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Montania · Admin — Prețuri & Disponibilitate</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    body { background: var(--cream); }
+    .admin-wrap { max-width: 760px; margin: 0 auto; padding: 22px 16px 80px; }
+    .admin-card { background: #fff; border-radius: 14px; box-shadow: var(--shadow); padding: 20px; margin-bottom: 18px; }
+    .admin-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+    .admin-head h1 { font-size: 1.5rem; }
+    .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+    .row .field { flex: 1; min-width: 120px; margin: 0; }
+    label { display: block; font-size: .82rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+    input, select { width: 100%; padding: 10px 12px; border: 1px solid var(--cream-2); border-radius: 9px; font: inherit; background: #fff; }
+    .cal-toolbar { display: flex; align-items: center; justify-content: space-between; margin: 12px 0; }
+    .cal-toolbar button { background: var(--cream-2); border: 0; border-radius: 8px; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; }
+    .cal-month { font-family: var(--serif); font-size: 1.3rem; font-weight: 700; }
+    .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: .82rem; color: var(--muted); margin-top: 10px; }
+    .legend .dot { display: inline-block; width: 12px; height: 12px; border-radius: 4px; vertical-align: middle; margin-right: 5px; }
+    .hint { font-size: .85rem; color: var(--muted); }
+    .savebar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; box-shadow: 0 -4px 20px rgba(0,0,0,.12); padding: 12px 16px; display: flex; gap: 12px; align-items: center; justify-content: space-between; z-index: 50; }
+    .savebar .status { font-size: .9rem; }
+    .ok { color: var(--green); } .err { color: #b14b3c; }
+    .seg { display: flex; gap: 8px; flex-wrap: wrap; }
+    .seg button { flex: 1; min-width: 110px; }
+    .hidden { display: none; }
+    .cal-day .cal-avail { font-size: .56rem; font-weight: 700; opacity: .8; }
+    .cal-day.sold { background: #efd6d2; color: #b14b3c; }
+    .cal-day.sel { outline: 3px solid var(--amber); outline-offset: -3px; }
+  </style>
+</head>
+<body>
+  <div class="admin-wrap">
+    <div class="admin-head">
+      <h1>Montania · Admin</h1>
+      <button id="logout" class="btn btn-outline hidden">Ieși</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="admin-card" id="login-card">
+      <h3 style="margin-bottom:10px">Autentificare</h3>
+      <p class="hint" style="margin-bottom:12px">Introdu parola de administrator pentru a gestiona prețurile și disponibilitatea.</p>
+      <div class="field"><label>Parolă</label><input type="password" id="pw" autocomplete="current-password"></div>
+      <button class="btn btn-primary mt-2" id="login-btn" style="width:100%;justify-content:center">Intră</button>
+      <p class="err mt-1 hidden" id="login-err">Parolă greșită.</p>
+    </div>
+
+    <!-- EDITOR -->
+    <div id="editor" class="hidden">
+      <div class="admin-card">
+        <div class="field"><label>Tip cameră</label><select id="room"></select></div>
+        <div class="row mt-2">
+          <div class="field"><label>Preț de bază (RON/noapte)</label><input type="number" id="base-price" min="0"></div>
+          <div class="field"><label>Nr. camere (acest tip)</label><input type="number" id="base-units" min="0"></div>
+          <button class="btn btn-outline" id="save-base">Salvează baza</button>
+        </div>
+        <p class="hint mt-1">Prețul/numărul de bază se aplică zilelor fără setare specială.</p>
+      </div>
+
+      <div class="admin-card">
+        <div class="cal-toolbar">
+          <button id="prev">‹</button>
+          <span class="cal-month" id="month"></span>
+          <button id="next">›</button>
+        </div>
+        <div class="cal-grid" id="cal"></div>
+        <div class="legend">
+          <span><span class="dot" style="background:var(--cream-2)"></span>liber</span>
+          <span><span class="dot" style="background:#efd6d2"></span>ocupat (0 camere)</span>
+          <span><span class="dot" style="background:var(--amber)"></span>selectat</span>
+        </div>
+        <p class="hint mt-1">Apasă pe o zi (sau apasă început + sfârșit pentru un interval), apoi aplică mai jos.</p>
+      </div>
+
+      <div class="admin-card">
+        <h3 style="margin-bottom:10px">Aplică pe zilele selectate</h3>
+        <div class="row">
+          <div class="field"><label>Preț (RON)</label><input type="number" id="set-price" min="0" placeholder="(lasă gol = preț bază)"></div>
+          <div class="field"><label>Camere disponibile</label><input type="number" id="set-avail" min="0"></div>
+        </div>
+        <div class="seg mt-2">
+          <button class="btn btn-primary" id="apply">Aplică preț + disponibilitate</button>
+        </div>
+        <div class="seg mt-1">
+          <button class="btn btn-dark" id="mark-sold">Marchează OCUPAT</button>
+          <button class="btn btn-outline" id="mark-free">Marchează LIBER (revine la bază)</button>
+        </div>
+        <p class="hint mt-1" id="sel-info">Nicio zi selectată.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="savebar hidden" id="savebar">
+    <span class="status" id="status">Modificări nesalvate apar doar după „Publică”.</span>
+    <button class="btn btn-primary" id="save-all">Publică live</button>
+  </div>
+
+  <script src="../assets/js/data.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

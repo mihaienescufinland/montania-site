@@ -152,7 +152,10 @@ h3 { font-size: 1.4rem; }
 .cal-title { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; }
 .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
 .cal-dow { text-align: center; font-size: .72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; padding-bottom: 4px; }
-.cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: .9rem; cursor: pointer; user-select: none; transition: .12s; }
+.cal-day { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border-radius: 8px; font-size: .9rem; cursor: pointer; user-select: none; transition: .12s; }
+.cal-num { line-height: 1; }
+.cal-price { font-size: .58rem; opacity: .75; font-weight: 600; }
+.cal-day.booked .cal-price, .cal-day.past .cal-price { display: none; }
 .cal-day.empty { visibility: hidden; }
 .cal-day.available { background: var(--cream-2); color: var(--charcoal); }
 .cal-day.available:hover { background: var(--amber-soft); color: #fff; }
@@ -185,6 +188,7 @@ h3 { font-size: 1.4rem; }
 .mt-1 { margin-top: 10px; } .mt-2 { margin-top: 20px; } .mt-3 { margin-top: 32px; }
 .mb-2 { margin-bottom: 20px; }
 .tag-secondary { font-size: .8rem; color: var(--muted); font-style: italic; }
+.best-price { font-size: .92rem; color: var(--green); font-weight: 700; }
 
 /* ---------- Gallery (masonry) ---------- */
 .gallery-grid { column-count: 3; column-gap: 14px; }

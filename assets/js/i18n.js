@@ -15,6 +15,8 @@ const I18N = {
     "home.hero.sub": "Vila TUI — cazare ultracentrală în Sinaia, la câțiva pași de telecabină, pârtii, Castelul Peleș și traseele Bucegilor.",
     "home.hero.stay": "Verifică disponibilitatea",
     "home.hero.taste": "Descoperă Sinaia",
+    "home.hero.rating": "Recenzii oaspeți",
+    "home.hero.bestprice": "★ Cel mai bun preț, direct pe site-ul oficial",
 
     "home.doors.eyebrow": "Alege experiența",
     "home.doors.stay.title": "Stai la munte",
@@ -118,11 +120,12 @@ const I18N = {
     "vila.book.guests": "Număr persoane",
     "vila.book.message": "Mesaj (opțional)",
     "vila.book.send": "Trimite cererea de rezervare",
-    "vila.book.whatsapp": "Cere pe WhatsApp",
+    "vila.book.whatsapp": "Rezervă pe WhatsApp",
     "vila.book.bookingcom": "Sau rezervă pe Booking.com",
     "vila.book.legend.avail": "Disponibil",
     "vila.book.legend.booked": "Ocupat",
     "vila.book.legend.selected": "Selectat",
+    "vila.book.bestprice": "★ Cel mai bun preț — rezervi direct, fără comision.",
     "vila.book.note": "Plata nu se face online. Cererea ajunge la noi și revenim cu confirmarea.",
 
     "bio.hero.title": "Bio de Maramu'",
@@ -168,6 +171,8 @@ const I18N = {
 
     "home.hero.title": "A mountain holiday in the heart of Sinaia.",
     "home.hero.sub": "TUI Villa — ultra-central accommodation in Sinaia, steps from the cable car, ski slopes, Peleș Castle and the Bucegi trails.",
+    "home.hero.rating": "Guest reviews",
+    "home.hero.bestprice": "★ Best price, direct on the official site",
     "home.hero.stay": "Check availability",
     "home.hero.taste": "Discover Sinaia",
 
@@ -273,11 +278,12 @@ const I18N = {
     "vila.book.guests": "Number of guests",
     "vila.book.message": "Message (optional)",
     "vila.book.send": "Send booking request",
-    "vila.book.whatsapp": "Ask on WhatsApp",
+    "vila.book.whatsapp": "Reserve on WhatsApp",
     "vila.book.bookingcom": "Or book on Booking.com",
     "vila.book.legend.avail": "Available",
     "vila.book.legend.booked": "Booked",
     "vila.book.legend.selected": "Selected",
+    "vila.book.bestprice": "★ Best price — book direct, no commission.",
     "vila.book.note": "No online payment. Your request reaches us and we reply with a confirmation.",
 
     "bio.hero.title": "Bio de Maramu'",

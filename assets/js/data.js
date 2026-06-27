@@ -34,6 +34,7 @@ const SITE = {
       capacity: 2,
       size: 15,
       price: 373,
+      units: 2,
       img: "assets/img/villa/rooms/dubla-balcon.jpg",
       amenities: {
         ro: ["Pat dublu mare", "Balcon & vedere", "Baie proprie (duș)", "TV cu cablu", "Frigider", "Ceai/cafea", "Izolare fonică", "Wi-Fi gratuit"],
@@ -47,6 +48,7 @@ const SITE = {
       capacity: 2,
       size: 15,
       price: 350,
+      units: 1,
       img: "assets/img/villa/rooms/queen.jpg",
       amenities: {
         ro: ["Pat dublu mare", "Baie proprie (duș/cadă)", "TV cu cablu", "Dulap", "Ceai/cafea", "Încălzire", "Izolare fonică", "Wi-Fi gratuit"],
@@ -60,6 +62,7 @@ const SITE = {
       capacity: 2,
       size: 16,
       price: 390,
+      units: 1,
       img: "assets/img/villa/rooms/deluxe.jpg",
       amenities: {
         ro: ["Pat dublu mare", "Baie proprie (duș sau cadă)", "TV cu cablu", "Dulap", "Ceai/cafea", "Încălzire", "Izolare fonică", "Wi-Fi gratuit"],
@@ -73,6 +76,7 @@ const SITE = {
       capacity: 3,
       size: 22,
       price: 352,
+      units: 2,
       img: "assets/img/villa/rooms/tripla.jpg",
       amenities: {
         ro: ["Pat dublu + pat single / canapea extensibilă", "Vedere la curtea interioară", "Baie proprie", "TV cu cablu", "Ceai/cafea", "Izolare fonică", "Wi-Fi gratuit"],
@@ -86,14 +90,33 @@ const SITE = {
       capacity: 4,
       size: 45,
       price: 579,
+      units: 1,
       img: "assets/img/villa/rooms/apartament.jpg",
       amenities: {
         ro: ["2 dormitoare (paturi duble)", "2 băi (duș & cadă)", "Chicinetă privată utilată", "Balcon & vedere la grădină", "Intrare privată", "TV cu cablu", "Wi-Fi gratuit"],
         en: ["2 bedrooms (double beds)", "2 bathrooms (shower & tub)", "Private equipped kitchenette", "Balcony & garden view", "Private entrance", "Cable TV", "Free Wi-Fi"]
       },
       booked: []
+    },
+    {
+      id: "accesibila",
+      name: { ro: "Cameră accesibilă la parter", en: "Accessible ground-floor room" },
+      capacity: 2,
+      size: 16,
+      price: 350,
+      units: 1,
+      img: "assets/img/villa/rooms/accesibila.jpg",
+      amenities: {
+        ro: ["Acces la parter, fără trepte", "Pat dublu", "Baie proprie", "TV cu cablu", "Ceai/cafea", "Wi-Fi gratuit"],
+        en: ["Step-free, ground floor", "Double bed", "Private bathroom", "Cable TV", "Tea/coffee", "Free Wi-Fi"]
+      },
+      booked: []
     }
   ],
+
+  // Disponibilitate & prețuri pe zile — gestionate din /admin.
+  // availability[roomId]["AAAA-LL-ZZ"] = { p: preț RON, a: camere disponibile }
+  availability: {},
 
   // ====================  BIO DE MARAMU' — PRODUSE  ===================
   // Doar prezentare (fără vânzare online deocamdată).

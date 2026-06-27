@@ -3,7 +3,10 @@
    Navigație, camere, produse + calendar de disponibilitate (rezervare directă)
    ===================================================================== */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  // ---- Live prices & availability (managed from /admin); falls back to data.js ----
+  await loadLiveData();
+
   // ---- Language init ----
   setLang(getLang());
   document.querySelectorAll(".lang-toggle button").forEach(btn => {
@@ -31,6 +34,28 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+/* Pull live rooms/prices/availability from the API (Cloudflare Function).
+   On local preview or if the API is unavailable, we keep the static data.js values. */
+async function loadLiveData() {
+  try {
+    const res = await fetch("/api/data", { cache: "no-store" });
+    if (!res.ok) return;
+    const live = await res.json();
+    // Room structure (names, photos, amenities) stays in data.js;
+    // only base price / units / availability are overridden from the DB.
+    if (live && live.prices) {
+      SITE.rooms.forEach(r => {
+        const o = live.prices[r.id];
+        if (o) {
+          if (o.price != null) r.price = o.price;
+          if (o.units != null) r.units = o.units;
+        }
+      });
+    }
+    if (live && live.availability) SITE.availability = live.availability;
+  } catch (e) { /* offline / local preview — use static data.js */ }
+}
+
 /* ---------------- Helpers ---------------- */
 function ymd(d) {
   return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
@@ -38,6 +63,17 @@ function ymd(d) {
 function parseYmd(s) { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); }
 function startOfDay(d) { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; }
 function L(obj) { return obj[getLang()] || obj.ro; }
+
+/* Per-day price & availability for a room type.
+   Falls back to the room's base price and total units when no override exists. */
+function roomAvail(room) { return (SITE.availability && SITE.availability[room.id]) || {}; }
+function dayInfo(room, key) {
+  const ov = roomAvail(room)[key];
+  const units = room.units != null ? room.units : 1;
+  const a = ov && ov.a != null ? ov.a : units;
+  const p = ov && ov.p != null ? ov.p : room.price;
+  return { a, p };
+}
 
 /* ---------------- Contact injection ---------------- */
 function injectContact() {
@@ -136,10 +172,7 @@ function initBooking() {
     renderCalendar(); updateSummary();
   });
 
-  document.getElementById("cal-prev").addEventListener("click", () => shiftMonth(-1));
-  document.getElementById("cal-next").addEventListener("click", () => shiftMonth(1));
-
-  document.getElementById("booking-form").addEventListener("submit", submitBooking);
+  document.getElementById("booking-form").addEventListener("submit", sendWhatsApp);
   document.getElementById("wa-btn")?.addEventListener("click", sendWhatsApp);
 
   renderCalendar();
@@ -160,7 +193,8 @@ function renderCalendar() {
   const lang = getLang();
   const { viewYear: y, viewMonth: m } = booking.state;
   const today = startOfDay(new Date());
-  const bookedSet = new Set(booking.state.room.booked || []);
+  const room = booking.state.room;
+  const bookedSet = new Set(room.booked || []);
 
   const monthName = new Date(y, m, 1).toLocaleDateString(lang === "en" ? "en-US" : "ro-RO", { month: "long", year: "numeric" });
   const dows = lang === "en" ? ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"] : ["Lu", "Ma", "Mi", "Jo", "Vi", "Sâ", "Du"];
@@ -182,9 +216,10 @@ function renderCalendar() {
   for (let day = 1; day <= daysInMonth; day++) {
     const date = new Date(y, m, day);
     const key = ymd(date);
+    const info = dayInfo(room, key);
     let cls = "cal-day", clickable = true;
     if (date < today) { cls += " past"; clickable = false; }
-    else if (bookedSet.has(key)) { cls += " booked"; clickable = false; }
+    else if (bookedSet.has(key) || info.a <= 0) { cls += " booked"; clickable = false; }
     else cls += " available";
 
     const ci = booking.state.checkIn, co = booking.state.checkOut;
@@ -192,7 +227,8 @@ function renderCalendar() {
     else if (co && key === ymd(co)) cls += " selected";
     else if (ci && co && date > ci && date < co) cls += " in-range";
 
-    html += `<div class="${cls}" ${clickable ? `data-day="${key}"` : ""}>${day}</div>`;
+    const priceTag = clickable ? `<span class="cal-price">${info.p}</span>` : "";
+    html += `<div class="${cls}" ${clickable ? `data-day="${key}"` : ""}><span class="cal-num">${day}</span>${priceTag}</div>`;
   }
   html += `</div>`;
   cal.innerHTML = html;
@@ -203,10 +239,12 @@ function renderCalendar() {
   cal.querySelectorAll("[data-day]").forEach(el => el.addEventListener("click", () => onDayClick(el.dataset.day)));
 }
 
-function rangeHasBooked(start, end, bookedSet) {
+function rangeHasBooked(start, end, room) {
+  const booked = new Set(room.booked || []);
   const d = new Date(start);
   while (d < end) {
-    if (bookedSet.has(ymd(d))) return true;
+    const key = ymd(d);
+    if (booked.has(key) || dayInfo(room, key).a <= 0) return true;
     d.setDate(d.getDate() + 1);
   }
   return false;
@@ -215,12 +253,11 @@ function rangeHasBooked(start, end, bookedSet) {
 function onDayClick(key) {
   const date = parseYmd(key);
   const s = booking.state;
-  const bookedSet = new Set(s.room.booked || []);
 
   if (!s.checkIn || (s.checkIn && s.checkOut)) {
     s.checkIn = date; s.checkOut = null;
   } else if (date > s.checkIn) {
-    if (rangeHasBooked(s.checkIn, date, bookedSet)) { s.checkIn = date; s.checkOut = null; }
+    if (rangeHasBooked(s.checkIn, date, s.room)) { s.checkIn = date; s.checkOut = null; }
     else s.checkOut = date;
   } else {
     s.checkIn = date; s.checkOut = null;
@@ -251,7 +288,9 @@ function updateSummary() {
   }
   if (coField) coField.value = ymd(s.checkOut);
   const n = nightsBetween(s.checkIn, s.checkOut);
-  const total = n * s.room.price;
+  let total = 0;
+  const d = new Date(s.checkIn);
+  while (d < s.checkOut) { total += dayInfo(s.room, ymd(d)).p; d.setDate(d.getDate() + 1); }
   box.innerHTML = `
     <div><strong>${L(s.room.name)}</strong></div>
     <div>${ymd(s.checkIn)} → ${ymd(s.checkOut)} · ${n} ${n === 1 ? t("vila.book.night") : t("vila.book.nights")}</div>
