@@ -88,6 +88,22 @@
     .rev-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
     .rev-actions .btn { padding: 7px 12px; font-size: .82rem; }
 
+    /* editor layout with side panel */
+    @media (min-width: 1040px) {
+      #editor { display: grid; grid-template-columns: 1fr 340px; gap: 18px; align-items: start; }
+      .editor-side { position: sticky; top: 16px; }
+    }
+    .editor-side .admin-card { margin-bottom: 0; }
+    .book-item { border: 1px solid var(--cream-2); border-radius: 11px; padding: 11px 12px; margin-bottom: 10px; }
+    .book-item.new { background: #f1f8f2; border-color: #bfe0c7; }
+    .book-item.done { opacity: .6; }
+    .book-item .b-room { font-weight: 700; font-size: .95rem; }
+    .book-item .b-dates { font-size: .85rem; margin-top: 2px; }
+    .book-item .b-meta { font-size: .76rem; color: var(--muted); margin-top: 3px; }
+    .book-item .b-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .book-item .b-actions .btn { padding: 5px 10px; font-size: .76rem; }
+    #book-list { max-height: 70vh; overflow-y: auto; padding-right: 4px; }
+
     /* feed admin thumbnails */
     .feed-admin { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
     .feed-admin .fa-item { position: relative; border-radius: 10px; overflow: hidden; border: 1px solid var(--cream-2); }
@@ -117,6 +133,7 @@
 
     <!-- EDITOR -->
     <div id="editor" class="hidden">
+      <div class="editor-main">
       <!-- Base prices for all rooms -->
       <div class="admin-card">
         <h3>Prețuri de bază</h3>
@@ -199,6 +216,20 @@
         <span id="feed-msg" class="hint" style="margin-left:10px"></span>
         <div id="feed-admin-list" class="feed-admin mt-2"></div>
       </div>
+      </div><!-- /.editor-main -->
+
+      <!-- Reservation requests (side panel) -->
+      <aside class="editor-side">
+        <div class="admin-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+            <h3 style="margin:0">Cereri de rezervare <span id="book-count" class="rev-badge a" style="vertical-align:middle">0</span></h3>
+            <button class="btn btn-outline" id="book-refresh" style="padding:6px 10px;font-size:.8rem">↻</button>
+          </div>
+          <p class="hint" style="margin:6px 0 10px">Cererile trimise de oaspeți prin butonul „Rezervă pe WhatsApp”.</p>
+          <div id="book-list"></div>
+          <button class="btn btn-outline mt-2" id="book-clear" style="font-size:.8rem">Șterge cele rezolvate</button>
+        </div>
+      </aside>
     </div>
   </div>
 

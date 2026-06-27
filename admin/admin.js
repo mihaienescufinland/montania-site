@@ -57,6 +57,7 @@ async function showEditor(){
   renderMatrix();
   loadReviewsAdmin();
   loadFeedAdmin();
+  loadBookings();
 }
 
 /* ---- shared admin POST ---- */
@@ -108,6 +109,47 @@ function renderReviewsAdmin(list) {
 async function revAction(body) {
   const res = await adminPost("/api/reviews/admin", body);
   if (res.ok) loadReviewsAdmin(); else alert("Eroare la salvare.");
+}
+
+/* ---- reservation requests ---- */
+async function loadBookings() {
+  const box = $("book-list"); if (!box) return;
+  try {
+    const res = await adminPost("/api/booking/admin", { action: "list" });
+    if (!res.ok) { box.innerHTML = "<p class='hint'>Nu pot încărca cererile.</p>"; return; }
+    const data = await res.json();
+    renderBookings(data.bookings || []);
+  } catch (e) { box.innerHTML = "<p class='hint'>Cererile apar doar pe site-ul live.</p>"; }
+}
+function renderBookings(list) {
+  const box = $("book-list");
+  const cnt = $("book-count");
+  if (cnt) cnt.textContent = list.filter(r => r.status === "new").length;
+  if (!list.length) { box.innerHTML = "<p class='hint'>Nicio cerere încă.</p>"; return; }
+  box.innerHTML = list.map(r => {
+    const when = (r.createdAt || "").replace("T", " ").slice(0, 16);
+    const dates = (r.checkIn || "?") + " → " + (r.checkOut || "?");
+    const meta = [r.nights ? r.nights + " nopți" : "", r.guests ? r.guests + " pers." : "", r.total ? r.total + " RON" : ""].filter(Boolean).join(" · ");
+    return `<div class="book-item ${r.status}">
+      <div class="b-room">${escA(r.roomName || r.roomId || "Cameră")}</div>
+      <div class="b-dates">${escA(dates)}</div>
+      ${meta ? `<div class="b-meta">${escA(meta)}</div>` : ""}
+      <div class="b-meta">Trimisă: ${escA(when)}</div>
+      <div class="b-actions">
+        ${r.status === "new"
+          ? `<button class="btn btn-primary" data-bkdone="${r.id}">Rezolvată</button>`
+          : `<button class="btn btn-outline" data-bknew="${r.id}">Redeschide</button>`}
+        <button class="btn btn-outline" data-bkdel="${r.id}">Șterge</button>
+      </div>
+    </div>`;
+  }).join("");
+  box.querySelectorAll("[data-bkdone]").forEach(b => b.addEventListener("click", () => bkAction({ action: "done", id: b.dataset.bkdone })));
+  box.querySelectorAll("[data-bknew]").forEach(b => b.addEventListener("click", () => bkAction({ action: "new", id: b.dataset.bknew })));
+  box.querySelectorAll("[data-bkdel]").forEach(b => b.addEventListener("click", () => { if (confirm("Ștergi cererea?")) bkAction({ action: "delete", id: b.dataset.bkdel }); }));
+}
+async function bkAction(body) {
+  const res = await adminPost("/api/booking/admin", body);
+  if (res.ok) loadBookings(); else alert("Eroare.");
 }
 
 /* ---- media feed ---- */
@@ -495,6 +537,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   $("feed-upload").addEventListener("click", uploadPhotos);
+
+  $("book-refresh").addEventListener("click", loadBookings);
+  $("book-clear").addEventListener("click", async () => {
+    if (!confirm("Ștergi toate cererile marcate ca rezolvate?")) return;
+    const res = await adminPost("/api/booking/admin", { action: "clearDone" });
+    if (res.ok) loadBookings(); else alert("Eroare.");
+  });
 
   tryAutoLogin();
 });

@@ -23,6 +23,10 @@ export default {
     if (path === "/api/feed/img" && request.method === "GET") return getFeedImg(url, env);
     if (path === "/api/feed/admin" && request.method === "POST") return adminFeed(request, env);
 
+    // Reservation requests
+    if (path === "/api/booking" && request.method === "POST") return submitBooking(request, env);
+    if (path === "/api/booking/admin" && request.method === "POST") return adminBookings(request, env);
+
     // Everything else: serve the static asset (HTML, CSS, JS, images).
     return env.ASSETS.fetch(request);
   }
@@ -216,4 +220,53 @@ async function adminFeed(request, env) {
     return json({ ok: true });
   }
   return json({ ok: false, error: "unknown action" }, 400);
+}
+
+/* ---------------- Reservation requests ---------------- */
+// booking: { id, roomId, roomName, checkIn, checkOut, nights, guests, total,
+//            name, phone, status:"new"|"done", createdAt }
+async function submitBooking(request, env) {
+  if (!env.MONTANIA_KV) return json({ ok: false, error: "storage unavailable" }, 500);
+  let b = {};
+  try { b = await request.json(); } catch { return json({ ok: false, error: "invalid JSON" }, 400); }
+  const all = await kvJSON(env, "bookings", []);
+  all.push({
+    id: newId(),
+    roomId: clip(b.roomId, 40), roomName: clip(b.roomName, 120),
+    checkIn: clip(b.checkIn, 10), checkOut: clip(b.checkOut, 10),
+    nights: parseInt(b.nights, 10) || null, guests: clip(b.guests, 10),
+    total: parseInt(b.total, 10) || null,
+    name: clip(b.name, 80), phone: clip(b.phone, 40),
+    status: "new", createdAt: new Date().toISOString()
+  });
+  // keep at most the latest 500 requests
+  const trimmed = all.slice(-500);
+  await env.MONTANIA_KV.put("bookings", JSON.stringify(trimmed));
+  return json({ ok: true });
+}
+
+async function adminBookings(request, env) {
+  if (!isAdmin(request, env)) return json({ ok: false, error: "unauthorized" }, 401);
+  if (!env.MONTANIA_KV) return json({ ok: false, error: "KV not bound" }, 500);
+  let b = {};
+  try { b = await request.json(); } catch { return json({ ok: false, error: "invalid JSON" }, 400); }
+  let all = await kvJSON(env, "bookings", []);
+
+  if (b.action === "list") {
+    all.sort((a, b2) => (b2.createdAt || "").localeCompare(a.createdAt || ""));
+    return json({ bookings: all });
+  }
+  if (b.action === "done") {
+    all = all.map(r => r.id === b.id ? { ...r, status: "done" } : r);
+  } else if (b.action === "new") {
+    all = all.map(r => r.id === b.id ? { ...r, status: "new" } : r);
+  } else if (b.action === "delete") {
+    all = all.filter(r => r.id !== b.id);
+  } else if (b.action === "clearDone") {
+    all = all.filter(r => r.status !== "done");
+  } else {
+    return json({ ok: false, error: "unknown action" }, 400);
+  }
+  await env.MONTANIA_KV.put("bookings", JSON.stringify(all));
+  return json({ ok: true });
 }

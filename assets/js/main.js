@@ -352,10 +352,22 @@ function reserveRoom(id) {
     `${t("vila.book.checkout")}: ${s.checkOut ? ymd(s.checkOut) : "-"}`,
     `${t("vila.book.guests")}: ${guests}`
   ];
+  let ri = null;
   if (s.checkIn && s.checkOut) {
-    const ri = roomRangeInfo(room);
+    ri = roomRangeInfo(room);
     lines.push(`${t("vila.book.total")}: ${ri.total} RON (${ri.nights} ${ri.nights === 1 ? t("vila.book.night") : t("vila.book.nights")})`);
   }
+  // Record the request so it shows up in /admin (best-effort; never blocks WhatsApp)
+  try {
+    fetch("/api/booking", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        roomId: room.id, roomName: L(room.name),
+        checkIn: s.checkIn ? ymd(s.checkIn) : "", checkOut: s.checkOut ? ymd(s.checkOut) : "",
+        nights: ri ? ri.nights : null, guests, total: ri ? ri.total : null
+      })
+    }).catch(() => {});
+  } catch (e) { /* ignore */ }
   window.open(`https://wa.me/${SITE.contact.whatsapp}?text=${encodeURIComponent(lines.join("\n"))}`, "_blank");
 }
 
