@@ -99,7 +99,7 @@ const I18N = {
 
     "vila.feat.eyebrow": "De ce Vila TUI",
     "vila.feat.title": "Confort în inima stațiunii",
-    "vila.feat.1.t": "La 2 minute de Castelul Știrbey",
+    "vila.feat.1.t": "La 2 minute de parcul central Dimitrie Ghica",
     "vila.feat.1.d": "Poziție ultracentrală în Sinaia, lângă Mănăstirea Sinaia; la 18 min pe jos de Castelul Peleș.",
     "vila.feat.2.t": "Parcare privată gratuită",
     "vila.feat.2.d": "Parcare gratuită la proprietate și spațiu pentru depozitarea schiurilor.",
@@ -335,7 +335,7 @@ const I18N = {
 
     "vila.feat.eyebrow": "Why TUI Villa",
     "vila.feat.title": "Comfort in the heart of the resort",
-    "vila.feat.1.t": "2 minutes from Știrbey Castle",
+    "vila.feat.1.t": "2 minutes from Dimitrie Ghica central park",
     "vila.feat.1.d": "Ultra-central in Sinaia, next to Sinaia Monastery; an 18-min walk to Peleș Castle.",
     "vila.feat.2.t": "Free private parking",
     "vila.feat.2.d": "Free on-site parking and a dedicated ski-storage space.",
@@ -571,7 +571,7 @@ const I18N = {
 
     "vila.feat.eyebrow": "Pourquoi la Villa TUI",
     "vila.feat.title": "Le confort au cœur de la station",
-    "vila.feat.1.t": "À 2 minutes du château Știrbey",
+    "vila.feat.1.t": "À 2 minutes du parc central Dimitrie Ghica",
     "vila.feat.1.d": "Position ultra-centrale à Sinaia, à côté du monastère de Sinaia ; à 18 min à pied du château de Peleș.",
     "vila.feat.2.t": "Parking privé gratuit",
     "vila.feat.2.d": "Parking gratuit sur place et espace pour ranger les skis.",
@@ -807,7 +807,7 @@ const I18N = {
 
     "vila.feat.eyebrow": "Perché Villa TUI",
     "vila.feat.title": "Comfort nel cuore della località",
-    "vila.feat.1.t": "A 2 minuti dal Castello Știrbey",
+    "vila.feat.1.t": "A 2 minuti dal parco centrale Dimitrie Ghica",
     "vila.feat.1.d": "Posizione ultracentrale a Sinaia, accanto al Monastero di Sinaia; a 18 min a piedi dal Castello di Peleș.",
     "vila.feat.2.t": "Parcheggio privato gratuito",
     "vila.feat.2.d": "Parcheggio gratuito in loco e spazio per riporre gli sci.",
@@ -1043,7 +1043,7 @@ const I18N = {
 
     "vila.feat.eyebrow": "Warum Villa TUI",
     "vila.feat.title": "Komfort im Herzen des Ortes",
-    "vila.feat.1.t": "2 Minuten vom Schloss Știrbey",
+    "vila.feat.1.t": "2 Minuten vom zentralen Dimitrie-Ghica-Park",
     "vila.feat.1.d": "Ultrazentral in Sinaia, neben dem Kloster Sinaia; 18 Min. zu Fuß zum Schloss Peleș.",
     "vila.feat.2.t": "Kostenloser Privatparkplatz",
     "vila.feat.2.d": "Kostenloser Parkplatz vor Ort und Platz zur Skiaufbewahrung.",
