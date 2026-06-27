@@ -320,7 +320,7 @@ async function recordHit(request, env) {
     for (const k of dayKeys.slice(0, dayKeys.length - 180)) delete stats.days[k];
   }
   await env.MONTANIA_KV.put("stats", JSON.stringify(stats));
-  return json({ ok: true });
+  return json({ ok: true, geo: country || null });
 }
 
 async function adminStats(request, env) {
