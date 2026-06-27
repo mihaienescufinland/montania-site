@@ -12,7 +12,7 @@ const I18N = {
     "nav.book": "Rezervă",
 
     "home.hero.title": "Vacanță la munte, în inima Sinaiei.",
-    "home.hero.sub": "Vila TUI — cazare ultracentrală în Sinaia, la câțiva pași de telecabină, pârtii, Castelul Peleș și traseele Bucegilor.",
+    "home.hero.sub": "Vila TUI — cazare ultracentrală în Sinaia, la câțiva pași de telecabină, pârtii, Castelul Peleș și traseele Bucegilor. La doar 300 m de Parcul Dimitrie Ghica.",
     "home.hero.stay": "Verifică disponibilitatea",
     "home.hero.taste": "Descoperă Sinaia",
     "home.hero.rating": "Recenzii oaspeți",
@@ -244,7 +244,7 @@ const I18N = {
     "nav.book": "Book",
 
     "home.hero.title": "A mountain holiday in the heart of Sinaia.",
-    "home.hero.sub": "TUI Villa — ultra-central accommodation in Sinaia, steps from the cable car, ski slopes, Peleș Castle and the Bucegi trails.",
+    "home.hero.sub": "TUI Villa — ultra-central accommodation in Sinaia, steps from the cable car, ski slopes, Peleș Castle and the Bucegi trails. Just 300 m from Dimitrie Ghica Park.",
     "home.hero.rating": "Guest reviews",
     "home.hero.bestprice": "★ Best price, direct on the official site",
     "home.hero.stay": "Check availability",
@@ -476,7 +476,7 @@ const I18N = {
     "nav.book": "Réserver",
 
     "home.hero.title": "Des vacances à la montagne, au cœur de Sinaia.",
-    "home.hero.sub": "Villa TUI — hébergement ultra-central à Sinaia, à quelques pas du téléphérique, des pistes, du château de Peleș et des sentiers des Bucegi.",
+    "home.hero.sub": "Villa TUI — hébergement ultra-central à Sinaia, à quelques pas du téléphérique, des pistes, du château de Peleș et des sentiers des Bucegi. À seulement 300 m du parc Dimitrie Ghica.",
     "home.hero.stay": "Vérifier les disponibilités",
     "home.hero.taste": "Découvrir Sinaia",
     "home.hero.rating": "Avis des clients",
@@ -708,7 +708,7 @@ const I18N = {
     "nav.book": "Prenota",
 
     "home.hero.title": "Una vacanza in montagna, nel cuore di Sinaia.",
-    "home.hero.sub": "Villa TUI — alloggio ultracentrale a Sinaia, a pochi passi dalla funivia, dalle piste, dal Castello di Peleș e dai sentieri dei Bucegi.",
+    "home.hero.sub": "Villa TUI — alloggio ultracentrale a Sinaia, a pochi passi dalla funivia, dalle piste, dal Castello di Peleș e dai sentieri dei Bucegi. A soli 300 m dal parco Dimitrie Ghica.",
     "home.hero.stay": "Verifica disponibilità",
     "home.hero.taste": "Scopri Sinaia",
     "home.hero.rating": "Recensioni degli ospiti",
@@ -940,7 +940,7 @@ const I18N = {
     "nav.book": "Buchen",
 
     "home.hero.title": "Bergurlaub im Herzen von Sinaia.",
-    "home.hero.sub": "Villa TUI — ultrazentrale Unterkunft in Sinaia, wenige Schritte von der Seilbahn, den Pisten, Schloss Peleș und den Bucegi-Wegen.",
+    "home.hero.sub": "Villa TUI — ultrazentrale Unterkunft in Sinaia, wenige Schritte von der Seilbahn, den Pisten, Schloss Peleș und den Bucegi-Wegen. Nur 300 m vom Dimitrie-Ghica-Park entfernt.",
     "home.hero.stay": "Verfügbarkeit prüfen",
     "home.hero.taste": "Sinaia entdecken",
     "home.hero.rating": "Gästebewertungen",
