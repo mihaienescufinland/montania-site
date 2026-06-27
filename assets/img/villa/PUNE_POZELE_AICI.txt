@@ -1,0 +1,25 @@
+PUNE AICI POZELE PROFESIONALE / DROP YOUR PHOTOS HERE
+=====================================================
+
+Cum procedăm / How to proceed:
+
+1) Copiază pozele în acest folder (assets/img/villa/).
+   Ideal, grupează-le pe tip de cameră în subfoldere:
+       rooms-tip-a/     (camere Tip A - max 2 locuri, corp B)
+       rooms-tip-b/     (camere Tip B - max 2 locuri)
+       rooms-tip-c/     (camere Tip C - max 3 locuri)
+       apartament/      (apartamentul, max 4 locuri)
+       exterior/        (exterior vila, curte, gratar, terasa)
+       gallery/         (orice alte poze frumoase)
+
+   Dacă e mai simplu, pune-le toate aici fără subfoldere — le sortez eu.
+
+2) Numele fișierelor nu contează (pot fi IMG_1234.jpg etc.).
+
+3) Spune-mi "gata pozele" și eu:
+   - le redimensionez/optimizez pentru web (cele profesionale sunt prea mari),
+   - aleg coperțile pentru fiecare cameră,
+   - construiesc galeria foto cu lightbox,
+   - le public (git push -> live in ~1 min).
+
+NB: nu pune aici poze cu persoane identificabile fără acord (GDPR).
