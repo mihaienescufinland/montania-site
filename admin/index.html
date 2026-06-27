@@ -54,7 +54,6 @@
     table.matrix td.cell .a { font-size: .6rem; color: var(--muted); }
     table.matrix td.cell.sold { background: #f6e0dd; color: #b14b3c; }
     table.matrix td.cell.sold .a { color: #b14b3c; }
-    table.matrix td.cell.over { box-shadow: inset 0 0 0 1px var(--green); }
     table.matrix td.cell.sel { outline: 3px solid var(--amber); outline-offset: -3px; background: #fdf2d8; }
     table.matrix td.cell.dragsel { outline: 3px solid var(--amber); outline-offset: -3px; background: #fdf2d8; }
     table.matrix td.past { background: #f2f2f2; color: #bbb; cursor: default; }
@@ -180,20 +179,15 @@
           <span><span class="dot" style="background:#f6e0dd"></span>ocupat (0 camere)</span>
           <span><span class="dot" style="background:var(--amber)"></span>selectat</span>
         </div>
-        <p class="hint mt-1"><b>Click pe o celulă</b> = o selectezi (poți selecta mai multe zile/camere). <b>Ține apăsat și trage</b> peste mai multe zile dintr-o cameră pentru un interval. Apoi completează prețul / nr. camere în <b>„Aplică pe selecție”</b> de mai jos și apasă <b>Aplică</b> (sau „Marchează OCUPAT”). Click pe <b>numele camerei</b> = tot rândul; pe <b>o zi (sus)</b> = toate camerele în acea zi. <b>Dublu-click</b> pe o celulă = editor detaliat pentru acea zi.</p>
+        <p class="hint mt-1"><b>Click pe o celulă</b> = o selectezi (selecția se adună — poți alege mai multe zile/camere); click din nou = o deselectezi. <b>Ține apăsat și trage</b> peste mai multe zile dintr-o cameră pentru un interval. Apoi apasă <b>„✎ Editează selecția”</b> de mai jos ca să modifici prețul / nr. camere într-o fereastră, pentru toate odată. <b>Esc</b> sau „Deselectează tot” = anulează selecția. Click pe <b>numele camerei</b> = tot rândul; pe <b>o zi (sus)</b> = toate camerele în acea zi. <b>Dublu-click</b> pe o celulă = editor detaliat doar pentru acea zi.</p>
       </div>
 
-      <!-- Bulk apply to selection -->
+      <!-- Selection actions -->
       <div class="admin-card">
-        <h3>Aplică pe selecție (<span id="sel-count">0</span>)</h3>
-        <div class="row mt-1">
-          <div class="field"><label>Preț (RON)</label><input type="number" id="set-price" min="0" placeholder="(gol = preț bază)"></div>
-          <div class="field"><label>Camere disponibile</label><input type="number" id="set-avail" min="0" placeholder="(gol = nu schimba)"></div>
-          <button class="btn btn-primary" id="apply">Aplică</button>
-        </div>
-        <div class="seg mt-2">
-          <button class="btn btn-dark" id="mark-sold">Marchează OCUPAT</button>
-          <button class="btn btn-outline" id="mark-free">Marchează LIBER (revine la bază)</button>
+        <h3>Selecție (<span id="sel-count">0</span>)</h3>
+        <p class="hint" style="margin-bottom:10px">Selectează celule în calendar (click pe ele sau trage cu mouse-ul — se adună). Apoi apasă <b>Editează selecția</b> ca să le modifici pe toate într-o fereastră.</p>
+        <div class="seg">
+          <button class="btn btn-primary" id="edit-sel">✎ Editează selecția</button>
           <button class="btn btn-outline" id="clear-sel">Deselectează tot</button>
         </div>
       </div>
