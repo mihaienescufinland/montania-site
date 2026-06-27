@@ -172,6 +172,7 @@ const I18N = {
     "pay.holiday": "Carduri de vacanță",
     "pay.atproperty": "La proprietate",
     "pay.cash": "💵 Numerar",
+    "pay.taxes": "Suplimentar, neinclus în preț: 6 lei/persoană taxă Salvamont și 2% taxă de stațiune din totalul cazării.",
 
     "bio.hero.title": "Bio de Maramu'",
     "bio.hero.sub": "Brânză curată, făcută cu răbdare la stână, în inima Maramureșului.",
@@ -375,6 +376,7 @@ const I18N = {
     "pay.holiday": "Holiday cards",
     "pay.atproperty": "At the property",
     "pay.cash": "💵 Cash",
+    "pay.taxes": "Additional, not included in the price: 6 lei/person mountain-rescue (Salvamont) fee and 2% resort tax on the total accommodation.",
 
     "bio.hero.title": "Bio de Maramu'",
     "bio.hero.sub": "Clean cheese, patiently made at the sheepfold, in the heart of Maramureș.",
@@ -578,6 +580,7 @@ const I18N = {
     "pay.holiday": "Cartes vacances",
     "pay.atproperty": "Sur place",
     "pay.cash": "💵 Espèces",
+    "pay.taxes": "En supplément, non inclus dans le prix : 6 lei/personne de taxe de secours en montagne (Salvamont) et 2 % de taxe de séjour sur le total de l'hébergement.",
 
     "bio.hero.title": "Bio de Maramu'",
     "bio.hero.sub": "Un fromage pur, fait avec patience à la bergerie, au cœur du Maramureș.",
@@ -781,6 +784,7 @@ const I18N = {
     "pay.holiday": "Carte vacanza",
     "pay.atproperty": "In struttura",
     "pay.cash": "💵 Contanti",
+    "pay.taxes": "In aggiunta, non incluso nel prezzo: 6 lei/persona di tassa di soccorso alpino (Salvamont) e 2% di tassa di soggiorno sul totale del soggiorno.",
 
     "bio.hero.title": "Bio de Maramu'",
     "bio.hero.sub": "Formaggio puro, fatto con pazienza all'alpeggio, nel cuore del Maramureș.",
@@ -984,6 +988,7 @@ const I18N = {
     "pay.holiday": "Urlaubskarten",
     "pay.atproperty": "Vor Ort",
     "pay.cash": "💵 Bargeld",
+    "pay.taxes": "Zusätzlich, nicht im Preis enthalten: 6 Lei/Person Bergrettungsgebühr (Salvamont) und 2 % Kurtaxe auf den Gesamtpreis der Unterkunft.",
 
     "bio.hero.title": "Bio de Maramu'",
     "bio.hero.sub": "Reiner Käse, mit Geduld auf der Alm hergestellt, im Herzen des Maramureș.",
