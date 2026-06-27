@@ -28,13 +28,39 @@ document.addEventListener("DOMContentLoaded", async () => {
   initBooking();
   initReviews();
   initFeed();
+  renderHeroPhotoDate();
 
   document.addEventListener("langchange", () => {
     injectContact();
     renderRooms();
+    renderHeroPhotoDate();
     if (document.getElementById("calendar")) { renderCalendar(); updateSummary(); renderRateTable(); }
   });
 });
+
+/* ---------------- Hero photo date (timeline stamp) ---------------- */
+const MONTHS_FULL = {
+  ro: ["ianuarie", "februarie", "martie", "aprilie", "mai", "iunie", "iulie", "august", "septembrie", "octombrie", "noiembrie", "decembrie"],
+  en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+  fr: ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
+  it: ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"],
+  de: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
+};
+function fmtPhotoDate(iso, lang) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ""));
+  if (!m) return String(iso || "");
+  const months = MONTHS_FULL[lang] || MONTHS_FULL.ro;
+  const day = +m[3], mon = months[+m[2] - 1], y = m[1];
+  if (lang === "en") return `${mon} ${day}, ${y}`;
+  if (lang === "de") return `${day}. ${mon} ${y}`;
+  return `${day} ${mon} ${y}`;
+}
+function renderHeroPhotoDate() {
+  const el = document.getElementById("hero-photo-date");
+  if (!el) return;
+  const d = (typeof SITE !== "undefined" && SITE.heroPhoto) ? SITE.heroPhoto.date : "";
+  el.textContent = d ? `\u{1F4F7} ${fmtPhotoDate(d, getLang())}` : "";
+}
 
 /* Pull live rooms/prices/availability from the API (Cloudflare Function).
    On local preview or if the API is unavailable, we keep the static data.js values. */

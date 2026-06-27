@@ -12,6 +12,10 @@
 const SITE = {
   brand: "Montania",
 
+  // Data fotografiei de pe prima pagină (poza cu flori a vilei).
+  // Folosită pentru a afișa "când a fost făcută poza" sub imagine. Format AAAA-LL-ZZ.
+  heroPhoto: { date: "2026-06-27" },
+
   contact: {
     phone: "0722 427 636",
     // WhatsApp: număr internațional fără + și fără spații
