@@ -365,14 +365,10 @@ function renderMatrix(){
   $("matrix").innerHTML = `<table class="matrix"><thead>${head}</thead><tbody>${body}</tbody></table>`;
   initMatrixDrag();
 
-  // (cell interaction handled by drag handlers bound once in initMatrixDrag)
-  // whole-row select (room name)
+  // (cell + day-header interaction handled by drag handlers bound once in initMatrixDrag)
+  // whole-row select (room name) = that room, all days
   $("matrix").querySelectorAll("th.roomcell").forEach(th => {
     th.addEventListener("click", () => selectRow(th.dataset.row));
-  });
-  // whole-column select (day header)
-  $("matrix").querySelectorAll("th.dayhead").forEach(th => {
-    th.addEventListener("click", () => selectCol(th.dataset.col));
   });
 
   updateSelCount();
@@ -407,6 +403,43 @@ function openSelectionEditor(anchorEl){
   if (!state.selected.size) return;
   closePop();
   const keys = Array.from(state.selected);
+  const rooms = new Set(keys.map(k => k.split("|")[0]));
+
+  // Selection spans several room types -> it's a DATE selection.
+  // Offer only the minimum-stay (applies to all rooms for those days), keeping each room's price/availability intact.
+  if (rooms.size > 1){
+    const dates = new Set(keys.map(k => k.split("|")[1]));
+    pop = document.createElement("div");
+    pop.className = "cellpop";
+    pop.innerHTML = `
+      <div class="cellpop-h">Sejur minim<br><small>${dates.size} ${dates.size===1?"zi":"zile"} · toate camerele</small></div>
+      <label>Minim nopți (1 = fără minim)</label>
+      <input type="number" id="pop-min" min="1" max="30" placeholder="(gol = nu schimba)">
+      <div class="cellpop-btns">
+        <button class="btn btn-primary" id="pop-save" style="flex:1">Salvează</button>
+      </div>`;
+    document.body.appendChild(pop);
+    positionPop(anchorEl);
+    popOnClose = () => { if (state.selected.size){ state.selected.clear(); renderMatrix(); } };
+    const saveMin = () => {
+      const mv = $("pop-min").value.trim();
+      if (mv===""){ alert("Completează minim nopți (ex. 2)."); return; }
+      const mi = parseInt(mv,10);
+      applyBulk((av, key) => {
+        const cur = Object.assign({}, av[key]);
+        if (mi>1) cur.m = mi; else delete cur.m;
+        if (Object.keys(cur).length) av[key] = cur; else delete av[key];
+      });
+      closePop();
+    };
+    $("pop-save").addEventListener("click", saveMin);
+    $("pop-min").addEventListener("keydown", e => { if (e.key==="Enter") saveMin(); });
+    $("pop-min").focus();
+    document.addEventListener("keydown", popKey);
+    setTimeout(() => document.addEventListener("click", popOutside), 0);
+    return;
+  }
+
   const single = keys.length === 1 ? keys[0].split("|") : null;
 
   let headerHtml, priceAttr = 'placeholder="(gol = nu schimba)"', availAttr = 'placeholder="(gol = nu schimba)"', minAttr = 'placeholder="(gol = nu schimba)"';
@@ -472,20 +505,16 @@ function selectRow(roomId){
   renderMatrix();
   openSelectionEditor($("matrix").querySelector(`th.roomcell[data-row="${roomId}"]`));
 }
-// click a day header = select that day for all rooms, then auto-open the editor
-function selectCol(key){
-  state.selected.clear();
-  $("matrix").querySelectorAll(`td.cell[data-key="${key}"]`).forEach(td => state.selected.add(td.dataset.room+"|"+key));
-  renderMatrix();
-  openSelectionEditor($("matrix").querySelector(`th.dayhead[data-col="${key}"]`));
-}
 function updateSelCount(){
   const el = $("sel-count");
   if (el) el.textContent = state.selected.size ? `${state.selected.size} celule` : "0";
 }
 
-/* ---- mouse drag selection (within one room row) ---- */
+/* ---- mouse drag selection ----
+   - inside a room row  -> selects days for THAT room (full editor: price/avail/min)
+   - across day headers -> selects those days for ALL rooms (minimum-stay-only editor) */
 const drag = { active: false, moved: false, room: null, startKey: null, endKey: null, inited: false };
+const coldrag = { active: false, startCol: null, endCol: null };
 function rangeKeys(startKey, endKey){
   let a = parseYmd(startKey), b = parseYmd(endKey);
   if (a > b){ const tmp = a; a = b; b = tmp; }
@@ -500,6 +529,12 @@ function highlightDrag(room, startKey, endKey){
     td.classList.toggle("dragsel", keys.has(td.dataset.key));
   });
 }
+function highlightColDrag(startCol, endCol){
+  coldrag.endCol = endCol;
+  const keys = new Set(rangeKeys(startCol, endCol));
+  $("matrix").querySelectorAll("td.cell").forEach(td => td.classList.toggle("dragsel", keys.has(td.dataset.key)));
+  $("matrix").querySelectorAll("th.dayhead").forEach(th => th.classList.toggle("dragsel", keys.has(th.dataset.col)));
+}
 // Build a fresh selection from the gesture (single click = 1 day, drag = range),
 // then auto-open the editor anchored on the last touched cell.
 function commitDrag(room, startKey, endKey){
@@ -512,30 +547,61 @@ function commitDrag(room, startKey, endKey){
               || $("matrix").querySelector(`td.cell[data-room="${room}"][data-key="${startKey}"]`);
   openSelectionEditor(anchor);
 }
+// Date-level selection: all rooms for the chosen days -> minimum-stay-only editor.
+function commitColDrag(startCol, endCol){
+  state.selected.clear();
+  const keys = new Set(rangeKeys(startCol, endCol));
+  $("matrix").querySelectorAll("td.cell").forEach(td => {
+    if (keys.has(td.dataset.key)) state.selected.add(td.dataset.room + "|" + td.dataset.key);
+  });
+  renderMatrix();
+  const anchor = $("matrix").querySelector(`th.dayhead[data-col="${endCol}"]`)
+              || $("matrix").querySelector(`th.dayhead[data-col="${startCol}"]`);
+  openSelectionEditor(anchor);
+}
 function initMatrixDrag(){
   if (drag.inited) return;
   drag.inited = true;
   const m = $("matrix");
   m.addEventListener("mousedown", e => {
-    const td = e.target.closest("td.cell"); if (!td) return;
-    e.preventDefault();
-    const room = td.dataset.room, key = td.dataset.key;
-    closePop();
-    drag.active = true; drag.moved = false;
-    drag.room = room; drag.startKey = key; drag.endKey = key;
+    const td = e.target.closest("td.cell");
+    if (td){
+      e.preventDefault();
+      const room = td.dataset.room, key = td.dataset.key;
+      closePop();
+      drag.active = true; drag.moved = false;
+      drag.room = room; drag.startKey = key; drag.endKey = key;
+      return;
+    }
+    const th = e.target.closest("th.dayhead");
+    if (th){
+      e.preventDefault();
+      const col = th.dataset.col;
+      closePop();
+      coldrag.active = true; coldrag.startCol = col; coldrag.endCol = col;
+    }
   });
   m.addEventListener("mouseover", e => {
-    if (!drag.active) return;
-    const td = e.target.closest("td.cell"); if (!td) return;
-    if (td.dataset.room !== drag.room) return; // keep selection within one room row
-    if (td.dataset.key !== drag.startKey) drag.moved = true;
-    highlightDrag(drag.room, drag.startKey, td.dataset.key);
+    if (drag.active){
+      const td = e.target.closest("td.cell"); if (!td) return;
+      if (td.dataset.room !== drag.room) return; // keep row selection within one room
+      if (td.dataset.key !== drag.startKey) drag.moved = true;
+      highlightDrag(drag.room, drag.startKey, td.dataset.key);
+      return;
+    }
+    if (coldrag.active){
+      const th = e.target.closest("th.dayhead"); if (!th) return;
+      highlightColDrag(coldrag.startCol, th.dataset.col);
+    }
   });
   document.addEventListener("mouseup", () => {
-    if (!drag.active) return;
-    drag.active = false;
-    // both a single click and a drag end here -> select & auto-open the editor
-    commitDrag(drag.room, drag.startKey, drag.endKey);
+    if (drag.active){
+      drag.active = false;
+      commitDrag(drag.room, drag.startKey, drag.endKey);
+    } else if (coldrag.active){
+      coldrag.active = false;
+      commitColDrag(coldrag.startCol, coldrag.endCol);
+    }
   });
 }
 

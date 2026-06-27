@@ -41,6 +41,7 @@
     table.matrix th, table.matrix td { border: 1px solid var(--cream-2); }
     table.matrix thead th { background: #0b3a67; color: #fff; padding: 5px 2px; text-align: center; font-weight: 600; white-space: nowrap; min-width: 42px; cursor: pointer; }
     table.matrix thead th.weekend { background: #082a4b; }
+    table.matrix thead th.dayhead.dragsel { background: var(--amber, #c98a2b); color: #fff; }
     table.matrix thead th.monthhead { background: var(--amber, #c98a2b); color: #fff; font-size: .92rem; letter-spacing: .02em; text-transform: capitalize; border-bottom: 2px solid #fff; }
     table.matrix .mstart { border-left: 3px solid var(--amber, #c98a2b); }
     table.matrix thead th .dn { font-size: .9rem; }
@@ -180,7 +181,7 @@
           <span><span class="dot" style="background:#f6e0dd"></span>ocupat (0 camere)</span>
           <span><span class="dot" style="background:var(--amber)"></span>selectat</span>
         </div>
-        <p class="hint mt-1"><b>Ține apăsat și trage</b> peste zilele dorite dintr-o cameră, apoi <b>eliberează mouse-ul</b> — se deschide automat o fereastră unde pui prețul / nr. camere / <b>minim nopți</b> pentru toate zilele selectate. Un singur <b>click</b> = editezi o singură zi. „Minim nopți” = sejur minim cerut pentru acele date (apare ca „min 2n” în calendar; oaspetele tot poate trimite cererea, e doar informativ). După ce salvezi (sau <b>Esc</b> ca să anulezi), selecția se șterge automat și poți apăsa <b>Publică live</b>. Click pe <b>numele camerei</b> = tot rândul; pe <b>o zi (sus)</b> = toate camerele în acea zi.</p>
+        <p class="hint mt-1"><b>Trage peste zilele dintr-o cameră</b> (rândul camerei) → fereastră cu preț / nr. camere / minim nopți doar pentru acea cameră. <b>Trage peste datele din capul de tabel</b> (rândul cu zilele, sus) → fereastră doar cu <b>minim nopți</b>, care se aplică la <b>toate camerele</b> pentru acele zile. Un singur <b>click</b> = o singură zi. „Minim nopți” apare ca „min 2n” în calendar; oaspetele tot poate trimite cererea (e doar informativ). După ce salvezi (sau <b>Esc</b> ca să anulezi) selecția se șterge automat și poți apăsa <b>Publică live</b>. Click pe <b>numele camerei</b> = tot rândul acelei camere.</p>
       </div>
 
       <!-- Reviews moderation -->
