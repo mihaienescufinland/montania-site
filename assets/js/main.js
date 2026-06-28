@@ -575,6 +575,9 @@ function reserveRoom(id) {
   const room = SITE.rooms.find(r => r.id === id);
   if (!room) return;
   const s = booking.state;
+  if (!s.checkIn && !s.checkOut) { alert(t("msg.needdates")); return; }
+  if (!s.checkIn) { alert(t("msg.needcheckin")); return; }
+  if (!s.checkOut) { alert(t("msg.needcheckout")); return; }
   const o = occupancy();
   let guests = `${o.adults} ${t("vila.book.adults").toLowerCase()}`;
   if (o.children) {
