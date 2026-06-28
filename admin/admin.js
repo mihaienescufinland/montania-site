@@ -200,6 +200,7 @@ function renderBookings(list) {
       <div class="b-room">${escA(r.roomName || r.roomId || "Cameră")}</div>
       <div class="b-dates">${escA(dates)}</div>
       ${meta ? `<div class="b-meta">${escA(meta)}</div>` : ""}
+      ${r.phone ? `<div class="b-phone">📞 <a href="tel:${escA(String(r.phone).replace(/[^0-9+]/g, ""))}">${escA(r.phone)}</a></div>` : `<div class="b-meta" style="color:#b23">📞 fără telefon</div>`}
       <div class="b-meta">Trimisă: ${escA(when)}</div>
       <div class="b-actions">
         ${r.status === "new"

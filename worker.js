@@ -238,7 +238,7 @@ async function submitBooking(request, env) {
     id: newId(),
     roomId: clip(b.roomId, 40), roomName: clip(b.roomName, 120),
     checkIn: clip(b.checkIn, 10), checkOut: clip(b.checkOut, 10),
-    nights: parseInt(b.nights, 10) || null, guests: clip(b.guests, 10),
+    nights: parseInt(b.nights, 10) || null, guests: clip(b.guests, 120),
     total: parseInt(b.total, 10) || null,
     name: clip(b.name, 80), phone: clip(b.phone, 40),
     status: "new", createdAt: new Date().toISOString()

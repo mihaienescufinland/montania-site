@@ -578,6 +578,13 @@ function reserveRoom(id) {
   if (!s.checkIn && !s.checkOut) { alert(t("msg.needdates")); return; }
   if (!s.checkIn) { alert(t("msg.needcheckin")); return; }
   if (!s.checkOut) { alert(t("msg.needcheckout")); return; }
+  const phoneEl = document.getElementById("f-phone");
+  const phone = phoneEl ? phoneEl.value.trim() : "";
+  if ((phone.replace(/[^0-9]/g, "").length) < 7) {
+    alert(t("msg.needphone"));
+    if (phoneEl) { phoneEl.focus(); }
+    return;
+  }
   const o = occupancy();
   let guests = `${o.adults} ${t("vila.book.adults").toLowerCase()}`;
   if (o.children) {
@@ -593,7 +600,8 @@ function reserveRoom(id) {
     `${t("vila.book.room")}: ${L(room.name)}`,
     `${t("vila.book.checkin")}: ${s.checkIn ? ymd(s.checkIn) : "-"}`,
     `${t("vila.book.checkout")}: ${s.checkOut ? ymd(s.checkOut) : "-"}`,
-    `${t("vila.book.guests")}: ${guests}`
+    `${t("vila.book.guests")}: ${guests}`,
+    `${t("vila.book.phone")}: ${phone}`
   ];
   if (isQuote) {
     lines.push(t("msg.quote.ask"));
@@ -608,6 +616,7 @@ function reserveRoom(id) {
       body: JSON.stringify({
         roomId: room.id, roomName: L(room.name),
         checkIn: s.checkIn ? ymd(s.checkIn) : "", checkOut: s.checkOut ? ymd(s.checkOut) : "",
+        phone,
         nights: ri ? ri.nights : null, guests, total: (ri && !ri.quote) ? ri.total : null, quote: isQuote
       })
     }).catch(() => {});
