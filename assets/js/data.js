@@ -99,7 +99,7 @@ const SITE = {
       size: 15,
       price: 373,
       units: 2,
-      img: "assets/img/villa/rooms/dubla-balcon.jpg",
+      img: "assets/img/villa/rooms/g/b1.jpg",
       bed: "double",
       features: ["balcony", "view", "bath", "tv", "fridge", "coffee", "heating", "wifi"],
       gallery: [
@@ -107,7 +107,6 @@ const SITE = {
         "assets/img/villa/rooms/g/b2.jpg",
         "assets/img/villa/rooms/g/b3.jpg",
         "assets/img/villa/rooms/g/b4.jpg",
-        "assets/img/villa/rooms/g/b5.jpg",
         "assets/img/villa/rooms/g/b6.jpg"
       ],
       amenities: {
