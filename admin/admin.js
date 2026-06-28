@@ -72,14 +72,20 @@ async function showEditor(){
   startAutoRefresh();
 }
 
+function refreshLivePanels() {
+  // Read-only panels: safe to refresh in the background.
+  loadBookings(true);
+  loadStats();
+}
+
 function startAutoRefresh() {
   if (state.autoTimer) clearInterval(state.autoTimer);
   state.autoTimer = setInterval(() => {
-    if (document.visibilityState === "visible") loadBookings(true);
+    if (document.visibilityState === "visible") refreshLivePanels();
   }, AUTO_REFRESH_MS);
   // Refresh immediately when the admin returns to the tab.
   document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") loadBookings(true);
+    if (document.visibilityState === "visible") refreshLivePanels();
   });
 }
 
