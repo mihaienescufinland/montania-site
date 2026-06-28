@@ -168,9 +168,7 @@ function renderStats(s) {
   const bookings = state.bookingsCount || 0;
   const conv = vilaVisits ? Math.round(bookings / vilaVisits * 100) : 0;
 
-  // RO vs international
   const countries = s.countries || {};
-  const ro = countries.RO || 0; const totC = sumv(countries); const intl = totC - ro;
 
   // Visitors new vs returning
   const v = s.visitors || { new: 0, returning: 0 };
@@ -216,10 +214,6 @@ function renderStats(s) {
     </div>
 
     <div class="stat-cols mt-1">
-      ${totC ? `<div class="stat-block"><h4>România vs. internațional</h4>
-        <div class="srow"><span class="srow-l">🇷🇴 România</span><span class="srow-bar"><i style="width:${pct(ro, totC)}%"></i></span><span class="srow-n">${ro}</span><span class="srow-p">${pct(ro, totC)}%</span></div>
-        <div class="srow"><span class="srow-l">🌍 Internațional</span><span class="srow-bar"><i style="width:${pct(intl, totC)}%"></i></span><span class="srow-n">${intl}</span><span class="srow-p">${pct(intl, totC)}%</span></div>
-      </div>` : ""}
       ${totV ? `<div class="stat-block"><h4>Vizitatori</h4>
         <div class="srow"><span class="srow-l">🆕 Noi</span><span class="srow-bar"><i style="width:${pct(v.new, totV)}%"></i></span><span class="srow-n">${v.new || 0}</span><span class="srow-p">${pct(v.new, totV)}%</span></div>
         <div class="srow"><span class="srow-l">🔁 Reveniți</span><span class="srow-bar"><i style="width:${pct(v.returning, totV)}%"></i></span><span class="srow-n">${v.returning || 0}</span><span class="srow-p">${pct(v.returning, totV)}%</span></div>
