@@ -107,6 +107,8 @@
     .book-item .b-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
     .book-item .b-actions .btn { padding: 5px 10px; font-size: .76rem; }
     #book-list { max-height: 70vh; overflow-y: auto; padding-right: 4px; }
+    @keyframes badgeFlash { 0%,100% { transform: scale(1); background:#c0392b; } 50% { transform: scale(1.5); background:#e74c3c; } }
+    #book-count.badge-flash { animation: badgeFlash .6s ease-in-out 6; color:#fff; }
 
     /* visit counter */
     .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
@@ -238,6 +240,7 @@
             <button class="btn btn-outline" id="book-refresh" style="padding:6px 10px;font-size:.8rem">↻</button>
           </div>
           <p class="hint" style="margin:6px 0 10px">Cererile trimise de oaspeți prin butonul „Rezervă pe WhatsApp”.</p>
+          <p class="hint" id="book-autorefresh" style="margin:-4px 0 10px;font-size:.72rem">⟳ Reîmprospătare automată la 30s</p>
           <div id="book-list"></div>
           <button class="btn btn-outline mt-2" id="book-clear" style="font-size:.8rem">Șterge cele rezolvate</button>
         </div>

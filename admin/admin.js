@@ -13,8 +13,12 @@ const state = {
   winStart: null,    // Date (start of visible window)
   winEnd: null,      // Date (end of visible window, inclusive)
   selected: new Set(),// "roomId|YYYY-MM-DD"
-  dirty: false
+  dirty: false,
+  lastNewCount: null, // tracks pending requests to detect arrivals
+  autoTimer: null
 };
+
+const AUTO_REFRESH_MS = 30000;
 
 /* ---- helpers ---- */
 const $ = (id) => document.getElementById(id);
@@ -64,6 +68,50 @@ async function showEditor(){
   loadFeedAdmin();
   loadBookings();
   loadStats();
+  startAutoRefresh();
+}
+
+function startAutoRefresh() {
+  if (state.autoTimer) clearInterval(state.autoTimer);
+  state.autoTimer = setInterval(() => {
+    if (document.visibilityState === "visible") loadBookings(true);
+  }, AUTO_REFRESH_MS);
+  // Refresh immediately when the admin returns to the tab.
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") loadBookings(true);
+  });
+}
+
+function setRefreshStamp() {
+  const el = $("book-autorefresh");
+  if (!el) return;
+  const now = new Date().toLocaleTimeString("ro-RO", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  el.textContent = `⟳ Reîmprospătare automată la 30s · ultima: ${now}`;
+}
+
+function notifyNewRequest(n) {
+  // Flash the title and the count badge so a new request is impossible to miss.
+  try {
+    const o = document.title;
+    let flips = 0;
+    const iv = setInterval(() => {
+      document.title = (flips % 2 === 0) ? `🔔 (${n}) Cerere nouă!` : o;
+      if (++flips > 7) { clearInterval(iv); document.title = o; }
+    }, 700);
+  } catch (e) { /* ignore */ }
+  const badge = $("book-count");
+  if (badge) {
+    badge.classList.add("badge-flash");
+    setTimeout(() => badge.classList.remove("badge-flash"), 4000);
+  }
+  // Short beep (best-effort; ignored if the browser blocks audio).
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator(), g = ctx.createGain();
+    osc.connect(g); g.connect(ctx.destination);
+    osc.type = "sine"; osc.frequency.value = 880; g.gain.value = 0.06;
+    osc.start(); osc.stop(ctx.currentTime + 0.18);
+  } catch (e) { /* ignore */ }
 }
 
 /* ---- visit counter ---- */
@@ -178,19 +226,26 @@ async function revAction(body) {
 }
 
 /* ---- reservation requests ---- */
-async function loadBookings() {
+async function loadBookings(silent) {
   const box = $("book-list"); if (!box) return;
   try {
     const res = await adminPost("/api/booking/admin", { action: "list" });
-    if (!res.ok) { box.innerHTML = "<p class='hint'>Nu pot încărca cererile.</p>"; return; }
+    if (!res.ok) { if (!silent) box.innerHTML = "<p class='hint'>Nu pot încărca cererile.</p>"; return; }
     const data = await res.json();
     renderBookings(data.bookings || []);
-  } catch (e) { box.innerHTML = "<p class='hint'>Cererile apar doar pe site-ul live.</p>"; }
+    setRefreshStamp();
+  } catch (e) { if (!silent) box.innerHTML = "<p class='hint'>Cererile apar doar pe site-ul live.</p>"; }
 }
 function renderBookings(list) {
   const box = $("book-list");
   const cnt = $("book-count");
-  if (cnt) cnt.textContent = list.filter(r => r.status === "new").length;
+  const newCount = list.filter(r => r.status === "new").length;
+  if (cnt) cnt.textContent = newCount;
+  // Detect a freshly-arrived request (count went up since last poll).
+  if (state.lastNewCount !== null && newCount > state.lastNewCount) {
+    notifyNewRequest(newCount);
+  }
+  state.lastNewCount = newCount;
   if (!list.length) { box.innerHTML = "<p class='hint'>Nicio cerere încă.</p>"; return; }
   box.innerHTML = list.map(r => {
     const when = (r.createdAt || "").replace("T", " ").slice(0, 16);
