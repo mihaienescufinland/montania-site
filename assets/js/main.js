@@ -66,7 +66,18 @@ function trackVisit() {
     const p = location.pathname || "/";
     if (p.startsWith("/admin")) return;                 // never count the admin area
     if (localStorage.getItem("montania_owner") === "1") return; // don't count the owner
-    const body = JSON.stringify({ path: p });
+    // New vs returning (cookieless: a simple localStorage flag).
+    let returning = false;
+    try {
+      returning = localStorage.getItem("montania_seen") === "1";
+      localStorage.setItem("montania_seen", "1");
+    } catch (e) { /* private mode */ }
+    const body = JSON.stringify({
+      path: p,
+      ref: document.referrer || "",
+      lang: (typeof getLang === "function" ? getLang() : "") || "",
+      returning: returning
+    });
     if (navigator.sendBeacon) {
       navigator.sendBeacon("/api/hit", new Blob([body], { type: "application/json" }));
     } else {

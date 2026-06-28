@@ -15,7 +15,8 @@ const state = {
   selected: new Set(),// "roomId|YYYY-MM-DD"
   dirty: false,
   lastNewCount: null, // tracks pending requests to detect arrivals
-  autoTimer: null
+  autoTimer: null,
+  bookingsCount: 0    // total reservation requests (for conversion rate)
 };
 
 const AUTO_REFRESH_MS = 30000;
@@ -122,56 +123,115 @@ async function loadStats() {
     const res = await adminPost("/api/stats/admin", {});
     if (!res.ok) { box.innerHTML = "<p class='hint'>Statisticile apar doar pe site-ul live.</p>"; return; }
     const data = await res.json();
-    renderStats(data.stats || { total: 0, days: {}, pages: {} });
+    state.bookingsCount = data.bookingsCount || 0;
+    renderStats(data.stats || {});
   } catch (e) { box.innerHTML = "<p class='hint'>Statisticile apar doar pe site-ul live.</p>"; }
 }
+
+const PAGE_NAMES = { "/": "Acasă", "/vila": "Vila TUI", "/vila.html": "Vila TUI", "/sinaia": "Sinaia", "/sinaia.html": "Sinaia", "/bio": "Bio de Maramu'", "/bio.html": "Bio de Maramu'", "/jurnal": "Jurnal", "/jurnal.html": "Jurnal", "/contact": "Contact", "/contact.html": "Contact" };
+const COUNTRY_NAMES = { RO: "România", MD: "Moldova", DE: "Germania", FR: "Franța", IT: "Italia", GB: "Marea Britanie", US: "SUA", NL: "Olanda", AT: "Austria", ES: "Spania", BE: "Belgia", CH: "Elveția", HU: "Ungaria", BG: "Bulgaria", PL: "Polonia", UA: "Ucraina", IL: "Israel", FI: "Finlanda", SE: "Suedia", DK: "Danemarca", IE: "Irlanda", CZ: "Cehia", GR: "Grecia", PT: "Portugalia", TR: "Turcia", CA: "Canada", AU: "Australia", NO: "Norvegia" };
+const LANG_NAMES = { ro: "🇷🇴 Română", en: "🇬🇧 Engleză", fr: "🇫🇷 Franceză", it: "🇮🇹 Italiană", de: "🇩🇪 Germană" };
+
 function renderStats(s) {
   const box = $("stats-body");
   const days = s.days || {}, pages = s.pages || {};
   const ymdLocal = d => d.toISOString().slice(0, 10);
-  const sumLast = n => {
-    let t = 0;
-    for (let i = 0; i < n; i++) { const d = new Date(); d.setDate(d.getDate() - i); t += days[ymdLocal(d)] || 0; }
-    return t;
-  };
+  const sumLast = n => { let t = 0; for (let i = 0; i < n; i++) { const d = new Date(); d.setDate(d.getDate() - i); t += days[ymdLocal(d)] || 0; } return t; };
+  const yest = new Date(); yest.setDate(yest.getDate() - 1);
   const today = days[ymdLocal(new Date())] || 0;
+  const yesterday = days[ymdLocal(yest)] || 0;
   const last7 = sumLast(7), last30 = sumLast(30);
-  const topPages = Object.entries(pages).sort((a, b) => b[1] - a[1]).slice(0, 6);
-  const pageName = p => ({ "/": "Acasă", "/vila": "Vila TUI", "/vila.html": "Vila TUI", "/sinaia": "Sinaia", "/sinaia.html": "Sinaia", "/bio": "Bio de Maramu'", "/bio.html": "Bio de Maramu'", "/jurnal": "Jurnal", "/jurnal.html": "Jurnal", "/contact": "Contact", "/contact.html": "Contact" }[p] || p);
-  const countries = s.countries || {}, cities = s.cities || {};
-  const topCountries = Object.entries(countries).sort((a, b) => b[1] - a[1]).slice(0, 8);
-  const topCities = Object.entries(cities).sort((a, b) => b[1] - a[1]).slice(0, 8);
+
   const flag = cc => (cc && cc.length === 2 && /^[A-Z]{2}$/.test(cc)) ? String.fromCodePoint(...[...cc].map(c => 0x1F1E6 + c.charCodeAt(0) - 65)) : "🌍";
-  const cName = { RO: "România", MD: "Moldova", DE: "Germania", FR: "Franța", IT: "Italia", GB: "Marea Britanie", US: "SUA", NL: "Olanda", AT: "Austria", ES: "Spania", BE: "Belgia", CH: "Elveția", HU: "Ungaria", BG: "Bulgaria", PL: "Polonia", UA: "Ucraina", IL: "Israel", FI: "Finlanda", SE: "Suedia", DK: "Danemarca", IE: "Irlanda", CZ: "Cehia", GR: "Grecia", PT: "Portugalia", TR: "Turcia", CA: "Canada", AU: "Australia", NO: "Norvegia" };
-  const countryName = cc => cName[cc] || cc;
-  // last 14 days sparkline
+  const top = (obj, n) => Object.entries(obj || {}).sort((a, b) => b[1] - a[1]).slice(0, n);
+  const sumv = obj => Object.values(obj || {}).reduce((a, b) => a + b, 0);
+  const pct = (n, t) => t ? Math.round(n / t * 100) : 0;
+
+  // Compact horizontal-bar list block
+  const block = (title, entries, fmt, total) => {
+    if (!entries.length) return "";
+    const t = total != null ? total : entries.reduce((a, [, n]) => a + n, 0);
+    const rows = entries.map(([k, n]) => `<div class="srow"><span class="srow-l">${fmt(k)}</span><span class="srow-bar"><i style="width:${pct(n, t)}%"></i></span><span class="srow-n">${n}</span><span class="srow-p">${pct(n, t)}%</span></div>`).join("");
+    return `<div class="stat-block"><h4>${escA(title)}</h4>${rows}</div>`;
+  };
+
+  // 30-day sparkline + busiest day
   const series = [];
-  for (let i = 13; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); series.push(days[ymdLocal(d)] || 0); }
-  const max = Math.max(1, ...series);
-  const bars = series.map(v => `<span class="spark-bar" style="height:${Math.round((v / max) * 100)}%" title="${v}"></span>`).join("");
+  for (let i = 29; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); series.push([ymdLocal(d), days[ymdLocal(d)] || 0]); }
+  const max = Math.max(1, ...series.map(x => x[1]));
+  const bars = series.map(([k, v]) => `<span class="spark-bar" style="height:${Math.round((v / max) * 100)}%" title="${k}: ${v}"></span>`).join("");
+  const busiest = series.slice().sort((a, b) => b[1] - a[1])[0];
+  const busiestTxt = (busiest && busiest[1]) ? `vârf: ${busiest[0].slice(5)} (${busiest[1]})` : "";
+
+  // Conversion: requests / Vila-page visits
+  const vilaVisits = (pages["/vila"] || 0) + (pages["/vila.html"] || 0);
+  const bookings = state.bookingsCount || 0;
+  const conv = vilaVisits ? Math.round(bookings / vilaVisits * 100) : 0;
+
+  // RO vs international
+  const countries = s.countries || {};
+  const ro = countries.RO || 0; const totC = sumv(countries); const intl = totC - ro;
+
+  // Visitors new vs returning
+  const v = s.visitors || { new: 0, returning: 0 };
+  const totV = (v.new || 0) + (v.returning || 0);
+
+  // Hour-of-day sparkline (0..23, local Bucharest)
+  const hours = s.hours || {};
+  const hourArr = []; for (let h = 0; h < 24; h++) hourArr.push(hours[String(h)] || 0);
+  const hmax = Math.max(1, ...hourArr);
+  const hourBars = hourArr.map((val, h) => `<span class="spark-bar" style="height:${Math.round((val / hmax) * 100)}%" title="${h}:00 — ${val}"></span>`).join("");
+  let peakHour = 0; hourArr.forEach((val, h) => { if (val > hourArr[peakHour]) peakHour = h; });
+  const peakHourTxt = sumv(hours) ? `oră de vârf: ${peakHour}:00–${peakHour + 1}:00` : "";
+
+  // Day-of-week (worker maps Sun=0..Sat=6); display Mon..Sun
+  const dows = s.dows || {};
+  const dowOrder = [1, 2, 3, 4, 5, 6, 0];
+  const dowLbl = { 1: "Lun", 2: "Mar", 3: "Mie", 4: "Joi", 5: "Vin", 6: "Sâm", 0: "Dum" };
+  const dmax = Math.max(1, ...dowOrder.map(d => dows[String(d)] || 0));
+  const dowBars = dowOrder.map(d => { const val = dows[String(d)] || 0; return `<div class="dow-col"><span class="dow-bar" style="height:${Math.round((val / dmax) * 100)}%" title="${val}"></span><span class="dow-lbl">${dowLbl[d]}</span></div>`; }).join("");
 
   box.innerHTML = `
     <div class="stat-grid">
       <div class="stat-tile"><div class="stat-num">${s.total || 0}</div><div class="stat-lbl">Total vizite</div></div>
       <div class="stat-tile"><div class="stat-num">${today}</div><div class="stat-lbl">Azi</div></div>
-      <div class="stat-tile"><div class="stat-num">${last7}</div><div class="stat-lbl">Ultimele 7 zile</div></div>
-      <div class="stat-tile"><div class="stat-num">${last30}</div><div class="stat-lbl">Ultimele 30 zile</div></div>
+      <div class="stat-tile"><div class="stat-num">${yesterday}</div><div class="stat-lbl">Ieri</div></div>
+      <div class="stat-tile"><div class="stat-num">${last7}</div><div class="stat-lbl">7 zile</div></div>
+      <div class="stat-tile"><div class="stat-num">${last30}</div><div class="stat-lbl">30 zile</div></div>
+      <div class="stat-tile stat-conv" title="Cereri de rezervare ÷ vizite pe pagina Vila TUI"><div class="stat-num">${conv}%</div><div class="stat-lbl">Conversie (${bookings}/${vilaVisits})</div></div>
     </div>
-    <div class="spark" title="Ultimele 14 zile">${bars}</div>
-    <div class="spark-cap hint">Ultimele 14 zile</div>
-    ${topCountries.length ? `<h4 class="mt-2" style="margin:14px 0 4px">De unde vin vizitatorii — țări</h4>
-      <table class="base-table"><thead><tr><th>Țară</th><th>Vizite</th></tr></thead><tbody>
-      ${topCountries.map(([c, n]) => `<tr><td>${flag(c)} ${escA(countryName(c))}</td><td>${n}</td></tr>`).join("")}
-    </tbody></table>` : ""}
-    ${topCities.length ? `<h4 class="mt-2" style="margin:14px 0 4px">Orașe / regiuni</h4>
-      <table class="base-table"><thead><tr><th>Loc</th><th>Vizite</th></tr></thead><tbody>
-      ${topCities.map(([c, n]) => `<tr><td>${escA(c)}</td><td>${n}</td></tr>`).join("")}
-    </tbody></table>` : ""}
-    ${topPages.length ? `<h4 class="mt-2" style="margin:14px 0 4px">Pagini vizitate</h4>
-      <table class="base-table"><thead><tr><th>Pagină</th><th>Vizite</th></tr></thead><tbody>
-      ${topPages.map(([p, n]) => `<tr><td>${escA(pageName(p))}</td><td>${n}</td></tr>`).join("")}
-    </tbody></table>` : ""}
-    <p class="hint mt-1">Locația e aproximativă (oferită de Cloudflare, fără date personale). Vizitele tale ca admin nu se numără; boții sunt excluși. Datele geografice se adună de acum înainte.</p>`;
+
+    <div class="spark spark30" title="Ultimele 30 de zile">${bars}</div>
+    <div class="spark-cap hint">Ultimele 30 de zile${busiestTxt ? " · " + busiestTxt : ""}</div>
+
+    <div class="stat-cols mt-2">
+      ${block("Țări", top(countries, 6), c => flag(c) + " " + escA(COUNTRY_NAMES[c] || c))}
+      ${block("Orașe / regiuni", top(s.cities, 6), escA)}
+      ${block("Pagini", top(pages, 6), p => escA(PAGE_NAMES[p] || p))}
+    </div>
+    <div class="stat-cols mt-1">
+      ${block("Surse de trafic", top(s.referrers, 6), escA)}
+      ${block("Dispozitive", top(s.devices, 3), escA)}
+      ${block("Limbă", top(s.langs, 5), k => LANG_NAMES[k] || escA(k))}
+    </div>
+
+    <div class="stat-cols mt-1">
+      ${totC ? `<div class="stat-block"><h4>România vs. internațional</h4>
+        <div class="srow"><span class="srow-l">🇷🇴 România</span><span class="srow-bar"><i style="width:${pct(ro, totC)}%"></i></span><span class="srow-n">${ro}</span><span class="srow-p">${pct(ro, totC)}%</span></div>
+        <div class="srow"><span class="srow-l">🌍 Internațional</span><span class="srow-bar"><i style="width:${pct(intl, totC)}%"></i></span><span class="srow-n">${intl}</span><span class="srow-p">${pct(intl, totC)}%</span></div>
+      </div>` : ""}
+      ${totV ? `<div class="stat-block"><h4>Vizitatori</h4>
+        <div class="srow"><span class="srow-l">🆕 Noi</span><span class="srow-bar"><i style="width:${pct(v.new, totV)}%"></i></span><span class="srow-n">${v.new || 0}</span><span class="srow-p">${pct(v.new, totV)}%</span></div>
+        <div class="srow"><span class="srow-l">🔁 Reveniți</span><span class="srow-bar"><i style="width:${pct(v.returning, totV)}%"></i></span><span class="srow-n">${v.returning || 0}</span><span class="srow-p">${pct(v.returning, totV)}%</span></div>
+      </div>` : ""}
+      ${sumv(dows) ? `<div class="stat-block"><h4>Zile ale săptămânii</h4><div class="dow-row">${dowBars}</div></div>` : ""}
+    </div>
+
+    ${sumv(hours) ? `<h4 class="stat-h4 mt-2">Ore de activitate (ora României)</h4>
+      <div class="spark spark24" title="Vizite pe oră">${hourBars}</div>
+      <div class="spark-cap hint">0h → 23h${peakHourTxt ? " · " + peakHourTxt : ""}</div>` : ""}
+
+    <p class="hint mt-1">Locația/sursa sunt aproximative, fără date personale. Vizitele tale ca admin nu se numără; boții sunt excluși. Conversia = cereri de rezervare ÷ vizite pe pagina Vila TUI.${s.since ? ` Date din: ${escA(s.since)}.` : ""}</p>`;
 }
 
 /* ---- shared admin POST ---- */
@@ -735,7 +795,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await adminPost("/api/stats/admin", { action: "reset" });
       const data = await res.json();
-      if (data.ok) renderStats(data.stats || { total: 0, days: {}, pages: {} });
+      if (data.ok) { state.bookingsCount = data.bookingsCount || 0; renderStats(data.stats || {}); }
     } catch (e) { alert("Nu am putut reseta."); }
   });
   $("book-clear").addEventListener("click", async () => {

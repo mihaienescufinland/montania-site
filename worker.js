@@ -290,13 +290,21 @@ async function recordHit(request, env) {
   if (!p.startsWith("/")) p = "/" + p;
   if (p.startsWith("/admin")) return json({ ok: true, skipped: "admin" });
 
-  const stats = await kvJSON(env, "stats", { total: 0, days: {}, pages: {}, countries: {}, cities: {} });
+  const stats = await kvJSON(env, "stats", freshStats());
   stats.total = (stats.total || 0) + 1;
   const today = new Date().toISOString().slice(0, 10);
+  // Ensure all buckets exist (covers records created before these fields).
   stats.days = stats.days || {};
   stats.pages = stats.pages || {};
   stats.countries = stats.countries || {};
   stats.cities = stats.cities || {};
+  stats.referrers = stats.referrers || {};
+  stats.devices = stats.devices || {};
+  stats.langs = stats.langs || {};
+  stats.hours = stats.hours || {};
+  stats.dows = stats.dows || {};
+  stats.visitors = stats.visitors || { new: 0, returning: 0 };
+  if (!stats.since) stats.since = today;
   stats.days[today] = (stats.days[today] || 0) + 1;
   stats.pages[p] = (stats.pages[p] || 0) + 1;
 
@@ -314,6 +322,32 @@ async function recordHit(request, env) {
     }
   }
 
+  // Traffic source (bucketed from the page-reported referrer).
+  const src = referrerBucket((b && b.ref) || "");
+  stats.referrers[src] = (stats.referrers[src] || 0) + 1;
+
+  // Device type from the user-agent.
+  const dev = deviceType(ua);
+  stats.devices[dev] = (stats.devices[dev] || 0) + 1;
+
+  // Site language the visitor was viewing.
+  const lang = clip((b && b.lang) || "", 4).toLowerCase();
+  if (lang) stats.langs[lang] = (stats.langs[lang] || 0) + 1;
+
+  // New vs returning (reported by the page via localStorage flag).
+  if (b && b.returning) stats.visitors.returning = (stats.visitors.returning || 0) + 1;
+  else stats.visitors.new = (stats.visitors.new || 0) + 1;
+
+  // Hour-of-day & day-of-week in local time (Europe/Bucharest).
+  try {
+    const parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Bucharest", hour: "2-digit", hour12: false, weekday: "short" }).formatToParts(new Date());
+    const hh = parts.find(x => x.type === "hour");
+    if (hh) { const h = String(parseInt(hh.value, 10)); stats.hours[h] = (stats.hours[h] || 0) + 1; }
+    const dmap = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+    const wd = parts.find(x => x.type === "weekday");
+    if (wd && dmap[wd.value] != null) { const d = String(dmap[wd.value]); stats.dows[d] = (stats.dows[d] || 0) + 1; }
+  } catch (e) { /* ignore */ }
+
   // Keep only the last ~180 days to bound the record size.
   const dayKeys = Object.keys(stats.days).sort();
   if (dayKeys.length > 180) {
@@ -323,15 +357,46 @@ async function recordHit(request, env) {
   return json({ ok: true });
 }
 
+function freshStats() {
+  return { total: 0, since: "", days: {}, pages: {}, countries: {}, cities: {}, referrers: {}, devices: {}, langs: {}, hours: {}, dows: {}, visitors: { new: 0, returning: 0 } };
+}
+
+function referrerBucket(ref) {
+  if (!ref) return "Direct";
+  let host = "";
+  try { host = new URL(ref).hostname.toLowerCase(); } catch { return "Direct"; }
+  if (!host || host.includes("montania.ro")) return "Direct";
+  if (host.includes("google")) return "Google";
+  if (host.includes("facebook") || host === "fb.com" || host.includes("fb.me") || host.includes("l.facebook")) return "Facebook";
+  if (host.includes("instagram")) return "Instagram";
+  if (host.includes("booking.")) return "Booking.com";
+  if (host.includes("bing")) return "Bing";
+  if (host.includes("duckduckgo")) return "DuckDuckGo";
+  if (host.includes("yahoo")) return "Yahoo";
+  if (host.includes("t.co") || host.includes("twitter") || host.includes("x.com")) return "X / Twitter";
+  if (host.includes("tiktok")) return "TikTok";
+  if (host.includes("whatsapp") || host.includes("wa.me")) return "WhatsApp";
+  return "Altele";
+}
+
+function deviceType(ua) {
+  ua = ua || "";
+  if (/ipad|tablet|playbook|silk|(android(?!.*mobile))/i.test(ua)) return "Tabletă";
+  if (/mobi|iphone|ipod|android.*mobile|windows phone/i.test(ua)) return "Mobil";
+  return "Desktop";
+}
+
 async function adminStats(request, env) {
   if (!isAdmin(request, env)) return json({ ok: false, error: "unauthorized" }, 401);
   let b = {};
   try { b = await request.json(); } catch { /* ignore */ }
   if (b && b.action === "reset") {
-    const fresh = { total: 0, days: {}, pages: {}, countries: {}, cities: {} };
+    const fresh = freshStats();
+    fresh.since = new Date().toISOString().slice(0, 10);
     if (env.MONTANIA_KV) await env.MONTANIA_KV.put("stats", JSON.stringify(fresh));
-    return json({ ok: true, stats: fresh });
+    return json({ ok: true, stats: fresh, bookingsCount: 0 });
   }
-  const stats = await kvJSON(env, "stats", { total: 0, days: {}, pages: {}, countries: {}, cities: {} });
-  return json({ ok: true, stats });
+  const stats = await kvJSON(env, "stats", freshStats());
+  const bookings = await kvJSON(env, "bookings", []);
+  return json({ ok: true, stats, bookingsCount: Array.isArray(bookings) ? bookings.length : 0 });
 }
