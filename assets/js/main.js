@@ -30,6 +30,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   initReviews();
   initFeed();
   renderHeroPhotoDate();
+  injectStickyBar();
+  injectFeaturedReview();
   trackVisit();
   injectAnalytics();
 
@@ -40,6 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderBioMeats();
     renderBV();
     renderHeroPhotoDate();
+    injectFeaturedReview();
     if (document.getElementById("calendar")) { renderCalendar(); updateSummary(); renderRateTable(); }
   });
 });
@@ -165,6 +168,46 @@ function injectContact() {
   document.querySelectorAll("[data-contact='booking']").forEach(e => { e.href = c.bookingUrl; });
   document.querySelectorAll("[data-contact='score']").forEach(e => { e.textContent = c.bookingScore; });
   document.querySelectorAll("[data-contact='reviews']").forEach(e => { e.textContent = t("home.reviews.based").replace("{n}", c.bookingReviews); });
+  // Call / WhatsApp action links (keep their own label, only set href).
+  document.querySelectorAll("[data-call]").forEach(e => { e.href = "tel:" + c.phone.replace(/\s/g, ""); });
+  const waMsg = encodeURIComponent(t("msg.generic"));
+  document.querySelectorAll("[data-wa]").forEach(e => { e.href = `https://wa.me/${c.whatsapp}?text=${waMsg}`; });
+  // "from" price teaser (lowest base price across rooms).
+  const minPrice = Math.min(...(SITE.rooms || []).map(r => r.price).filter(Boolean));
+  if (isFinite(minPrice)) {
+    document.querySelectorAll("[data-fromprice]").forEach(e => { e.textContent = `${t("rate.from")} ${minPrice} ${t("home.fromnight")}`; });
+  }
+}
+
+/* Sticky mobile call + WhatsApp bar (added to every page). */
+function injectStickyBar() {
+  if (document.getElementById("sticky-cta")) return;
+  const c = SITE.contact;
+  const waMsg = encodeURIComponent(t("msg.generic"));
+  const bar = document.createElement("div");
+  bar.id = "sticky-cta";
+  bar.className = "sticky-cta";
+  bar.innerHTML =
+    `<a class="scta scta-call" href="tel:${c.phone.replace(/\s/g, "")}">📞 ${t("cta.call")}</a>` +
+    `<a class="scta scta-wa" href="https://wa.me/${c.whatsapp}?text=${waMsg}" target="_blank" rel="noopener">💬 WhatsApp</a>`;
+  document.body.appendChild(bar);
+}
+
+/* Featured guest review (a real one, high on the Vila page). */
+function injectFeaturedReview() {
+  const host = document.getElementById("featured-review");
+  if (!host) return;
+  const seed = (typeof SITE !== "undefined" && SITE.seedReviews) ? SITE.seedReviews : [];
+  const pick = seed
+    .filter(r => r.text && r.text.length > 60)
+    .sort((a, b) => (b.rating - a.rating) || String(b.date).localeCompare(String(a.date)))[0];
+  if (!pick) { host.style.display = "none"; return; }
+  let txt = pick.text;
+  if (txt.length > 240) txt = txt.slice(0, 237).trim() + "…";
+  host.innerHTML =
+    `<div class="fr-score">★ ${SITE.contact.bookingScore}/10</div>` +
+    `<blockquote class="fr-quote">“${esc(txt)}”</blockquote>` +
+    `<div class="fr-author">— ${esc(pick.author)}, ${esc(pick.country || "")} · <span class="fr-src">Booking.com</span></div>`;
 }
 
 /* ---------------- Rooms grid ---------------- */
@@ -448,20 +491,23 @@ function selectionNeedsQuote() {
 function roomRangeInfo(room) {
   const s = booking.state;
   if (!s.checkIn || !s.checkOut) return { complete: false, available: true, quote: dayNeedsQuote(s.checkIn || new Date(0)), perNight: room.price };
-  let total = 0, available = true, quote = false, minStay = 1;
+  let total = 0, available = true, quote = false, minStay = 1, minAvail = Infinity;
   const booked = new Set(room.booked || []);
   const d = new Date(s.checkIn);
   while (d < s.checkOut) {
     const key = ymd(d);
     if (dayNeedsQuote(d)) quote = true;
     const info = dayInfo(room, key);
-    if (info.a <= 0 || booked.has(key)) available = false;
+    const effAvail = booked.has(key) ? 0 : info.a;
+    if (effAvail <= 0) available = false;
+    if (effAvail < minAvail) minAvail = effAvail;
     if (info.m > minStay) minStay = info.m;
     total += info.p;
     d.setDate(d.getDate() + 1);
   }
   const n = nightsBetween(s.checkIn, s.checkOut);
-  return { complete: true, available, quote, nights: n, total, perNight: Math.round(total / n), minStay, minStayOk: n >= minStay };
+  if (!isFinite(minAvail)) minAvail = 0;
+  return { complete: true, available, quote, nights: n, total, perNight: Math.round(total / n), minStay, minStayOk: n >= minStay, minAvail };
 }
 
 /* All-rooms rate table for the selected period (Booking-style) */
@@ -485,6 +531,8 @@ function renderRateTable() {
     } else if (ri.complete && ri.available) {
       priceHtml = `<div class="rate-price">${ri.total} <small>RON</small></div><div class="rate-sub">${ri.nights} ${ri.nights === 1 ? night : t("vila.book.nights")} · ${ri.perNight} RON/${night}</div>`;
       availHtml = `<span class="badge-ok">${t("rate.available")}</span>`;
+      if (ri.minAvail === 1) availHtml += `<div class="rate-scarce">🔥 ${t("rate.lastroom")}</div>`;
+      else if (ri.minAvail === 2) availHtml += `<div class="rate-scarce">${t("rate.fewrooms").replace("{n}", ri.minAvail)}</div>`;
       if (!ri.minStayOk) availHtml += `<div class="rate-minstay">⚠ ${t("rate.minstay").replace("{n}", ri.minStay)}</div>`;
       btn = `<button class="btn btn-primary" type="button" data-reserve="${room.id}">${t("vila.book.whatsapp")}</button>`;
     } else if (ri.complete && !ri.available) {
@@ -492,7 +540,7 @@ function renderRateTable() {
       availHtml = `<span class="badge-no">${t("rate.sold")}</span>`;
       btn = `<button class="btn btn-outline" type="button" disabled>${t("rate.sold")}</button>`;
     } else {
-      priceHtml = `<div class="rate-pickdates">${t("rate.selectdates")}</div>`;
+      priceHtml = `<div class="rate-price rate-fromprice"><small>${t("rate.from")}</small> ${room.price} <small>RON/${night}</small></div><div class="rate-pickhint">${t("rate.selectdates")}</div>`;
       availHtml = "";
       btn = `<button class="btn btn-primary" type="button" data-reserve="${room.id}">${t("vila.book.whatsapp")}</button>`;
     }

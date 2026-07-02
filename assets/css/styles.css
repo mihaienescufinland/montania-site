@@ -307,6 +307,31 @@ h3 { font-size: 1.4rem; }
 .rate-note { background: #fbf3e1; border: 1px solid #f0dcae; color: #6b4e16; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; font-size: .92rem; line-height: 1.5; }
 .rate-minstay { margin-top: 6px; font-size: .78rem; font-weight: 600; color: #8a5a00; background: #fbeccd; border-radius: 7px; padding: 4px 9px; line-height: 1.35; }
 .rate-common { margin-top: 6px; font-size: .92rem; color: var(--muted); }
+/* upfront "from" price + scarcity + response time */
+.rate-fromprice { color: var(--charcoal); }
+.rate-fromprice small { color: var(--muted); font-weight: 600; }
+.rate-pickhint { font-size: .74rem; color: var(--muted); margin-top: 2px; }
+.rate-scarce { margin-top: 5px; font-size: .8rem; font-weight: 700; color: #b23; }
+.book-responsetime { margin-top: 8px; font-size: .92rem; color: var(--green, #2f5d3a); font-weight: 600; }
+
+/* sticky mobile call + WhatsApp bar */
+.sticky-cta { position: fixed; left: 0; right: 0; bottom: 0; z-index: 900; display: none; gap: 0; box-shadow: 0 -6px 20px rgba(0,0,0,.16); }
+.sticky-cta .scta { flex: 1; text-align: center; padding: 14px 8px; font-weight: 700; font-size: 1rem; text-decoration: none; color: #fff; }
+.sticky-cta .scta-call { background: #2f5d3a; }
+.sticky-cta .scta-wa { background: #25d366; }
+@media (max-width: 820px) {
+  .sticky-cta { display: flex; }
+  body { padding-bottom: 54px; }
+  .footer { padding-bottom: 64px; }
+}
+
+/* featured guest review */
+.featured-review { max-width: 760px; margin: 18px auto 0; background: #fff; border: 1px solid var(--cream-2, #eadfce); border-left: 4px solid var(--amber, #c98a2b); border-radius: 12px; padding: 16px 20px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
+.featured-review .fr-score { display: inline-block; background: #003b95; color: #fff; font-weight: 700; border-radius: 7px; padding: 2px 8px; font-size: .85rem; margin-bottom: 8px; }
+.featured-review .fr-quote { margin: 0; font-family: var(--serif, Georgia, serif); font-size: 1.12rem; line-height: 1.5; color: var(--charcoal, #2b2b2b); font-style: italic; }
+.featured-review .fr-author { margin-top: 8px; font-size: .88rem; color: var(--muted); }
+.featured-review .fr-src { color: #003b95; font-weight: 600; }
+
 .video-wrap { display: flex; justify-content: center; margin-top: 24px; }
 .tour-video { width: 100%; max-width: 380px; border-radius: 16px; box-shadow: 0 18px 50px rgba(0,0,0,.22); background: #000; display: block; }
 .rate-thumb-wrap { position: relative; width: 150px; cursor: pointer; }
